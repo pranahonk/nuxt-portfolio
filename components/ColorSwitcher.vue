@@ -18,7 +18,6 @@ export default {
      * @returns {string} The color mode as "light" or "dark".
      */
     getSelectedTheme() {
-      console.log(this.$colorMode)
       return this.$colorMode.value
     },
   },
