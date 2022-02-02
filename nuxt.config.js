@@ -64,7 +64,7 @@ export default {
 
   // Sitemap Configuration: https://sitemap.nuxtjs.org/usage/sitemap-options#from-a-function-which-returns-a-promise
   sitemap: {
-    hostname: process.env.BASE_URL,
+    hostname: "https://prana-wijaya.netlify.app/" || process.env.BASE_URL,
     routes: async () => {
       const notion = require('vue-notion')
       const pageTable = await notion.getPageTable(process.env.NOTION_TABLE_ID)
