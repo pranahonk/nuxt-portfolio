@@ -15,6 +15,7 @@
       <IconTailwind class="m-2 md:m-4"/>
       <IconVuejs class="m-2 md:m-4"/>
       <IconNuxt class="m-2 md:m-4"/>
+      <IconReact class="m-2 md:m-4"/>
     </div>
   </div>
 </template>

@@ -7,10 +7,8 @@
           <p class="text-sm text-gray-700 dark:text-gray-200 mx-1">© 2022 {{ $config.githubUsername }} Built with ♡ </p>
           <a
 aria-label="AymaneMx.com" class="text-sm underline text-gray-700 dark:text-gray-200"
-             href="https://github.com/aymaneMx/nuxt-portfolio-dev">Open sourced on Github</a>
+             href="https://github.com/pranahonk/nuxt-portfolio">Open sourced on Github</a>
         </div>
-
-
         <div>
           <Social/>
         </div>

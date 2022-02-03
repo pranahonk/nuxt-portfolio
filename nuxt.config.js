@@ -78,6 +78,10 @@ export default {
     id: process.env.GOOGLE_ANALYTICS_ID,
   },
 
+  server: {
+    port: 8000 // default: 3000
+  },
+
   publicRuntimeConfig: {
     baseURL: process.env.BASE_URL,
     githubUsername: process.env.GITHUB_USERNAME,
