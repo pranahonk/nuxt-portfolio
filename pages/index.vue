@@ -21,7 +21,7 @@ export default {
       })
     const pageTable = await $notion.getPageTable(notionTableId)
     const posts = pageTable.filter((page) => page.public).sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
-    return { posts, projects: projects.data.items }
+    return { posts, projects: projects?.data?.items }
   }
 }
 </script>

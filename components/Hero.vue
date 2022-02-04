@@ -3,8 +3,7 @@
     <div class="m-auto">
       <h2 class="text-xl md:text-2xl lg:text-3xl font-semibold">
         <section class="hero container max-w-screen-lg mx-auto flex justify-center">
-          <img v-if="getSelectedTheme === 'light'" class="grid place-items-center rounded-full h-56 w-56" src='~/assets/image/avatar-light.png' alt='Avatars'>
-          <img v-else class="grid place-items-center rounded-full h-56 w-56" src='~/assets/image/avatar-dark.png' alt='Avatars'>
+          <img class="grid place-items-center rounded-full h-56 w-56" src='~/assets/image/avatar-transparent.png' alt='Avatars'>
         </section>
         <span class="font-normal dark:text-gray-300"> Hey, I am </span>{{ $config.devName}}</h2>
       <h3 class="font-bold text-primary dark:text-primary text-2xl md:text-3xl lg:text-4xl">a {{ $config.devRole}}</h3>
