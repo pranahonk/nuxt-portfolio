@@ -5,7 +5,7 @@ export default {
     return {blockMap}
   },
   head: {
-    title: "About"
+    title: "Portfolio"
   },
 }
 </script>
