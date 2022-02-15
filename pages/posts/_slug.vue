@@ -50,7 +50,7 @@ export default {
 <template>
   <div>
     <NotionRenderer :block-map="blockMap" :page-link-options="pageLinkOptions" full-page prism/>
-    <div class="container mx-auto xl:px-40">
+    <div class="container mx-auto xl:px-40 px-2">
       <Disqus />
     </div>
   </div>
