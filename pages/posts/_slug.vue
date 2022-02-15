@@ -48,7 +48,12 @@ export default {
 
 
 <template>
-  <NotionRenderer :block-map="blockMap" :page-link-options="pageLinkOptions" full-page prism/>
+  <div>
+    <NotionRenderer :block-map="blockMap" :page-link-options="pageLinkOptions" full-page prism/>
+    <div class="container mx-auto xl:px-40">
+      <Disqus />
+    </div>
+  </div>
 </template>
 
 

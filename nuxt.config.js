@@ -35,6 +35,7 @@ export default {
 
   plugins: [
     "@/plugins/util",
+    '@/plugins/disqus'
   ],
 
   components: true,
