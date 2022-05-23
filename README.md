@@ -3,7 +3,7 @@ a portfolio for developers w/ a blog powered by [Notion](https://www.notion.so/)
 
 [![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/aymaneMx/nuxt-portfolio-dev)
 
-Demo: https://aymaneMx.com
+Demo: https://prana-wijaya.netlify.app/
 
 
 **Features** 
@@ -21,13 +21,13 @@ Demo: https://aymaneMx.com
 ### Prerequisites
 
 1. create [Notion](https://www.notion.so/) account 
-2. duplicate [this template](https://aymanemx.notion.site/aymanemx/ceef6f1a895a46b2a0e4a87b41405547?v=8427738adccd4b2a8c28156be3757156) by clicking on "duplicate" button located at the top of the page.
+2. duplicate [this template](https://www.notion.so/f906db55071f471eb418879a2d0b3c7f?v=202b2d8603af4b3c86a93963287d3729) by clicking on "duplicate" button located at the top of the page.
 3. make your notion table public (by clicking on "share" button located at the top of the page)
 4. grab the table id from the table link:
 eg: 
 ```
-link: https://aymanemx.notion.site/aymanemx/ceef6f1a895a46b2a0e4a87b41405547?v=8427738adccd4b2a8c28156be3757156
-id: ceef6f1a895a46b2a0e4a87b41405547
+link: https://www.notion.so/f906db55071f471eb418879a2d0b3c7f?v=202b2d8603af4b3c86a93963287d3729
+id: f906db55071f471eb418879a2d0b3c7f
 ```
 5. do the same thing for about page id (we gonna use it as an env variable NOTION_ABOUT_PAGE_ID)
 5. get your Google analytics id (optional)
