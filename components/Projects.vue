@@ -1,8 +1,13 @@
 <template>
   <div class="mt-16">
     <div class="flex justify-center items-center text-base font-semibold text-gray-600 dark:text-gray-300">
-      <h2 class="text-center">Open Source Projects</h2>
-      <IconDoubleDown class="h-4 w-4"/>
+      <h2 class="text-center mt-5">My Contribution In {{new Date().getFullYear()}}</h2>
+    </div>
+    <div class='my-5'>
+      <img src="https://ghchart.rshah.org/pranahonk" alt="Name Your Github chart" width='100%'>
+    </div>
+    <div class="flex justify-center items-center text-base font-semibold text-gray-600 dark:text-gray-300">
+      <h2 class="text-center mt-5">Open Source Projects</h2>
     </div>
 
     <div class="wrapper-small my-5">
