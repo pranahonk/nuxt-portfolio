@@ -17,7 +17,8 @@
     "nuxt": "^2.15.7",
     "prismjs": "^1.25.0",
     "vue": "^2.6.14",
-    "vue-disqus": "^4.0.1"
+    "vue-disqus": "^4.0.1",
+    "vue-typed-js": "^0.1.2"
   },
   "devDependencies": {
     "@aceforth/nuxt-optimized-images": "^1.4.0",
