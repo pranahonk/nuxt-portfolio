@@ -42,19 +42,19 @@ id: f906db55071f471eb418879a2d0b3c7f
 create a `.env` file with the following variables
 
 ```
-BASE_URL=https://aymanemx.com
-GOOGLE_ANALYTICS_ID=
-NOTION_TABLE_ID="ceef6f1a895a46b2a0e4a87b41405547"
-NOTION_ABOUT_PAGE_ID="ad2346af0894443d8906cf78de4f310f"
-GITHUB_USERNAME=aymaneMx
-DEV_LOGO="AymaneMx"
-DEV_NAME="Aymane max"
-DEV_DESCRIPTION="a passionate Python developer from Morocco who loves to build and deliver quality products."
+BASE_URL="https://prana-wijaya.netlify.app/"
+DEV_DESCRIPTION="a passionate Javascript developer from Indonesia who loves to build and deliver quality products."
+DEV_GITHUB_LINK="https://github.com/pranahonk"
+DEV_LINKEDIN_LINK="https://www.linkedin.com/in/prana-wijaya/"
+DEV_LOGO="Prana"
+DEV_NAME="Prana Apsara Wijaya"
 DEV_ROLE="Software Engineer"
-DEV_GITHUB_LINK="https://github.com/aymaneMx"
-DEV_TWITTER_LINK="https://twitter.com/aymane_max"
-DEV_LINKEDIN_LINK="https://www.linkedin.com/in/aymane-mimouni/"
-```
+DEV_TWITTER_LINK="https://twitter.com/pranahonk"
+GITHUB_USERNAME="pranahonk"
+NOTION_ABOUT_PAGE_ID="34f33e041bc74cea89530902deef0012"
+NOTION_PORTFOLIO_PAGE_ID="316c052484be4a62b8c39bb5dcd36c01"
+NOTION_TABLE_ID="f906db55071f471eb418879a2d0b3c7f"
+
 
 then:
 
