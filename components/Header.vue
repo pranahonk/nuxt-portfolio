@@ -5,7 +5,7 @@
         <div class="logo">
           <nuxt-link to="/">
 
-            <h1 class="text-2xl font-semibold text-gray-700 dark:text-gray-200">{{ $config.devLogo }}</h1>
+            <img class="h-full w-full max-h-24" :src='$config.devLogo' />
           </nuxt-link>
         </div>
 
