@@ -12,7 +12,7 @@ export default {
 
 
 <template>
-  <NotionRenderer :block-map="blockMap" full-page prism/>
+  <NotionRenderer :block-map="blockMap" class='wrapper-small my-5' full-page prism/>
 </template>
 
 
