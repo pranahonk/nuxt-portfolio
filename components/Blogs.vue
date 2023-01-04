@@ -17,7 +17,7 @@
           <nuxt-link :to="`/posts/${post.slug}`">
             <img
               :alt="post.title"
-              :src="`${post.thumbnail[0].url}`"
+              :src="getImage(post.thumbnail)"
               class="rounded-xl h-44 w-96 object-cover object-center"
             />
           </nuxt-link>
@@ -77,6 +77,14 @@ export default {
       const options = { year: 'numeric', month: 'long', day: 'numeric' }
       return new Date(date).toLocaleDateString('en', options)
     },
+    getImage(thumbnail){
+      if(thumbnail){
+        return thumbnail[0]?.url
+      }
+      else{
+        return "https://via.placeholder.com/1000x1000?text=Placeholder"
+      }
+    }
   },
 }
 </script>
