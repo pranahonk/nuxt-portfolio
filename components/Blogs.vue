@@ -26,15 +26,15 @@
           <div class="txt md:px-5 lg:px-0">
             <nuxt-link :to="`/posts/${post.slug}`">
               <h2
-                class="text-xl font-semibold text-gray-800 dark:text-gray-100"
+                class="text-xl mt-1 md:mt-0 font-semibold text-gray-800 dark:text-gray-100"
               >
                 {{ post.title }}
               </h2>
             </nuxt-link>
-            <p class="font-semibold text-gray-600 dark:text-gray-300 text-sm">
+            <p class="font-semibold mt-1 md:mt-0 text-gray-600 dark:text-gray-300 text-sm">
               {{ formatDate(post.created_at) }}
             </p>
-            <div class="flex flex-col justify-between max-w-lg mx-auto"></div>
+            <div class="flex flex-col mt-1 md:mt-0 justify-between max-w-lg mx-auto"></div>
             <span
               v-for="tag of post.tags"
               :key="tag"
@@ -42,7 +42,7 @@
             >
               #{{ tag }}
             </span>
-            <p class="text-base text-gray-700 dark:text-gray-200 my-1">
+            <p class="text-base text-gray-700 dark:text-gray-200 my-1 ">
               {{ post.description }}
             </p>
             <nuxt-link
