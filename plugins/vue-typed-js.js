@@ -1,6 +1,4 @@
 import Vue from 'vue'
-import VueTypedJs from 'vue-typed-js'
-
-console.log('masuk sini')
+import VueTypedJs from 'vue-typed-js/index'
 
 Vue.use(VueTypedJs)
