@@ -2,8 +2,8 @@
 export default {
   async asyncData({$notion, $config: { notionPortfolioPageId }}) {
     const blockMap = await $notion.getPageBlocks(notionPortfolioPageId);
-    const portfolios = blockMap.filter((page) => page.public);
-    return {portfolios}
+    // const portfolios = blockMap.filter((page) => page.public);
+    return {blockMap}
   },
   head: {
     title: "Portfolio"
