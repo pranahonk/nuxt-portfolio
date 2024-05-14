@@ -8,9 +8,20 @@
         <span class="font-normal dark:text-gray-300">
           Hey, I am </span>{{ $config.devName}}
       </h2>
-      <h3 class="font-bold text-primary dark:text-primary text-2xl md:text-3xl lg:text-4xl">
-        a happy {{ $config.devRole}}
-      </h3>
+      <div class='text-center'>
+        <vue-typed-js
+          :type-speed='100'
+          :loop='true'
+          :strings="['Software Engineer', 'Front End Developer',
+          'Mobile Apps Developer']">
+          <h3 class="font-bold text-primary dark:text-primary text-2xl md:text-3xl lg:text-4xl">
+            a happy <span class="typing"></span>
+          </h3>
+        </vue-typed-js>
+      </div>
+
+
+
       <p class="text-lg lg:text-xl font-semibold">
         {{ $config.devDescription}}
       </p>
@@ -23,7 +34,6 @@
 
 
 <script>
-
 export default {
   computed: {
     /**

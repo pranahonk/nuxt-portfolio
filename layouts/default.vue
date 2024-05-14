@@ -14,7 +14,7 @@
   </div>
 </template>
 
-<style>
+<style lang='css'>
 .wrapper {
   @apply max-w-screen-xl mx-auto;
 }

@@ -1,13 +1,5 @@
 <script>
 export default {
-  async asyncData({$notion, $config: { notionPortfolioPageId }}) {
-    const blockMap = await $notion.getPageTable(notionPortfolioPageId);
-    const portfolios = blockMap.filter((page) => page.public);
-    return {portfolios}
-  },
-  head: {
-    title: "Portfolio"
-  },
   props: {
     title: {
       type: String,
@@ -20,11 +12,15 @@ export default {
       },
     },
   },
+  async asyncData({$notion, $config: { notionPortfolioPageId }}) {
+    const blockMap = await $notion.getPageTable(notionPortfolioPageId);
+    const portfolios = blockMap.filter((page) => page.public);
+    return {portfolios}
+  },
+  head: {
+    title: "Portfolio"
+  },
   methods: {
-    formatDate(date) {
-      const options = { year: 'numeric', month: 'long', day: 'numeric' }
-      return new Date(date).toLocaleDateString('en', options)
-    },
     getImage(thumbnail){
       if(thumbnail){
         return thumbnail[0]?.url
@@ -89,7 +85,7 @@ export default {
 </template>
 
 
-<style>
+<style lang='css'>
 @import "vue-notion/src/styles.css";
 
 .notion-title, .notion-text, .notion-list, .notion-callout-text, p, h1, h2, h3, h4, span {

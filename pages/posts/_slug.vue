@@ -11,7 +11,8 @@ import 'prismjs/components/prism-javascript'
 
 export default {
   async asyncData({ $notion, params, error, $config: { notionTableId } }) {
-    const pageTable = await $notion.getPageTable(notionTableId)
+    const pageTable = await $notion.getPageTable(notionTableId);
+    console.log(pageTable);
     const page = pageTable.find(
       (item) => item.public && item.slug === params.slug
     )
@@ -59,10 +60,24 @@ export default {
 
 <style>
 @import "vue-notion/src/styles.css";
-.notion-title, .notion-text, .notion-list, .notion-callout-text, p , h1, h2, h3, h4, span {
-  @apply dark:text-white;
-}
-.notion-link{
-  @apply dark:hover:bg-red-500;
+
+/* Apply dark mode styles using media queries (recommended) */
+@media (prefers-color-scheme: dark) {
+  .notion-title,
+  .notion-text,
+  .notion-list,
+  .notion-callout-text,
+  p,
+  h1,
+  h2,
+  h3,
+  h4,
+  span {
+    color: white; /* Base color for dark mode */
+  }
+
+  .notion-link:hover {
+    background-color: red; /* Adjust shade as needed */
+  }
 }
 </style>

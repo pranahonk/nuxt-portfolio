@@ -85,9 +85,6 @@ export default {
       return pageTable.filter((item) => !!item.public).map((item) => `/posts/${item.slug}`)
     }
   },
-  axios: {
-    // proxy: true
-  },
 
   // Google Analytics Configuration: https://google-analytics.nuxtjs.org
   googleAnalytics: {
