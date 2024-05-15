@@ -5,7 +5,7 @@
         <div class="logo">
           <nuxt-link to="/">
 
-            <img class="h-full w-full max-h-24" :src='$config.devLogo' />
+            <img class="h-full w-full max-h-24" :src='config.devLogo' />
           </nuxt-link>
         </div>
 
@@ -21,19 +21,10 @@
 </template>
 
 
-<script>
-export default {
-  data() {
-    return {
-      isOpen: false
-    }
-  },
-  methods: {
-    toggle() {
-      this.isOpen = !this.isOpen
-    },
-  }
-}
+<script setup>
+import { useRuntimeConfig } from '#imports' // Import from Nuxt 3 plugin
+
+const config = useRuntimeConfig();
 </script>
 
 <style lang='css'>

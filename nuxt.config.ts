@@ -8,7 +8,10 @@ export default defineNuxtConfig({
   },
   devtools: { enabled: true },
   css: ['~/assets/css/main.css'],
-  modules: ["@nuxt/devtools", ["vue3-notion/nuxt", { css: true }]],
+  modules: [
+    "@nuxt/devtools",
+    ["vue3-notion/nuxt", { css: true }],
+    '@nuxtjs/color-mode'],
   postcss: {
     plugins: {
       tailwindcss: {},
