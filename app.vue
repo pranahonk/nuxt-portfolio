@@ -1,13 +1,15 @@
 <script setup lang="ts"></script>
 
 <template>
-  <NuxtPage></NuxtPage>
+  <NuxtLayout>
+    <NuxtPage />
+  </NuxtLayout>
 </template>
 
 <style>
 body {
   margin: 0;
-  padding: 2rem;
+  padding: 0;
   box-sizing: border-box;
 }
 .notion {
