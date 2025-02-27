@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import { useProps } from '~/composables/useProps'
 
 const { $notion } = useNuxtApp();
-const { data } = await useAsyncData("notion-index", () => $notion.getPageTable("34f33e041bc74cea89530902deef0012"));
+const { data } = await useAsyncData("notion-index", () => $notion.getPageBlocks("34f33e041bc74cea89530902deef0012"));
 </script>
 
 
