@@ -1,23 +1,17 @@
-<script>
-export default {
-  async asyncData({$notion, $config: { notionPortfolioPageId }}) {
-    const blockMap = await $notion.getPageBlocks(notionPortfolioPageId)
-    return {blockMap}
-  },
-  head: {
-    title: "Portfolio"
-  },
-}
+<script setup lang="ts">
+
+const { $notion } = useNuxtApp();
+const { data } = await useAsyncData("notion-index", () => $notion.getPageBlocks("f906db55071f471eb418879a2d0b3c7f"));
+
 </script>
 
-
 <template>
-  <NotionRenderer :block-map="blockMap" class='wrapper-small my-5' full-page prism/>
+  <NotionRenderer v-if='data' :block-map="data" class='wrapper-small my-5' full-page prism/>
 </template>
 
 
 <style>
-@import "vue-notion/src/styles.css";
+@import "vue3-notion/dist/style.css";
 
 .notion-title, .notion-text, .notion-list, .notion-callout-text, p, h1, h2, h3, h4, span {
   @apply dark:text-white;

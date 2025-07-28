@@ -5,7 +5,7 @@
     </div>
 
     <div class="mb-auto dark:bg-gray-900">
-      <Nuxt/>
+      <slot />
     </div>
 
     <div class="dark:bg-gray-900">
