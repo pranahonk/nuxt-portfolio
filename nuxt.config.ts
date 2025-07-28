@@ -1,4 +1,9 @@
 export default defineNuxtConfig({
+  nitro: {
+    prerender: {
+      routes: ['/']
+    }
+  },
   app: {
     head: {
       title: "Nuxt3 notion portfolio",
