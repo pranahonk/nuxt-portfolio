@@ -3,6 +3,9 @@
   "version": "0.0.1",
   "description": "Nuxt 3 Notion Renderer.",
   "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "scripts": {
     "dev": "nuxt dev",
     "build": "nuxt build",
