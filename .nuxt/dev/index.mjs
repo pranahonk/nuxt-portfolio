@@ -55,7 +55,7 @@ const _inlineRuntimeConfig = {
     "devGithubLink": "https://github.com/pranahonk",
     "devTwitterLink": "https://twitter.com/pranahonk",
     "devLinkedinLink": "https://www.linkedin.com/in/prana-wijaya/",
-    "devLogo": "Prana"
+    "devLogo": "https://prana-wijaya.netlify.app/_nuxt/img/deaabc7.png"
   }
 };
 const ENV_PREFIX = "NITRO_";
