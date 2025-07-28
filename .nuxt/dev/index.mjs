@@ -5,7 +5,7 @@ import { join } from 'node:path';
 import { mkdirSync } from 'node:fs';
 import { parentPort, threadId } from 'node:worker_threads';
 import { provider, isWindows } from 'file:///Volumes/TEAM%20SSD/WebstormProjects/nuxt-portfolio/node_modules/std-env/dist/index.mjs';
-import { defineEventHandler, handleCacheHeaders, createEvent, eventHandler, setHeaders, sendRedirect, proxyRequest, setResponseStatus, getRequestHeader, setResponseHeader, getRequestHeaders, createApp, createRouter as createRouter$1, toNodeListener, fetchWithEvent, lazyEventHandler, getQuery as getQuery$1, createError } from 'file:///Volumes/TEAM%20SSD/WebstormProjects/nuxt-portfolio/node_modules/h3/dist/index.mjs';
+import { defineEventHandler, handleCacheHeaders, createEvent, eventHandler, setHeaders, sendRedirect, proxyRequest, setResponseStatus, getRequestHeader, setResponseHeader, getRequestHeaders, createApp, createRouter as createRouter$1, toNodeListener, fetchWithEvent, lazyEventHandler, createError, getQuery as getQuery$1 } from 'file:///Volumes/TEAM%20SSD/WebstormProjects/nuxt-portfolio/node_modules/h3/dist/index.mjs';
 import { NotionAPI } from 'file:///Volumes/TEAM%20SSD/WebstormProjects/nuxt-portfolio/node_modules/notion-client/build/index.js';
 import { createRenderer } from 'file:///Volumes/TEAM%20SSD/WebstormProjects/nuxt-portfolio/node_modules/vue-bundle-renderer/dist/runtime.mjs';
 import devalue from 'file:///Volumes/TEAM%20SSD/WebstormProjects/nuxt-portfolio/node_modules/@nuxt/devalue/dist/devalue.mjs';
@@ -692,10 +692,16 @@ const errorDev = /*#__PURE__*/Object.freeze({
 });
 
 const _pageId_ = defineEventHandler(async (event) => {
-  var _a;
-  const pageId = (_a = event == null ? void 0 : event.context) == null ? void 0 : _a.params.pageId;
+  var _a, _b;
+  const pageId = (_b = (_a = event == null ? void 0 : event.context) == null ? void 0 : _a.params) == null ? void 0 : _b.pageId;
+  if (!pageId) {
+    throw createError({
+      statusCode: 400,
+      statusMessage: "Page ID is required"
+    });
+  }
   const api = new NotionAPI();
-  const page = await api.getPage(pageId.toString());
+  const page = await api.getPage(pageId);
   return page;
 });
 
