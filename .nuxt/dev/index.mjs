@@ -923,7 +923,7 @@ const renderer$1 = /*#__PURE__*/Object.freeze({
       default: renderer
 });
 
-const _virtual__headStatic = {"headTags":"<meta charset=\"utf-8\">\n<title>Nuxt3 notion portfolio</title>\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<link rel=\"icon\" type=\"image/png\" href=\"/logo.png\">","bodyTags":"","bodyTagsOpen":"","htmlAttrs":"","bodyAttrs":""};
+const _virtual__headStatic = {"headTags":"<meta charset=\"utf-8\">\n<title>Nuxt3 notion portfolio</title>\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<meta name=\"google-site-verification\" content=\"Pxn-EftTSqZBgx5TI5vHBM9oiZ6QxvRtG-qIeuA6TMM\">\n<link rel=\"icon\" type=\"image/png\" href=\"/logo.png\">","bodyTags":"","bodyTagsOpen":"","htmlAttrs":"","bodyAttrs":""};
 
 const _virtual__headStatic$1 = /*#__PURE__*/Object.freeze({
       __proto__: null,

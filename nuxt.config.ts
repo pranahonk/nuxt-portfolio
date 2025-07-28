@@ -2,7 +2,11 @@ export default defineNuxtConfig({
   app: {
     head: {
       title: "Nuxt3 notion portfolio",
-      meta: [{ charset: "utf-8" }, { name: "viewport", content: "width=device-width, initial-scale=1" }],
+      meta: [
+        { charset: "utf-8" }, 
+        { name: "viewport", content: "width=device-width, initial-scale=1" },
+        { name: "google-site-verification", content: "Pxn-EftTSqZBgx5TI5vHBM9oiZ6QxvRtG-qIeuA6TMM" }
+      ],
       link: [{ rel: "icon", type: "image/png", href: "/logo.png" }],
     },
   },
