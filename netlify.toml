@@ -1,5 +1,5 @@
 [build]
-  command = "yarn generate"
+  command = "mkdir -p dist && npm run generate"
   publish = ".output/public"
 
 [build.environment]
