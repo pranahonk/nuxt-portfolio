@@ -1,6 +1,7 @@
 <script setup lang="ts">
+const config = useRuntimeConfig();
 const { $notion } = useNuxtApp();
-const { data } = await useAsyncData("notion-posts", () => $notion.getPageTable("f906db55071f471eb418879a2d0b3c7f"));
+const { data } = await useAsyncData("notion-posts", () => $notion.getPageTable(config.public.notionTableId));
 </script>
 
 <template>
