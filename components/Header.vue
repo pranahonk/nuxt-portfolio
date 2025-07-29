@@ -25,12 +25,6 @@ const config = useRuntimeConfig()
 </template>
 
 
-<script setup>
-import { useRuntimeConfig } from '#imports' // Import from Nuxt 3 plugin
-
-const config = useRuntimeConfig();
-</script>
-
 <style lang='css'>
 .mobile-link {
   @apply block px-3 py-2 text-lg text-gray-900 rounded-md text-white font-medium text-center;
