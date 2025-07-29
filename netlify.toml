@@ -1,8 +1,7 @@
 [build]
-  command = "npm install && npx nuxt generate"
+  command = "npm ci && npm run generate"
   publish = ".output/public"
 
 [build.environment]
   NODE_VERSION = "18"
-  CI = "false"
   NPM_FLAGS = "--legacy-peer-deps"
