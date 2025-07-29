@@ -15,7 +15,7 @@
       >
         <div class="img max-w-lg md:max-w-sm mx-auto m-2">
           <nuxt-link :to="`/posts/${post.slug}`">
-            <img
+            <NuxtImg
               :alt="post.title"
               :src="getImage(post.thumbnail)"
               class="rounded-xl h-44 w-96 object-cover object-center"
@@ -78,11 +78,11 @@ export default {
       return new Date(date).toLocaleDateString('en', options)
     },
     getImage(thumbnail){
-      if(thumbnail){
-        return thumbnail[0]?.url
+      if(thumbnail && thumbnail[0]?.url){
+        return thumbnail[0].url
       }
       else{
-        return "https://via.placeholder.com/1000x1000?text=Placeholder"
+        return "~/assets/image/avatar-transparent.png"
       }
     }
   },

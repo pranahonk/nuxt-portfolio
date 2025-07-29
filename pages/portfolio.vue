@@ -1,7 +1,7 @@
 <script setup lang="ts">
-
+const config = useRuntimeConfig();
 const { $notion } = useNuxtApp();
-const { data } = await useAsyncData("notion-index", () => $notion.getPageBlocks("f906db55071f471eb418879a2d0b3c7f"));
+const { data } = await useAsyncData("notion-portfolio", () => $notion.getPageBlocks(config.public.notionPortfolioPageId));
 
 </script>
 
