@@ -7,13 +7,13 @@ const { data, error } = await useAsyncData("notion-about", () => $notion.getPage
 
 <template>
   <div class="wrapper-small my-5">
-    <div v-if="error" class="text-red-500">
-      <h2>Error loading about page</h2>
-      <p>{{ error }}</p>
-      <p>notionAboutPageId: {{ config.public.notionAboutPageId || 'Not set' }}</p>
+    <div v-if="error" class="text-red-500 dark:text-red-400">
+      <h2 class="text-gray-900 dark:text-white">Error loading about page</h2>
+      <p class="text-gray-700 dark:text-gray-300">{{ error }}</p>
+      <p class="text-gray-600 dark:text-gray-400">notionAboutPageId: {{ config.public.notionAboutPageId || 'Not set' }}</p>
     </div>
     <NotionRenderer v-else-if="data" :block-map="data" full-page prism/>
-    <div v-else>Loading about page...</div>
+    <div v-else class="text-gray-700 dark:text-gray-300">Loading about page...</div>
   </div>
 </template>
 
