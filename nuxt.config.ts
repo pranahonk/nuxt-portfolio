@@ -5,7 +5,14 @@ export default defineNuxtConfig({
     }
   },
   image: {
-    domains: ['www.notion.so', 's3.us-west-2.amazonaws.com']
+    domains: ['www.notion.so', 's3.us-west-2.amazonaws.com', 'miro.medium.com', 'user-images.githubusercontent.com', 'binus.ac.id'],
+    provider: 'ipx',
+    ipx: {
+      modifiers: {
+        quality: 80,
+        format: 'webp'
+      }
+    }
   },
   app: {
     head: {

@@ -15,10 +15,11 @@
       >
         <div class="img max-w-lg md:max-w-sm mx-auto m-2">
           <nuxt-link :to="`/posts/${post.slug}`">
-            <NuxtImg
+            <img
               :alt="post.title"
               :src="getImage(post.thumbnail)"
               class="rounded-xl h-44 w-96 object-cover object-center"
+              loading="lazy"
             />
           </nuxt-link>
         </div>
