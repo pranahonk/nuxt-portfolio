@@ -1,12 +1,19 @@
 <script setup lang="ts">
 const config = useRuntimeConfig();
 const { $notion } = useNuxtApp();
-const { data } = await useAsyncData("notion-portfolio", () => $notion.getPageBlocks(config.public.notionPortfolioPageId));
-
+const { data, error } = await useAsyncData("notion-portfolio", () => $notion.getPageBlocks(config.public.notionPortfolioPageId));
 </script>
 
 <template>
-  <NotionRenderer v-if='data' :block-map="data" class='wrapper-small my-5' full-page prism/>
+  <div class="wrapper-small my-5">
+    <div v-if="error" class="text-red-500">
+      <h2>Error loading portfolio page</h2>
+      <p>{{ error }}</p>
+      <p>notionPortfolioPageId: {{ config.public.notionPortfolioPageId || 'Not set' }}</p>
+    </div>
+    <NotionRenderer v-else-if="data" :block-map="data" full-page prism/>
+    <div v-else>Loading portfolio page...</div>
+  </div>
 </template>
 
 

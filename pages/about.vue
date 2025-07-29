@@ -1,12 +1,20 @@
 <script setup lang="ts">
-
+const config = useRuntimeConfig();
 const { $notion } = useNuxtApp();
-const { data } = await useAsyncData("notion-index", () => $notion.getPageBlocks("34f33e041bc74cea89530902deef0012"));
+const { data, error } = await useAsyncData("notion-about", () => $notion.getPageBlocks(config.public.notionAboutPageId));
 </script>
 
 
 <template>
-  <NotionRenderer v-if="data" :block-map="data" class='wrapper-small my-5' full-page prism/>
+  <div class="wrapper-small my-5">
+    <div v-if="error" class="text-red-500">
+      <h2>Error loading about page</h2>
+      <p>{{ error }}</p>
+      <p>notionAboutPageId: {{ config.public.notionAboutPageId || 'Not set' }}</p>
+    </div>
+    <NotionRenderer v-else-if="data" :block-map="data" full-page prism/>
+    <div v-else>Loading about page...</div>
+  </div>
 </template>
 
 
