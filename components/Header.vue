@@ -1,3 +1,7 @@
+<script setup lang="ts">
+const config = useRuntimeConfig()
+</script>
+
 <template>
   <div>
     <nav class="wrapper py-6 dark:bg-gray-900">
