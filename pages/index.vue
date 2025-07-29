@@ -1,6 +1,7 @@
 <script setup lang="ts">
+const config = useRuntimeConfig();
 const { $notion } = useNuxtApp();
-const { data } = await useAsyncData("notion-index", () => $notion.getPageTable("f906db55071f471eb418879a2d0b3c7f"));
+const { data } = await useAsyncData("notion-index", () => $notion.getPageTable(config.public.notionTableId));
 const projects = data; // Use the same data for projects
 </script>
 

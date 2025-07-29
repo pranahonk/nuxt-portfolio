@@ -4,9 +4,12 @@ export default defineNuxtConfig({
       routes: ['/']
     }
   },
+  image: {
+    domains: ['www.notion.so', 's3.us-west-2.amazonaws.com']
+  },
   app: {
     head: {
-      title: "Nuxt3 notion portfolio",
+      title: "Prana Apsara Wijaya's Portfolio",
       meta: [
         { charset: "utf-8" }, 
         { name: "viewport", content: "width=device-width, initial-scale=1" },
@@ -19,6 +22,7 @@ export default defineNuxtConfig({
   css: ['~/assets/css/main.css'],
   modules: [
     "@nuxt/devtools",
+    "@nuxt/image",
     ["vue3-notion/nuxt", { css: true }],
     '@nuxtjs/color-mode'],
   postcss: {

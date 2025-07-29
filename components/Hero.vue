@@ -13,12 +13,12 @@ const config = useRuntimeConfig();
           <img class="grid place-items-center rounded-full h-56 w-56" src="~/assets/image/avatar-transparent.png" alt="Avatars" />
         </section>
         <span class="font-normal dark:text-gray-300">Hey, I am </span>
-        {{ config.devName }}
+        {{ config.public.devName }}
       </h2>
       <h3 class="font-bold text-primary dark:text-primary text-2xl md:text-3xl lg:text-4xl">
-        a happy {{ config.devRole }}
+        a happy {{ config.public.devRole }}
       </h3>
-      <p class="text-lg lg:text-xl font-semibold">{{ config.devDescription }}</p>
+      <p class="text-lg lg:text-xl font-semibold">{{ config.public.devDescription }}</p>
       <div class="mt-5">
         <TechStack />
       </div>

@@ -1,3 +1,7 @@
+<script setup lang="ts">
+const config = useRuntimeConfig()
+</script>
+
 <template>
   <div>
     <nav class="wrapper py-6 dark:bg-gray-900">
@@ -20,12 +24,6 @@
   </div>
 </template>
 
-
-<script setup>
-import { useRuntimeConfig } from '#imports' // Import from Nuxt 3 plugin
-
-const config = useRuntimeConfig();
-</script>
 
 <style lang='css'>
 .mobile-link {
