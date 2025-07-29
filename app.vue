@@ -25,7 +25,7 @@ body {
 
 @media screen and (max-width: 600px) {
   body {
-    padding: 2rem 1rem;
+    padding: 0;
   }
 }
 </style>

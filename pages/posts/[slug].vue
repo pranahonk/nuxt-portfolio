@@ -8,18 +8,18 @@ const { data, pending, error } = useLazyAsyncData(`notion-post-${route.params.sl
 
 <template>
   <div class="wrapper-small my-5">
-    <div v-if="pending" class="notion">Loading...</div>
-    <div v-else-if="error" class="text-red-500">
-      <h2>Error loading blog post</h2>
-      <p>{{ error }}</p>
-      <p>Post slug: {{ route.params.slug }}</p>
+    <div v-if="pending" class="notion text-gray-700 dark:text-gray-300">Loading...</div>
+    <div v-else-if="error" class="text-red-500 dark:text-red-400">
+      <h2 class="text-gray-900 dark:text-white">Error loading blog post</h2>
+      <p class="text-gray-700 dark:text-gray-300">{{ error }}</p>
+      <p class="text-gray-600 dark:text-gray-400">Post slug: {{ route.params.slug }}</p>
     </div>
     <div v-else-if="data">
       <NotionRenderer :blockMap="data" fullPage prism katex />
     </div>
-    <div v-else class="text-gray-500">
-      <h2>Post not found</h2>
-      <p>The blog post "{{ route.params.slug }}" could not be found.</p>
+    <div v-else class="text-gray-500 dark:text-gray-400">
+      <h2 class="text-gray-900 dark:text-white">Post not found</h2>
+      <p class="text-gray-700 dark:text-gray-300">The blog post "{{ route.params.slug }}" could not be found.</p>
     </div>
   </div>
 </template>

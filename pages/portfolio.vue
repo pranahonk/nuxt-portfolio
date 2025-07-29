@@ -6,13 +6,13 @@ const { data, error } = await useAsyncData("notion-portfolio", () => $notion.get
 
 <template>
   <div class="wrapper-small my-5">
-    <div v-if="error" class="text-red-500">
-      <h2>Error loading portfolio page</h2>
-      <p>{{ error }}</p>
-      <p>notionPortfolioPageId: {{ config.public.notionPortfolioPageId || 'Not set' }}</p>
+    <div v-if="error" class="text-red-500 dark:text-red-400">
+      <h2 class="text-gray-900 dark:text-white">Error loading portfolio page</h2>
+      <p class="text-gray-700 dark:text-gray-300">{{ error }}</p>
+      <p class="text-gray-600 dark:text-gray-400">notionPortfolioPageId: {{ config.public.notionPortfolioPageId || 'Not set' }}</p>
     </div>
     <NotionRenderer v-else-if="data" :block-map="data" full-page prism/>
-    <div v-else>Loading portfolio page...</div>
+    <div v-else class="text-gray-700 dark:text-gray-300">Loading portfolio page...</div>
   </div>
 </template>
 
