@@ -1,5 +1,5 @@
 [build]
-  command = "npm ci && npm run generate"
+  command = "npm ci && npm run generate && ls -la .output"
   publish = ".output/public"
 
 [build.environment]
