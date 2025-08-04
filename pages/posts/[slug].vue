@@ -1,9 +1,12 @@
 <script setup lang="ts">
 const route = useRoute()
 const { $notion } = useNuxtApp()
-const { data, pending, error } = useLazyAsyncData(`notion-post-${route.params.slug}`, () =>
-  $notion.getPageBlocks(route.params.slug.toString())
-)
+const { data, pending, error } = useAsyncData(`notion-post-${route.params.slug}`, async () => {
+  const blocks = await $notion.getPageBlocks(route.params.slug.toString());
+  return {
+    blocks: JSON.parse(JSON.stringify(blocks))
+  };
+});
 </script>
 
 <template>
@@ -14,8 +17,8 @@ const { data, pending, error } = useLazyAsyncData(`notion-post-${route.params.sl
       <p class="text-gray-700 dark:text-gray-300">{{ error }}</p>
       <p class="text-gray-600 dark:text-gray-400">Post slug: {{ route.params.slug }}</p>
     </div>
-    <div v-else-if="data">
-      <NotionRenderer :blockMap="data" fullPage prism katex />
+    <div v-else-if="data && data.blocks">
+      <NotionRenderer :blockMap="data.blocks" fullPage prism katex />
     </div>
     <div v-else class="text-gray-500 dark:text-gray-400">
       <h2 class="text-gray-900 dark:text-white">Post not found</h2>
