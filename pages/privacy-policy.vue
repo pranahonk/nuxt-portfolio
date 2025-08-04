@@ -126,9 +126,9 @@
           If you have any questions about this privacy policy or our privacy practices, please contact us:
         </p>
         <div class="text-gray-700 dark:text-gray-300 space-y-2">
-          <p><strong>Email:</strong> [your-email@example.com]</p>
+          <p><strong>Email:</strong> helpmeprana@gmail.com</p>
           <p><strong>App:</strong> Alkitab: Offline - Indonesian Bible App</p>
-          <p><strong>Developer:</strong> Pranawijaya</p>
+          <p><strong>Developer:</strong> Prana Apsara Wijaya</p>
         </div>
         
         <p class="text-gray-700 dark:text-gray-300 mt-4">
