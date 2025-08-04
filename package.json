@@ -9,6 +9,7 @@
   "scripts": {
     "dev": "nuxt dev",
     "build": "nuxt build",
+    "pregenerate": "rm -rf .nuxt .output",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "start": "node .output/server/index.mjs"
