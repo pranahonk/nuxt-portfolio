@@ -1,6 +1,6 @@
 import { getPortfolioProjects } from '~/server/data/portfolioData';
 
-export default defineEventHandler(async (event) => {
+export default defineEventHandler(async (event: any) => {
   const projectId = getRouterParam(event, 'id');
 
   if (!projectId) {
