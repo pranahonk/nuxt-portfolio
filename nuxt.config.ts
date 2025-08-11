@@ -70,6 +70,24 @@ export default defineNuxtConfig({
       },
     },
   },
+  vite: {
+    css: {
+      preprocessorOptions: {
+        scss: {
+          additionalData: `@import "~/assets/css/main.css";`
+        }
+      }
+    },
+    build: {
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            vendor: ['vue', 'nuxt']
+          }
+        }
+      }
+    }
+  },
   runtimeConfig: {
     public: {
       baseURL: process.env.BASE_URL,

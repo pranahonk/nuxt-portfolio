@@ -36,7 +36,7 @@
 
           <!-- Project Content -->
           <div class="p-6">
-            <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-3 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
+            <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-3 group-hover:text-purple-600 transition-colors">
               {{ project.title }}
             </h3>
             
@@ -64,7 +64,7 @@
                 :href="project.liveUrl"
                 target="_blank"
                 rel="noopener noreferrer"
-                class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
+                class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-purple-600 transition-colors"
               >
                 <IconExternalLink class="w-4 h-4" />
                 Live Preview
@@ -75,7 +75,7 @@
                 :href="project.codeUrl"
                 target="_blank"
                 rel="noopener noreferrer"
-                class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
+                class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-purple-600 transition-colors"
               >
                 <IconGithub class="w-4 h-4" />
                 View Code
