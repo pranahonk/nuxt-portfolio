@@ -10,7 +10,7 @@
 
     <!-- Project Content -->
     <div v-else-if="project" class="py-16">
-      
+
 
       <!-- Project Hero Section -->
       <div class="mb-12">
@@ -94,7 +94,7 @@
                   class="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-300"
                   width="400"
                   height="256"
-                  format="webp"
+                format="webp"
                   quality="80"
                   loading="lazy"
                 />
@@ -344,7 +344,7 @@ const prevImage = () => {
 // Keyboard navigation
 const handleKeydown = (event: KeyboardEvent) => {
   if (!isModalOpen.value) return;
-  
+
   switch (event.key) {
     case 'Escape':
       closeImageModal();
