@@ -52,6 +52,11 @@ export default defineNuxtConfig({
     "@nuxt/image",
     ["vue3-notion/nuxt", { css: true }],
     '@nuxtjs/color-mode'],
+  colorMode: {
+    classSuffix: '',
+    preference: 'system',
+    fallback: 'light'
+  },
   postcss: {
     plugins: {
       tailwindcss: {},
