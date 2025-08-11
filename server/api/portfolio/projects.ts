@@ -15,139 +15,402 @@ function getRandomGradient() {
   return gradients[Math.floor(Math.random() * gradients.length)];
 }
 
+
 function getPortfolioProjects() {
   return [
     {
-      id: 'occumed',
-      title: 'OccuMed',
-      description: 'Occu-Med Job Analysis Portal for managing occupational medical information with secure auth, dashboard, referrals and reports.',
-      fullDescription:
-        'I developed the Occu-Med Job Analysis Portal, a comprehensive platform for managing occupational medical information. My responsibilities included building the secure login and registration system, and creating the main dashboard for handling referrals, results, and client reports. I engineered a dynamic data table with advanced filtering and pagination, and a multi-step modal for creating new referrals. The application features a clean, professional UI built with a focus on user experience and data management.',
-      techStack: ['.NET / C#', 'Vue.js', 'Tailwind CSS', 'Full-Stack Development', 'Data Visualization'],
-      liveUrl: '#',
-      codeUrl: '#',
-      // Intentionally omit coverImage because provided attachments are not publicly accessible
+      id: '1',
+      title: 'OccuMed Job Analysis Portal',
+      description: 'A comprehensive platform for managing occupational medical information with secure authentication, dynamic data tables, and advanced filtering capabilities.',
+      fullDescription: 'I developed the Occu-Med Job Analysis Portal, a comprehensive platform for managing occupational medical information. My responsibilities included building the secure login and registration system, and creating the main dashboard for handling referrals, results, and client reports. I engineered a dynamic data table with advanced filtering and pagination, and a multi-step modal for creating new referrals. The application features a clean, professional UI built with a focus on user experience and data management.',
+      techStack: ['.NET / C#', 'Vue.js', 'Tailwind CSS', 'RESTful APIs'],
+      liveUrl: 'https://nusameta.com',
+      codeUrl: 'https://github.com/example',
+      openSource: false,
+      coverImage: 'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Screenshot_2025-07-21_at_12.38.14.png',
+      images: [
+        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Screenshot_2025-07-21_at_12.38.14.png',
+        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Screenshot_2025-07-21_at_12.38.21.png',
+        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Screenshot_2025-07-21_at_12.39.07.png',
+        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Screenshot_2025-07-21_at_12.39.21.png'
+      ],
       gradient: getRandomGradient(),
       features: [
-        'Secure login and registration',
-        'Dashboard for referrals, results, and reports',
-        'Dynamic data table with filtering and pagination',
-        'Multi-step referral creation flow'
+        'Secure login and registration system',
+        'Dynamic data table with advanced filtering',
+        'Multi-step modal for creating referrals',
+        'Professional dashboard for managing reports',
+        'Advanced pagination and data management',
+        'Clean and responsive UI/UX design',
+        'Cross-platform authentication'
       ],
-      challenges: [],
-      learnings: []
+      challenges: [
+        'Implementing secure authentication mechanisms',
+        'Creating complex data filtering and pagination',
+        'Building intuitive multi-step forms',
+        'Ensuring responsive design across devices'
+      ],
+      learnings: [
+        'Advanced .NET / C# backend development',
+        'Vue.js component architecture and state management',
+        'Tailwind CSS for rapid UI development',
+        'Full-stack development best practices'
+      ],
+      role: 'Full Stack Developer',
+      company: 'Nusameta',
+      duration: 'Nov 2023 - Jun 2025'
     },
     {
-      id: 'rctiplus',
-      title: 'RCTI+',
-      description: 'Mobile app offering AVOD and live streaming services by PT MNC Digital Indonesia.',
-      fullDescription:
-        'RCTI+ is a mobile application with AVOD (audio and video service on demand) and live streaming services. This app is ad-driven and free. This application was developed by PT MNC Digital Indonesia, a subsidiary of Media Nusantara Citra.',
-      techStack: [],
+      id: '2',
+      title: 'MyBoost Kedai Merchant Platform',
+      description: 'A modern, mobile-responsive React web application for merchant management within the MyBoost ecosystem, featuring credit systems and order management.',
+      fullDescription: 'Developed and maintained a comprehensive merchant management platform featuring secure login with device fingerprinting, merchant onboarding, BoostTempo credit system with multi-step forms, order management, and promotional campaigns. Built with modern React architecture and integrated with multiple APIs for seamless user experience.',
+      techStack: ['React 17', 'Redux Toolkit', 'Ant Design', 'Tailwind CSS', 'React Query', 'Docker'],
+      liveUrl: 'https://myboost.id',
+      codeUrl: 'https://github.com/example',
+      openSource: false,
+      coverImage: 'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Screenshot_20221031_092647.jpg',
+      images: [
+        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Screenshot_20221031_092647.jpg',
+        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/IMG_2685.jpg',
+        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/IMG_2683.jpg',
+        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/IMG_2684.jpg'
+      ],
+      gradient: getRandomGradient(),
+      features: [
+        'Secure login with device fingerprinting',
+        'Merchant registration and onboarding',
+        'BoostTempo credit system with multi-step forms',
+        'Comprehensive order management',
+        'Reward points and voucher system',
+        'User profile and address management',
+        'Mobile-responsive design'
+      ],
+      challenges: [
+        'Implementing complex credit application workflows',
+        'Integrating camera for document uploads',
+        'Managing complex state across multiple features',
+        'Ensuring mobile responsiveness and performance'
+      ],
+      learnings: [
+        'Advanced React patterns and hooks',
+        'Redux Toolkit for state management',
+        'Component-based architecture design',
+        'CI/CD with Docker and Bitbucket Pipelines'
+      ],
+      role: 'Senior Software Engineer',
+      company: 'Axiata Digital Services Indonesia',
+      duration: 'Oct 2022 - Oct 2023'
+    },
+    {
+      id: '3',
+      title: 'RCTI+ Streaming Platform',
+      description: 'A mobile application with AVOD and live streaming services, featuring microservices architecture, PWA capabilities, and advanced video streaming.',
+      fullDescription: 'RCTI+ is a mobile application with AVOD (audio and video service on demand) and live streaming services. This app is ad-driven and free. Built using Next.js with microservices architecture, featuring search recommendations, service workers for caching, and cross-platform WebView integration.',
+      techStack: ['Next.js', 'React', 'TypeScript', 'Redux', 'Video.js', 'GraphQL', 'PWA'],
       liveUrl: 'https://rctiplus.com/',
-      codeUrl: '#',
+      codeUrl: 'https://github.com/example',
+      openSource: false,
+      coverImage: 'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/rplus.jpg',
+      images: [
+        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/rplus.jpg',
+        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Untitled-min.png',
+        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Untitled_(1)-min.png',
+        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Untitled_(2)-min.png',
+        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Untitled.png',
+        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Untitled%201.png'
+      ],
       gradient: getRandomGradient(),
-      features: [],
-      challenges: [],
-      learnings: []
+      features: [
+        'Live streaming and video on demand',
+        'Search recommendations and history',
+        'Microservices architecture',
+        'Service workers for offline caching',
+        'Cross-platform WebView integration',
+        'Progressive Web App (PWA)',
+        'Advanced video player with HLS support'
+      ],
+      challenges: [
+        'Building microservices architecture for mobile web',
+        'Implementing service workers for caching',
+        'Cross-platform WebView compatibility',
+        'Video streaming optimization'
+      ],
+      learnings: [
+        'Next.js SSR and static generation',
+        'Advanced video streaming technologies',
+        'PWA development and service workers',
+        'Microservices architecture patterns'
+      ],
+      role: 'Software Engineer',
+      company: 'RCTI+',
+      duration: 'Mar 2021 - Sep 2022'
     },
     {
-      id: 'telunjuk',
-      title: 'Telunjuk',
-      description: 'Shopping search engine to compare prices and buy from trusted online stores.',
-      fullDescription:
-        'Telunjuk is a shopping search engine that acts as your best friend in finding, comparing prices, and buying the things you need. Just type in the product or item you are looking for, Telunjuk will display shopping recommendations for that product, complete with prices, discounts, and other interesting promos from dozens of trusted online stores such as Tokopedia, Blibli, Shopee and many other online stores for Telunjuk!',
-      techStack: [],
+      id: '4',
+      title: 'Telunjuk Shopping Search Engine',
+      description: 'A comprehensive shopping search engine that compares prices across multiple e-commerce platforms, built with Nuxt.js and advanced analytics.',
+      fullDescription: 'Telunjuk is a shopping search engine that acts as your best friend in finding, comparing prices, and buying the things you need. The platform displays shopping recommendations with prices, discounts, and promos from dozens of trusted online stores. Led platform revamp from CodeIgniter to Nuxt.js with significant performance improvements.',
+      techStack: ['Nuxt.js', 'Vue.js', 'Elasticsearch', 'BigQuery', 'Google Analytics'],
       liveUrl: 'https://www.telunjuk.com/',
-      codeUrl: '#',
+      codeUrl: 'https://github.com/pranahonk/telunjuk-vue',
+      openSource: true,
+      coverImage: 'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Untitled%202.png',
+      images: [
+        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Untitled%202.png',
+        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Untitled%203.png',
+        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Untitled%204.png',
+        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Untitled%205.png',
+        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Untitled%206.png',
+        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Untitled%207.png',
+        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Untitled%208.png'
+      ],
       gradient: getRandomGradient(),
-      features: [],
-      challenges: [],
-      learnings: []
+      features: [
+        'Multi-platform price comparison',
+        'Product search and recommendations',
+        'Real-time price tracking',
+        'Integration with major e-commerce platforms',
+        'Advanced analytics and reporting',
+        'A/B testing for conversion optimization',
+        'Atomic design component system'
+      ],
+      challenges: [
+        'Platform migration from CodeIgniter to Nuxt.js',
+        'Implementing data pipelines from Elasticsearch to BigQuery',
+        'Optimizing conversion rates through A/B testing',
+        'Managing large-scale product data'
+      ],
+      learnings: [
+        'Nuxt.js SSR and performance optimization',
+        'Data pipeline architecture',
+        'A/B testing and conversion optimization',
+        'Atomic design principles'
+      ],
+      role: 'Senior Software Engineer (Front End)',
+      company: 'Telunjuk.com',
+      duration: 'Oct 2020 - Feb 2021'
     },
     {
-      id: 'compas',
-      title: 'Compas',
-      description: 'E-commerce market insight tools delivering actionable business intelligence.',
-      fullDescription:
-        'Compas is developed by the team that brought Telunjuk.com, a technology company based in Jakarta, Indonesia. We focus on business intelligence tools, namely e-commerce market insight, that provide actionable insights to empower you to make strategic decisions for your greater online business.',
-      techStack: [],
-      liveUrl: 'https://compas.co.id/',
-      codeUrl: '#',
+      id: '5',
+      title: 'Blanja E-commerce Marketplace',
+      description: 'A joint-venture marketplace between Telkom Indonesia and eBay, featuring comprehensive e-commerce functionality and payment integrations.',
+      fullDescription: 'Blanja is a joint-venture between Telkom Indonesia and eBay with thousands of merchants offering various products. Built comprehensive checkout system, payment integrations including credit card processing and KAI train ticketing, and collaborated on platform-wide improvements.',
+      techStack: ['Vue.js', 'JavaScript', 'RESTful APIs', 'Payment Gateways'],
+      liveUrl: 'https://blanja.com/',
+      codeUrl: 'https://github.com/example',
+      openSource: false,
+      coverImage: 'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Untitled%209.png',
+      images: [
+        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Untitled%209.png',
+        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Untitled%2010.png',
+        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Untitled%2011.png'
+      ],
       gradient: getRandomGradient(),
-      features: [],
-      challenges: [],
-      learnings: []
+      features: [
+        'Comprehensive e-commerce marketplace',
+        'Multiple payment gateway integrations',
+        'Credit card processing system',
+        'KAI train ticketing integration',
+        'Modular checkout system',
+        'Partnership with major banks',
+        'Scalable microservices architecture'
+      ],
+      challenges: [
+        'Integrating multiple payment gateways',
+        'Building modular and scalable checkout system',
+        'Managing high-traffic e-commerce platform',
+        'Cross-functional collaboration with multiple teams'
+      ],
+      learnings: [
+        'E-commerce platform development',
+        'Payment gateway integration',
+        'Microservices architecture',
+        'Cross-functional team collaboration'
+      ],
+      role: 'Software Engineer (Front End Developer)',
+      company: 'BLANJA.com',
+      duration: 'Nov 2019 - Oct 2020'
     },
     {
-      id: 'sakoo',
-      title: 'Sakoo',
-      description: 'Web app integrating offline and online sales channels with stock, transactions, CRM, and catalog features.',
-      fullDescription:
-        'Sakoo is a web-based application that provides and integrates offline and online sales channels so that it can help business owners to increase effectiveness and efficiency in selling. Sakoo provides features in the form of stock management, transactions, customer data, and product catalogs.',
-      techStack: [],
-      liveUrl: 'https://app.sakoo.id/login',
-      codeUrl: '#',
-      gradient: getRandomGradient(),
-      features: [],
-      challenges: [],
-      learnings: []
-    },
-    {
-      id: 'blanja',
-      title: 'Blanja',
-      description: 'Online marketplace joint venture between Telkom Indonesia and eBay.',
-      fullDescription:
-        'Blanja is a joint-venture between Telkom Indonesia and eBay. Having a concept as an Online-Marketplace, BLANJA.com has more than thousands of merchants that offer a variety of products from its various categories. As an online shopping medium, apart from a wide variety of products, it also has cooperative relationships with a number of leading banks in the country such as Mandiri, BNI, BCA, BRI, BTN, Mega, Niaga, ANZ, BII, and so on. BLANJA.com is actually a market place site resulting from a joint venture between Telkomsel\'s parent company, Telkom Indonesia and eBay, which is under the umbrella of PT Metra Plasa.',
-      techStack: [],
-      liveUrl: 'http://blanja.com/',
-      codeUrl: '#',
-      gradient: getRandomGradient(),
-      features: [],
-      challenges: [],
-      learnings: []
-    },
-    {
-      id: 'indoesports',
-      title: 'Indoesports',
-      description: 'Indonesian esports media covering tournaments, games, and business news since 2017.',
-      fullDescription:
-        'Indoesports is a company that operates and lives in the Indonesian esports industry ecosystem. INDOESPORTS has active media products since 2017. Through two ways, namely the official website (www.indoesports.com) and social media (Instagram @indo.esports). INDOESPORTS media actively covers and reports about the world of esports, from tournaments, the latest game information to the latest news about the esports business.',
-      techStack: [],
+      id: '6',
+      title: 'Indoesports Media Platform',
+      description: 'An esports industry media platform covering tournaments, game information, and business news with full-stack Laravel and React implementation.',
+      fullDescription: 'Indoesports operates in the Indonesian esports industry ecosystem with active media products since 2017. Built comprehensive platform featuring UI/UX design, full-stack development with Laravel and React, and YouTube API integration for video content management.',
+      techStack: ['Laravel', 'React', 'PHP', 'Adobe XD', 'YouTube API', 'JavaScript'],
       liveUrl: 'https://www.indoesports.com/',
-      codeUrl: '#',
+      codeUrl: 'https://github.com/pranahonk/indoesports-laravel',
+      openSource: true,
+      coverImage: 'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Untitled%2013.png',
       gradient: getRandomGradient(),
-      features: [],
-      challenges: [],
-      learnings: []
+      features: [
+        'Esports news and tournament coverage',
+        'YouTube API integration for video content',
+        'Full-stack Laravel + React architecture',
+        'RESTful API design and implementation',
+        'Adobe XD prototyping and design',
+        'Responsive web application',
+        'Social media integration'
+      ],
+      challenges: [
+        'Creating high-fidelity prototypes with Adobe XD',
+        'Integrating third-party YouTube API',
+        'Building full-stack Laravel + React solution',
+        'Managing complex content management system'
+      ],
+      learnings: [
+        'Full-stack development with Laravel and React',
+        'UI/UX design and prototyping',
+        'Third-party API integration',
+        'RESTful API design patterns'
+      ],
+      role: 'Full Stack Developer',
+      company: 'PT. INDOESPORTS KARYA INDONESIA',
+      duration: 'Nov 2018 - Oct 2019'
     },
     {
-      id: 'xetia',
-      title: 'Xetia',
-      description: 'AI-focused company delivering instant digital analysis using the latest technology.',
-      fullDescription:
-        'Xetia are companies that have a strong hold in the field of Artificial Intelligence, able to carry out various analyzes by utilizing the most updated technology to perform all digital activities instantly.',
-      techStack: [],
+      id: '7',
+      title: 'Compas Business Intelligence',
+      description: 'E-commerce market insight platform providing actionable business intelligence tools for strategic decision making.',
+      fullDescription: 'Compas is developed by the Telunjuk team, focusing on business intelligence tools for e-commerce market insights. The platform provides actionable insights to empower strategic decisions for online businesses.',
+      techStack: ['Vue.js', 'Business Intelligence', 'Data Analytics', 'JavaScript'],
+      liveUrl: 'https://compas.co.id/',
+      codeUrl: 'https://github.com/example',
+      openSource: false,
+      coverImage: 'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Untitled%208.png',
+      gradient: getRandomGradient(),
+      features: [
+        'E-commerce market insights',
+        'Business intelligence dashboard',
+        'Actionable data analytics',
+        'Strategic decision support tools',
+        'Real-time market data',
+        'Comprehensive reporting system',
+        'Data visualization components'
+      ],
+      challenges: [
+        'Processing large volumes of market data',
+        'Creating intuitive business intelligence dashboard',
+        'Implementing real-time data analytics',
+        'Designing actionable insight presentations'
+      ],
+      learnings: [
+        'Business intelligence platform development',
+        'Data visualization and analytics',
+        'Market data processing',
+        'Strategic business tool design'
+      ],
+      role: 'Front End Developer',
+      company: 'Telunjuk.com',
+      duration: 'Oct 2020 - Feb 2021'
+    },
+    {
+      id: '8',
+      title: 'Sakoo Sales Management Platform',
+      description: 'A web-based application integrating offline and online sales channels with comprehensive business management features.',
+      fullDescription: 'Sakoo is a web-based application that provides and integrates offline and online sales channels to help business owners increase effectiveness and efficiency in selling. Features include stock management, transactions, customer data, and product catalogs.',
+      techStack: ['Web Technologies', 'JavaScript', 'Database Management'],
+      liveUrl: 'https://app.sakoo.id/login',
+      codeUrl: 'https://github.com/example',
+      openSource: false,
+      coverImage: 'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Untitled%2012.png',
+      gradient: getRandomGradient(),
+      features: [
+        'Offline and online sales integration',
+        'Stock management system',
+        'Transaction processing',
+        'Customer data management',
+        'Product catalog management',
+        'Business efficiency tools',
+        'Multi-channel sales support'
+      ],
+      challenges: [
+        'Integrating offline and online sales channels',
+        'Building comprehensive inventory management',
+        'Creating efficient transaction processing',
+        'Designing user-friendly business tools'
+      ],
+      learnings: [
+        'Multi-channel sales platform development',
+        'Inventory and stock management systems',
+        'Business process automation',
+        'Customer relationship management'
+      ],
+      role: 'Software Developer',
+      company: 'Independent Project',
+      duration: 'Project Timeline'
+    },
+    {
+      id: '9',
+      title: 'Xetia AI Platform',
+      description: 'An Artificial Intelligence platform capable of performing various analyses using cutting-edge technology for instant digital activities.',
+      fullDescription: 'Xetia is a company with a strong hold in Artificial Intelligence, capable of carrying out various analyses by utilizing the most updated technology to perform all digital activities instantly.',
+      techStack: ['AI/ML', 'JavaScript', 'Modern Web Technologies'],
       liveUrl: 'https://xetia.io/',
-      codeUrl: '#',
+      codeUrl: 'https://github.com/example',
+      openSource: false,
+      coverImage: 'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Untitled%2017.png',
       gradient: getRandomGradient(),
-      features: [],
-      challenges: [],
-      learnings: []
+      features: [
+        'Artificial Intelligence analysis tools',
+        'Real-time digital activity processing',
+        'Advanced analytics platform',
+        'Cutting-edge technology integration',
+        'Instant data processing',
+        'Automated decision making',
+        'Scalable AI infrastructure'
+      ],
+      challenges: [
+        'Implementing cutting-edge AI technologies',
+        'Creating real-time analysis capabilities',
+        'Building scalable AI infrastructure',
+        'Ensuring instant processing performance'
+      ],
+      learnings: [
+        'AI/ML platform development',
+        'Real-time data processing',
+        'Advanced analytics implementation',
+        'Cutting-edge technology integration'
+      ],
+      role: 'AI Platform Developer',
+      company: 'Xetia',
+      duration: 'Project Timeline'
     },
     {
-      id: 'brilian-muda',
-      title: 'Brilian Muda',
-      description: 'Health sector vendor; delivered a CMS project with Kalbe Farma.',
-      fullDescription:
-        'Brilian Muda is one of vendor in health sector, when I am here I did the project with Kalbe farma to make CMS.',
-      techStack: [],
+      id: '10',
+      title: 'Brilian Muda Health CMS',
+      description: 'A content management system developed for Kalbe Farma in the health sector, providing comprehensive healthcare content management.',
+      fullDescription: 'Brilian Muda is a vendor in the health sector. During my time there, I developed a comprehensive Content Management System (CMS) project in collaboration with Kalbe Farma, focusing on healthcare content management and digital health solutions.',
+      techStack: ['CMS Development', 'PHP', 'Healthcare Systems'],
       liveUrl: 'https://www.brilianmuda.com/',
-      codeUrl: '#',
+      codeUrl: 'https://github.com/example',
+      openSource: false,
+      coverImage: 'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Untitled%2021.png',
       gradient: getRandomGradient(),
-      features: [],
-      challenges: [],
-      learnings: []
+      features: [
+        'Healthcare content management',
+        'Kalbe Farma integration',
+        'Medical content organization',
+        'User-friendly CMS interface',
+        'Healthcare data management',
+        'Content workflow automation',
+        'Secure health information handling'
+      ],
+      challenges: [
+        'Building healthcare-compliant CMS',
+        'Integrating with Kalbe Farma systems',
+        'Ensuring medical data security',
+        'Creating intuitive content management workflows'
+      ],
+      learnings: [
+        'Healthcare industry requirements',
+        'CMS architecture and development',
+        'Medical data compliance',
+        'Healthcare system integration'
+      ],
+      role: 'CMS Developer',
+      company: 'Brilian Muda',
+      duration: 'Project Timeline'
     }
   ];
 }

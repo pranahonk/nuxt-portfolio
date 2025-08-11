@@ -1,6 +1,6 @@
 export default defineEventHandler(async (event) => {
   const projectId = getRouterParam(event, 'id');
-  
+
   if (!projectId) {
     throw createError({
       statusCode: 400,
@@ -9,7 +9,7 @@ export default defineEventHandler(async (event) => {
   }
 
   const project = getProjectById(projectId);
-  
+
   if (!project) {
     throw createError({
       statusCode: 404,
@@ -25,199 +25,434 @@ function getProjectById(id: string) {
   return projects.find(project => project.id === id);
 }
 
+function getRandomGradient() {
+  const gradients = [
+    'from-red-400 via-pink-500 to-blue-600',
+    'from-purple-400 via-pink-500 to-red-500',
+    'from-blue-400 via-purple-500 to-pink-500',
+    'from-green-400 via-blue-500 to-purple-600',
+    'from-yellow-400 via-orange-500 to-red-500',
+    'from-indigo-400 via-purple-500 to-pink-500'
+  ];
+  return gradients[Math.floor(Math.random() * gradients.length)];
+}
+
 function getPortfolioProjects() {
   return [
     {
       id: '1',
-      title: 'E-Commerce Platform',
-      description: 'A full-stack e-commerce solution with modern UI/UX, payment integration, and admin dashboard for managing products and orders.',
-      fullDescription: 'This comprehensive e-commerce platform was built from the ground up to provide a seamless shopping experience for both customers and administrators. The project showcases advanced features including user authentication, product catalog management, shopping cart functionality, secure payment processing, and real-time inventory tracking.',
-      techStack: ['React', 'Node.js', 'MongoDB', 'Stripe'],
-      liveUrl: 'https://example.com',
+      title: 'OccuMed Job Analysis Portal',
+      description: 'A comprehensive platform for managing occupational medical information with secure authentication, dynamic data tables, and advanced filtering capabilities.',
+      fullDescription: 'I developed the Occu-Med Job Analysis Portal, a comprehensive platform for managing occupational medical information. My responsibilities included building the secure login and registration system, and creating the main dashboard for handling referrals, results, and client reports. I engineered a dynamic data table with advanced filtering and pagination, and a multi-step modal for creating new referrals. The application features a clean, professional UI built with a focus on user experience and data management.',
+      techStack: ['.NET / C#', 'Vue.js', 'Tailwind CSS', 'RESTful APIs'],
+      liveUrl: 'https://nusameta.com',
       codeUrl: 'https://github.com/example',
-      coverImage: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400&h=300&fit=crop',
-      gradient: 'from-red-400 via-pink-500 to-blue-600',
+      openSource: false,
+      coverImage: 'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Screenshot_2025-07-21_at_12.38.14.png',
+      images: [
+        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Screenshot_2025-07-21_at_12.38.14.png',
+        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Screenshot_2025-07-21_at_12.38.21.png',
+        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Screenshot_2025-07-21_at_12.39.07.png',
+        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Screenshot_2025-07-21_at_12.39.21.png'
+      ],
+      gradient: getRandomGradient(),
       features: [
-        'User authentication and authorization',
-        'Product catalog with search and filtering',
-        'Shopping cart and wishlist functionality',
-        'Secure payment integration with Stripe',
-        'Admin dashboard for inventory management',
-        'Order tracking and email notifications',
-        'Responsive design for all devices'
+        'Secure login and registration system',
+        'Dynamic data table with advanced filtering',
+        'Multi-step modal for creating referrals',
+        'Professional dashboard for managing reports',
+        'Advanced pagination and data management',
+        'Clean and responsive UI/UX design',
+        'Cross-platform authentication'
       ],
       challenges: [
-        'Implementing secure payment processing',
-        'Optimizing database queries for large product catalogs',
-        'Creating a scalable admin interface',
-        'Ensuring mobile responsiveness across all pages'
+        'Implementing secure authentication mechanisms',
+        'Creating complex data filtering and pagination',
+        'Building intuitive multi-step forms',
+        'Ensuring responsive design across devices'
       ],
       learnings: [
-        'Advanced React patterns and state management',
-        'Payment gateway integration best practices',
-        'Database optimization techniques',
-        'E-commerce security considerations'
-      ]
+        'Advanced .NET / C# backend development',
+        'Vue.js component architecture and state management',
+        'Tailwind CSS for rapid UI development',
+        'Full-stack development best practices'
+      ],
+      role: 'Full Stack Developer',
+      company: 'Nusameta',
+      duration: 'Nov 2023 - Jun 2025'
     },
     {
       id: '2',
-      title: 'Task Management App',
-      description: 'A collaborative task management application with real-time updates, team collaboration features, and project tracking.',
-      fullDescription: 'A modern task management solution built to enhance team productivity and project coordination. This application features real-time collaboration, intuitive drag-and-drop interfaces, and comprehensive project analytics to help teams stay organized and meet deadlines.',
-      techStack: ['Vue.js', 'Express', 'Socket.io', 'PostgreSQL'],
-      liveUrl: 'https://example.com',
+      title: 'MyBoost Kedai Merchant Platform',
+      description: 'A modern, mobile-responsive React web application for merchant management within the MyBoost ecosystem, featuring credit systems and order management.',
+      fullDescription: 'Developed and maintained a comprehensive merchant management platform featuring secure login with device fingerprinting, merchant onboarding, BoostTempo credit system with multi-step forms, order management, and promotional campaigns. Built with modern React architecture and integrated with multiple APIs for seamless user experience.',
+      techStack: ['React 17', 'Redux Toolkit', 'Ant Design', 'Tailwind CSS', 'React Query', 'Docker'],
+      liveUrl: 'https://myboost.id',
       codeUrl: 'https://github.com/example',
-      coverImage: 'https://images.unsplash.com/photo-1611224923853-80b023f02d71?w=400&h=300&fit=crop',
-      gradient: 'from-purple-400 via-pink-500 to-red-500',
+      openSource: false,
+      coverImage: 'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Screenshot_20221031_092647.jpg',
+      images: [
+        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Screenshot_20221031_092647.jpg',
+        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/IMG_2685.jpg',
+        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/IMG_2683.jpg',
+        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/IMG_2684.jpg'
+      ],
+      gradient: getRandomGradient(),
       features: [
-        'Real-time task updates and notifications',
-        'Drag-and-drop task organization',
-        'Team collaboration and comments',
-        'Project progress tracking',
-        'Time tracking and reporting',
-        'File attachments and sharing',
-        'Custom task categories and labels'
+        'Secure login with device fingerprinting',
+        'Merchant registration and onboarding',
+        'BoostTempo credit system with multi-step forms',
+        'Comprehensive order management',
+        'Reward points and voucher system',
+        'User profile and address management',
+        'Mobile-responsive design'
       ],
       challenges: [
-        'Implementing real-time synchronization',
-        'Managing complex state across multiple users',
-        'Optimizing performance for large datasets',
-        'Creating intuitive user workflows'
+        'Implementing complex credit application workflows',
+        'Integrating camera for document uploads',
+        'Managing complex state across multiple features',
+        'Ensuring mobile responsiveness and performance'
       ],
       learnings: [
-        'WebSocket implementation with Socket.io',
-        'Vue.js composition API patterns',
-        'Real-time data synchronization strategies',
-        'UX design for productivity applications'
-      ]
+        'Advanced React patterns and hooks',
+        'Redux Toolkit for state management',
+        'Component-based architecture design',
+        'CI/CD with Docker and Bitbucket Pipelines'
+      ],
+      role: 'Senior Software Engineer',
+      company: 'Axiata Digital Services Indonesia',
+      duration: 'Oct 2022 - Oct 2023'
     },
     {
       id: '3',
-      title: 'Weather Dashboard',
-      description: 'A responsive weather application with location-based forecasts, interactive maps, and detailed weather analytics.',
-      fullDescription: 'An interactive weather dashboard that provides comprehensive weather information with beautiful visualizations. Features location-based forecasts, historical weather data, and interactive maps to help users plan their activities based on weather conditions.',
-      techStack: ['JavaScript', 'API Integration', 'Chart.js', 'CSS3'],
-      liveUrl: 'https://example.com',
+      title: 'RCTI+ Streaming Platform',
+      description: 'A mobile application with AVOD and live streaming services, featuring microservices architecture, PWA capabilities, and advanced video streaming.',
+      fullDescription: 'RCTI+ is a mobile application with AVOD (audio and video service on demand) and live streaming services. This app is ad-driven and free. Built using Next.js with microservices architecture, featuring search recommendations, service workers for caching, and cross-platform WebView integration.',
+      techStack: ['Next.js', 'React', 'TypeScript', 'Redux', 'Video.js', 'GraphQL', 'PWA'],
+      liveUrl: 'https://rctiplus.com/',
       codeUrl: 'https://github.com/example',
-      coverImage: 'https://images.unsplash.com/photo-1504608524841-42fe6f032b4b?w=400&h=300&fit=crop',
-      gradient: 'from-blue-400 via-purple-500 to-pink-500',
+      openSource: false,
+      coverImage: 'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/rplus.jpg',
+      images: [
+        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/rplus.jpg',
+        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Untitled-min.png',
+        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Untitled_(1)-min.png',
+        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Untitled_(2)-min.png',
+        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Untitled.png',
+        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Untitled%201.png'
+      ],
+      gradient: getRandomGradient(),
       features: [
-        'Location-based weather forecasts',
-        'Interactive weather maps',
-        'Historical weather data analysis',
-        'Weather alerts and notifications',
-        'Multiple location tracking',
-        'Detailed weather metrics and charts',
-        'Responsive design for mobile devices'
+        'Live streaming and video on demand',
+        'Search recommendations and history',
+        'Microservices architecture',
+        'Service workers for offline caching',
+        'Cross-platform WebView integration',
+        'Progressive Web App (PWA)',
+        'Advanced video player with HLS support'
       ],
       challenges: [
-        'Integrating multiple weather APIs',
-        'Creating responsive data visualizations',
-        'Handling geolocation and permissions',
-        'Optimizing API call frequency'
+        'Building microservices architecture for mobile web',
+        'Implementing service workers for caching',
+        'Cross-platform WebView compatibility',
+        'Video streaming optimization'
       ],
       learnings: [
-        'Working with multiple external APIs',
-        'Data visualization with Chart.js',
-        'Geolocation API implementation',
-        'Performance optimization techniques'
-      ]
+        'Next.js SSR and static generation',
+        'Advanced video streaming technologies',
+        'PWA development and service workers',
+        'Microservices architecture patterns'
+      ],
+      role: 'Software Engineer',
+      company: 'RCTI+',
+      duration: 'Mar 2021 - Sep 2022'
     },
     {
       id: '4',
-      title: 'Social Media Analytics',
-      description: 'A comprehensive analytics dashboard for social media performance tracking with data visualization and reporting features.',
-      fullDescription: 'A powerful analytics platform designed to help businesses and content creators understand their social media performance. Features comprehensive data visualization, automated reporting, and actionable insights to improve social media strategy.',
-      techStack: ['Python', 'Django', 'D3.js', 'Redis'],
-      liveUrl: 'https://example.com',
-      codeUrl: 'https://github.com/example',
-      coverImage: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=300&fit=crop',
-      gradient: 'from-green-400 via-blue-500 to-purple-600',
+      title: 'Telunjuk Shopping Search Engine',
+      description: 'A comprehensive shopping search engine that compares prices across multiple e-commerce platforms, built with Nuxt.js and advanced analytics.',
+      fullDescription: 'Telunjuk is a shopping search engine that acts as your best friend in finding, comparing prices, and buying the things you need. The platform displays shopping recommendations with prices, discounts, and promos from dozens of trusted online stores. Led platform revamp from CodeIgniter to Nuxt.js with significant performance improvements.',
+      techStack: ['Nuxt.js', 'Vue.js', 'Elasticsearch', 'BigQuery', 'Google Analytics'],
+      liveUrl: 'https://www.telunjuk.com/',
+      codeUrl: 'https://github.com/pranahonk/telunjuk-vue',
+      openSource: true,
+      coverImage: 'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Untitled%202.png',
+      images: [
+        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Untitled%202.png',
+        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Untitled%203.png',
+        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Untitled%204.png',
+        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Untitled%205.png',
+        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Untitled%206.png',
+        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Untitled%207.png',
+        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Untitled%208.png'
+      ],
+      gradient: getRandomGradient(),
       features: [
-        'Multi-platform social media integration',
-        'Advanced data visualization with D3.js',
-        'Automated report generation',
-        'Engagement metrics and trends',
-        'Competitor analysis tools',
-        'Custom dashboard creation',
-        'Export capabilities for presentations'
+        'Multi-platform price comparison',
+        'Product search and recommendations',
+        'Real-time price tracking',
+        'Integration with major e-commerce platforms',
+        'Advanced analytics and reporting',
+        'A/B testing for conversion optimization',
+        'Atomic design component system'
       ],
       challenges: [
-        'Integrating multiple social media APIs',
-        'Processing large datasets efficiently',
-        'Creating custom data visualizations',
-        'Implementing real-time data updates'
+        'Platform migration from CodeIgniter to Nuxt.js',
+        'Implementing data pipelines from Elasticsearch to BigQuery',
+        'Optimizing conversion rates through A/B testing',
+        'Managing large-scale product data'
       ],
       learnings: [
-        'Python data processing techniques',
-        'Advanced D3.js visualization patterns',
-        'Redis caching strategies',
-        'Social media API integration'
-      ]
+        'Nuxt.js SSR and performance optimization',
+        'Data pipeline architecture',
+        'A/B testing and conversion optimization',
+        'Atomic design principles'
+      ],
+      role: 'Senior Software Engineer (Front End)',
+      company: 'Telunjuk.com',
+      duration: 'Oct 2020 - Feb 2021'
     },
     {
       id: '5',
-      title: 'Learning Management System',
-      description: 'An educational platform with course management, student progress tracking, and interactive learning modules.',
-      fullDescription: 'A comprehensive learning management system designed for modern education needs. Features course creation tools, student progress tracking, interactive assessments, and multimedia content support to create engaging learning experiences.',
-      techStack: ['Next.js', 'Prisma', 'TypeScript', 'Tailwind'],
-      liveUrl: 'https://example.com',
+      title: 'Blanja E-commerce Marketplace',
+      description: 'A joint-venture marketplace between Telkom Indonesia and eBay, featuring comprehensive e-commerce functionality and payment integrations.',
+      fullDescription: 'Blanja is a joint-venture between Telkom Indonesia and eBay with thousands of merchants offering various products. Built comprehensive checkout system, payment integrations including credit card processing and KAI train ticketing, and collaborated on platform-wide improvements.',
+      techStack: ['Vue.js', 'JavaScript', 'RESTful APIs', 'Payment Gateways'],
+      liveUrl: 'https://blanja.com/',
       codeUrl: 'https://github.com/example',
-      coverImage: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=400&h=300&fit=crop',
-      gradient: 'from-yellow-400 via-orange-500 to-red-500',
+      openSource: false,
+      coverImage: 'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Untitled%209.png',
+      images: [
+        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Untitled%209.png',
+        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Untitled%2010.png',
+        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Untitled%2011.png'
+      ],
+      gradient: getRandomGradient(),
       features: [
-        'Course creation and management',
-        'Student progress tracking',
-        'Interactive quizzes and assessments',
-        'Video content streaming',
-        'Discussion forums and messaging',
-        'Grade book and reporting',
-        'Mobile-responsive learning interface'
+        'Comprehensive e-commerce marketplace',
+        'Multiple payment gateway integrations',
+        'Credit card processing system',
+        'KAI train ticketing integration',
+        'Modular checkout system',
+        'Partnership with major banks',
+        'Scalable microservices architecture'
       ],
       challenges: [
-        'Implementing secure user authentication',
-        'Creating scalable video content delivery',
-        'Building interactive assessment tools',
-        'Optimizing for mobile learning'
+        'Integrating multiple payment gateways',
+        'Building modular and scalable checkout system',
+        'Managing high-traffic e-commerce platform',
+        'Cross-functional collaboration with multiple teams'
       ],
       learnings: [
-        'Next.js full-stack development',
-        'Prisma ORM for complex data models',
-        'TypeScript best practices',
-        'Educational technology UX patterns'
-      ]
+        'E-commerce platform development',
+        'Payment gateway integration',
+        'Microservices architecture',
+        'Cross-functional team collaboration'
+      ],
+      role: 'Software Engineer (Front End Developer)',
+      company: 'BLANJA.com',
+      duration: 'Nov 2019 - Oct 2020'
     },
     {
       id: '6',
-      title: 'Fitness Tracking App',
-      description: 'A mobile-first fitness application with workout tracking, nutrition planning, and progress visualization features.',
-      fullDescription: 'A comprehensive fitness companion app designed to help users achieve their health and fitness goals. Features workout tracking, nutrition planning, progress visualization, and social features to keep users motivated and engaged.',
-      techStack: ['React Native', 'Firebase', 'Redux', 'Chart.js'],
-      liveUrl: 'https://example.com',
-      codeUrl: 'https://github.com/example',
-      coverImage: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=300&fit=crop',
-      gradient: 'from-indigo-400 via-purple-500 to-pink-500',
+      title: 'Indoesports Media Platform',
+      description: 'An esports industry media platform covering tournaments, game information, and business news with full-stack Laravel and React implementation.',
+      fullDescription: 'Indoesports operates in the Indonesian esports industry ecosystem with active media products since 2017. Built comprehensive platform featuring UI/UX design, full-stack development with Laravel and React, and YouTube API integration for video content management.',
+      techStack: ['Laravel', 'React', 'PHP', 'Adobe XD', 'YouTube API', 'JavaScript'],
+      liveUrl: 'https://www.indoesports.com/',
+      codeUrl: 'https://github.com/pranahonk/indoesports-laravel',
+      openSource: true,
+      coverImage: 'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Untitled%2013.png',
+      images: [
+        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Untitled%2013.png',
+        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Untitled%2014.png',
+        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Untitled%2015.png',
+        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Untitled%2016.png'
+      ],
+      gradient: getRandomGradient(),
       features: [
-        'Workout tracking and planning',
-        'Nutrition logging and meal planning',
-        'Progress visualization and analytics',
-        'Social features and challenges',
-        'Wearable device integration',
-        'Custom workout creation',
-        'Offline mode support'
+        'Esports news and tournament coverage',
+        'YouTube API integration for video content',
+        'Full-stack Laravel + React architecture',
+        'RESTful API design and implementation',
+        'Adobe XD prototyping and design',
+        'Responsive web application',
+        'Social media integration'
       ],
       challenges: [
-        'Implementing offline data synchronization',
-        'Creating smooth mobile animations',
-        'Integrating with health APIs',
-        'Managing complex state in mobile apps'
+        'Creating high-fidelity prototypes with Adobe XD',
+        'Integrating third-party YouTube API',
+        'Building full-stack Laravel + React solution',
+        'Managing complex content management system'
       ],
       learnings: [
-        'React Native development best practices',
-        'Mobile app performance optimization',
-        'Firebase real-time database usage',
-        'Health and fitness app UX design'
-      ]
+        'Full-stack development with Laravel and React',
+        'UI/UX design and prototyping',
+        'Third-party API integration',
+        'RESTful API design patterns'
+      ],
+      role: 'Full Stack Developer',
+      company: 'PT. INDOESPORTS KARYA INDONESIA',
+      duration: 'Nov 2018 - Oct 2019'
+    },
+    {
+      id: '7',
+      title: 'Compas Business Intelligence',
+      description: 'E-commerce market insight platform providing actionable business intelligence tools for strategic decision making.',
+      fullDescription: 'Compas is developed by the Telunjuk team, focusing on business intelligence tools for e-commerce market insights. The platform provides actionable insights to empower strategic decisions for online businesses.',
+      techStack: ['Vue.js', 'Business Intelligence', 'Data Analytics', 'JavaScript'],
+      liveUrl: 'https://compas.co.id/',
+      codeUrl: 'https://github.com/example',
+      openSource: false,
+      coverImage: 'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Untitled%208.png',
+      images: [
+        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Untitled%208.png'
+      ],
+      gradient: getRandomGradient(),
+      features: [
+        'E-commerce market insights',
+        'Business intelligence dashboard',
+        'Actionable data analytics',
+        'Strategic decision support tools',
+        'Real-time market data',
+        'Comprehensive reporting system',
+        'Data visualization components'
+      ],
+      challenges: [
+        'Processing large volumes of market data',
+        'Creating intuitive business intelligence dashboard',
+        'Implementing real-time data analytics',
+        'Designing actionable insight presentations'
+      ],
+      learnings: [
+        'Business intelligence platform development',
+        'Data visualization and analytics',
+        'Market data processing',
+        'Strategic business tool design'
+      ],
+      role: 'Front End Developer',
+      company: 'Telunjuk.com',
+      duration: 'Oct 2020 - Feb 2021'
+    },
+    {
+      id: '8',
+      title: 'Sakoo Sales Management Platform',
+      description: 'A web-based application integrating offline and online sales channels with comprehensive business management features.',
+      fullDescription: 'Sakoo is a web-based application that provides and integrates offline and online sales channels to help business owners increase effectiveness and efficiency in selling. Features include stock management, transactions, customer data, and product catalogs.',
+      techStack: ['Web Technologies', 'JavaScript', 'Database Management'],
+      liveUrl: 'https://app.sakoo.id/login',
+      codeUrl: 'https://github.com/example',
+      openSource: false,
+      coverImage: 'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Untitled%2012.png',
+      images: [
+        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Untitled%2012.png'
+      ],
+      gradient: getRandomGradient(),
+      features: [
+        'Offline and online sales integration',
+        'Stock management system',
+        'Transaction processing',
+        'Customer data management',
+        'Product catalog management',
+        'Business efficiency tools',
+        'Multi-channel sales support'
+      ],
+      challenges: [
+        'Integrating offline and online sales channels',
+        'Building comprehensive inventory management',
+        'Creating efficient transaction processing',
+        'Designing user-friendly business tools'
+      ],
+      learnings: [
+        'Multi-channel sales platform development',
+        'Inventory and stock management systems',
+        'Business process automation',
+        'Customer relationship management'
+      ],
+      role: 'Software Developer',
+      company: 'Independent Project',
+      duration: 'Project Timeline'
+    },
+    {
+      id: '9',
+      title: 'Xetia AI Platform',
+      description: 'An Artificial Intelligence platform capable of performing various analyses using cutting-edge technology for instant digital activities.',
+      fullDescription: 'Xetia is a company with a strong hold in Artificial Intelligence, capable of carrying out various analyses by utilizing the most updated technology to perform all digital activities instantly.',
+      techStack: ['AI/ML', 'JavaScript', 'Modern Web Technologies'],
+      liveUrl: 'https://xetia.io/',
+      codeUrl: 'https://github.com/example',
+      openSource: false,
+      coverImage: 'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Untitled%2017.png',
+      images: [
+        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Untitled%2017.png',
+        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Untitled%2018.png',
+        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Untitled%2019.png',
+        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Untitled%2020.png'
+      ],
+      gradient: getRandomGradient(),
+      features: [
+        'Artificial Intelligence analysis tools',
+        'Real-time digital activity processing',
+        'Advanced analytics platform',
+        'Cutting-edge technology integration',
+        'Instant data processing',
+        'Automated decision making',
+        'Scalable AI infrastructure'
+      ],
+      challenges: [
+        'Implementing cutting-edge AI technologies',
+        'Creating real-time analysis capabilities',
+        'Building scalable AI infrastructure',
+        'Ensuring instant processing performance'
+      ],
+      learnings: [
+        'AI/ML platform development',
+        'Real-time data processing',
+        'Advanced analytics implementation',
+        'Cutting-edge technology integration'
+      ],
+      role: 'AI Platform Developer',
+      company: 'Xetia',
+      duration: 'Project Timeline'
+    },
+    {
+      id: '10',
+      title: 'Brilian Muda Health CMS',
+      description: 'A content management system developed for Kalbe Farma in the health sector, providing comprehensive healthcare content management.',
+      fullDescription: 'Brilian Muda is a vendor in the health sector. During my time there, I developed a comprehensive Content Management System (CMS) project in collaboration with Kalbe Farma, focusing on healthcare content management and digital health solutions.',
+      techStack: ['CMS Development', 'PHP', 'Healthcare Systems'],
+      liveUrl: 'https://www.brilianmuda.com/',
+      codeUrl: 'https://github.com/example',
+      openSource: false,
+      coverImage: 'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Untitled%2021.png',
+      images: [
+        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Untitled%2021.png'
+      ],
+      gradient: getRandomGradient(),
+      features: [
+        'Healthcare content management',
+        'Kalbe Farma integration',
+        'Medical content organization',
+        'User-friendly CMS interface',
+        'Healthcare data management',
+        'Content workflow automation',
+        'Secure health information handling'
+      ],
+      challenges: [
+        'Building healthcare-compliant CMS',
+        'Integrating with Kalbe Farma systems',
+        'Ensuring medical data security',
+        'Creating intuitive content management workflows'
+      ],
+      learnings: [
+        'Healthcare industry requirements',
+        'CMS architecture and development',
+        'Medical data compliance',
+        'Healthcare system integration'
+      ],
+      role: 'CMS Developer',
+      company: 'Brilian Muda',
+      duration: 'Project Timeline'
     }
   ];
 }

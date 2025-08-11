@@ -26,14 +26,14 @@
       <!-- Project Hero Section -->
       <div class="mb-12">
         <div class="relative h-64 md:h-80 rounded-2xl overflow-hidden mb-8">
-          <div :class="`absolute inset-0 bg-gradient-to-br ${project?.gradient} opacity-90`"></div>
           <img
             v-if="project?.coverImage"
             :src="project?.coverImage"
             :alt="project?.title"
-            class="w-full h-full object-cover mix-blend-overlay"
+            class="w-full h-full object-cover"
           />
-          <div class="absolute inset-0 bg-black bg-opacity-20"></div>
+          <div :class="`absolute inset-0 bg-gradient-to-br ${project?.gradient} opacity-30`"></div>
+          <div class="absolute inset-0 bg-black bg-opacity-40"></div>
           <div class="absolute inset-0 flex items-center justify-center">
             <h1 class="text-4xl md:text-6xl font-bold text-white text-center px-4">
               {{ project?.title }}
@@ -54,6 +54,7 @@
           </a>
 
           <a
+            v-if="project?.openSource"
             :href="project?.codeUrl"
             target="_blank"
             rel="noopener noreferrer"
@@ -78,6 +79,33 @@
               <p class="text-gray-600 dark:text-gray-300 leading-relaxed">
                 {{ project?.fullDescription }}
               </p>
+            </div>
+          </section>
+
+          <!-- Project Images -->
+          <section v-if="project?.images && project.images.length > 0" class="mb-12">
+            <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">Project Screenshots</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div
+                v-for="(image, index) in project.images"
+                :key="index"
+                class="relative group cursor-pointer overflow-hidden rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300"
+                @click="openImageModal(image, index)"
+              >
+                <img
+                  :src="image"
+                  :alt="`${project.title} screenshot ${index + 1}`"
+                  class="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-300"
+                  loading="lazy"
+                />
+                <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-300 flex items-center justify-center">
+                  <div class="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
+                    </svg>
+                  </div>
+                </div>
+              </div>
             </div>
           </section>
 
@@ -159,6 +187,7 @@
                 View Live Site
               </a>
               <a
+                v-if="project?.openSource"
                 :href="project?.codeUrl"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -188,6 +217,58 @@
         </NuxtLink>
       </div>
     </div>
+
+    <!-- Image Modal -->
+    <div
+      v-if="isModalOpen"
+      class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-90 p-4"
+      @click="closeImageModal"
+    >
+      <div class="relative max-w-4xl max-h-full" @click.stop>
+        <!-- Close Button -->
+        <button
+          @click="closeImageModal"
+          class="absolute -top-12 right-0 text-white hover:text-gray-300 transition-colors z-10"
+        >
+          <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+
+        <!-- Navigation Buttons -->
+        <button
+          v-if="project?.images && selectedImageIndex > 0"
+          @click="prevImage"
+          class="absolute left-4 top-1/2 transform -translate-y-1/2 text-white hover:text-gray-300 transition-colors z-10 bg-black bg-opacity-50 rounded-full p-2"
+        >
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+
+        <button
+          v-if="project?.images && selectedImageIndex < project.images.length - 1"
+          @click="nextImage"
+          class="absolute right-4 top-1/2 transform -translate-y-1/2 text-white hover:text-gray-300 transition-colors z-10 bg-black bg-opacity-50 rounded-full p-2"
+        >
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+
+        <!-- Image -->
+        <img
+          :src="selectedImage"
+          :alt="`${project?.title} screenshot ${selectedImageIndex + 1}`"
+          class="max-w-full max-h-full object-contain rounded-lg shadow-2xl"
+        />
+
+        <!-- Image Counter -->
+        <div class="absolute -bottom-12 left-1/2 transform -translate-x-1/2 text-white text-sm">
+          {{ selectedImageIndex + 1 }} / {{ project?.images?.length || 0 }}
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -200,7 +281,9 @@ interface Project {
   techStack: string[];
   liveUrl: string;
   codeUrl: string;
+  openSource?: boolean;
   coverImage?: string;
+  images?: string[];
   gradient: string;
   features: string[];
   challenges: string[];
@@ -211,6 +294,64 @@ const route = useRoute();
 const projectId = route.params.id as string;
 
 const { data: project, error, pending } = await useFetch<Project>(`/api/portfolio/projects/${projectId}`);
+
+// Image modal state
+const selectedImage = ref<string>('');
+const selectedImageIndex = ref<number>(0);
+const isModalOpen = ref<boolean>(false);
+
+// Image modal functions
+const openImageModal = (image: string, index: number) => {
+  selectedImage.value = image;
+  selectedImageIndex.value = index;
+  isModalOpen.value = true;
+  document.body.style.overflow = 'hidden';
+};
+
+const closeImageModal = () => {
+  isModalOpen.value = false;
+  document.body.style.overflow = 'auto';
+};
+
+const nextImage = () => {
+  if (project.value?.images && selectedImageIndex.value < project.value.images.length - 1) {
+    selectedImageIndex.value++;
+    selectedImage.value = project.value.images[selectedImageIndex.value];
+  }
+};
+
+const prevImage = () => {
+  if (project.value?.images && selectedImageIndex.value > 0) {
+    selectedImageIndex.value--;
+    selectedImage.value = project.value.images[selectedImageIndex.value];
+  }
+};
+
+// Keyboard navigation
+const handleKeydown = (event: KeyboardEvent) => {
+  if (!isModalOpen.value) return;
+  
+  switch (event.key) {
+    case 'Escape':
+      closeImageModal();
+      break;
+    case 'ArrowRight':
+      nextImage();
+      break;
+    case 'ArrowLeft':
+      prevImage();
+      break;
+  }
+};
+
+onMounted(() => {
+  document.addEventListener('keydown', handleKeydown);
+});
+
+onUnmounted(() => {
+  document.removeEventListener('keydown', handleKeydown);
+  document.body.style.overflow = 'auto';
+});
 
 useHead({
   title: `${project.value?.title} - Project Details`,

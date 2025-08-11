@@ -18,15 +18,15 @@
         >
           <!-- Project Image with Gradient Overlay -->
           <div class="relative h-48 overflow-hidden">
-            <div :class="`absolute inset-0 bg-gradient-to-br ${project.gradient} opacity-90`"></div>
             <img
               v-if="project.coverImage"
               :src="project.coverImage"
               :alt="project.title"
-              class="w-full h-full object-cover mix-blend-overlay"
+              class="w-full h-full object-cover"
               loading="lazy"
             />
-            <div class="absolute inset-0 bg-black bg-opacity-20"></div>
+            <div :class="`absolute inset-0 bg-gradient-to-br ${project.gradient} opacity-30`"></div>
+            <div class="absolute inset-0 bg-black bg-opacity-40"></div>
           </div>
 
           <!-- Project Content -->
@@ -66,6 +66,7 @@
               </a>
               
               <a
+                v-if="project.openSource"
                 :href="project.codeUrl"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -98,6 +99,7 @@ interface Project {
   techStack: string[];
   liveUrl: string;
   codeUrl: string;
+  openSource?: boolean;
   coverImage?: string;
   gradient: string;
 }
