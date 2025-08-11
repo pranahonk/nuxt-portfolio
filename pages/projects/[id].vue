@@ -64,11 +64,8 @@
         </div>
       </div>
 
-      <!-- Main Content -->
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
-        <!-- Project Details -->
         <div class="lg:col-span-2">
-          <!-- Description -->
           <section class="mb-12">
             <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">Project Overview</h2>
             <div class="prose prose-lg dark:prose-invert max-w-none">
@@ -78,7 +75,6 @@
             </div>
           </section>
 
-          <!-- Project Images -->
           <section v-if="project?.images && project.images.length > 0" class="mb-12">
             <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">Project Screenshots</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -108,8 +104,7 @@
               </div>
             </div>
           </section>
-
-          <!-- Features -->
+          
           <section class="mb-12">
             <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">Key Features</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -256,7 +251,6 @@
           </svg>
         </button>
 
-        <!-- Image -->
         <img
           :src="selectedImage"
           :alt="`${project?.title} screenshot ${selectedImageIndex + 1}`"
@@ -273,35 +267,16 @@
 </template>
 
 <script setup lang="ts">
-interface Project {
-  id: string;
-  title: string;
-  description: string;
-  fullDescription: string;
-  techStack: string[];
-  liveUrl: string;
-  codeUrl: string;
-  openSource?: boolean;
-  coverImage?: string;
-  images?: string[];
-  gradient: string;
-  features: string[];
-  challenges: string[];
-  learnings: string[];
-}
 
 import { getPortfolioProjects } from '~/server/data/portfolioData';
 
 const route = useRoute();
 const projectId = route.params.id as string;
 
-// Use static data instead of API call for better static generation
 const projects = getPortfolioProjects();
 const project = ref(projects.find(p => p.id === projectId));
-const error = ref(null);
 const pending = ref(false);
 
-// Handle case where project is not found
 if (!project.value) {
   throw createError({
     statusCode: 404,

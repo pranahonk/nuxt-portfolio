@@ -77,15 +77,6 @@ export default defineNuxtConfig({
           additionalData: `@import "~/assets/css/main.css";`
         }
       }
-    },
-    build: {
-      rollupOptions: {
-        output: {
-          manualChunks: {
-            vendor: ['vue', 'nuxt']
-          }
-        }
-      }
     }
   },
   runtimeConfig: {
