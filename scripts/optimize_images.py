@@ -1,141 +1,234 @@
 #!/usr/bin/env python3
 """
-Optimize images for the portfolio:
-- Generate responsive widths (default: 3840, 2560, 1920, 1280, 960, 640)
-- Convert to WebP
-- Strip metadata
-- Preserve transparency when present
-- Skip upscaling
-- Skip if output exists and is newer than the source
-
-Usage:
-  python3 scripts/optimize_images.py --src assets/image/Portfolio --widths 3840,2560,1920,1280,960,640 --quality 82
-
-Notes:
-- Requires Pillow with WebP support.
-- Outputs beside the source as `<name>-<width>.webp`.
+Image Optimization Script for Nuxt Portfolio
+Optimizes JPG and PNG files to reduce their size while maintaining quality.
 """
-from __future__ import annotations
 
-import argparse
 import os
 import sys
+import shutil
+import subprocess
 from pathlib import Path
-from typing import Iterable, List, Tuple
+from typing import List, Tuple
+import argparse
 
-from PIL import Image, ImageOps
-
-SUPPORTED_EXTS = {".jpg", ".jpeg", ".png", ".webp"}
-DEFAULT_WIDTHS = [3840, 2560, 1920, 1280, 960, 640]
-
-
-def parse_widths(s: str | None) -> List[int]:
-    if not s:
-        return DEFAULT_WIDTHS
+def check_dependencies():
+    """Check if required dependencies are installed."""
     try:
-        widths = [int(x) for x in s.split(",") if x.strip()]
-    except ValueError:
-        raise argparse.ArgumentTypeError("--widths must be a comma-separated list of integers")
-    return sorted(set(widths), reverse=True)
+        from PIL import Image, ImageOps
+        return True, None
+    except ImportError:
+        return False, "Pillow library not found. Please install it with: pip3 install Pillow"
 
-
-def iter_images(src: Path) -> Iterable[Path]:
-    for p in src.rglob("*"):
-        if p.is_file() and p.suffix.lower() in SUPPORTED_EXTS:
-            yield p
-
-
-def should_skip(src: Path, out: Path) -> bool:
-    return out.exists() and out.stat().st_mtime >= src.stat().st_mtime
-
-
-def calc_target_size(img: Image.Image, target_w: int) -> Tuple[int, int]:
-    w, h = img.size
-    if w <= target_w:
-        # No upscaling
-        return w, h
-    target_h = int(round(h * (target_w / w)))
-    return target_w, target_h
-
-
-def to_webp(img: Image.Image, out_path: Path, quality: int, lossless_for_png: bool) -> None:
-    params = {
-        "format": "WEBP",
-        "method": 6,  # best compression
-        "optimize": True,
-        "quality": quality,
-        "icc_profile": None,
-    }
-    if lossless_for_png and img.mode in ("RGBA", "LA"):
-        params.update({"lossless": True, "quality": 100})
-    # Ensure RGB/RGBA modes
-    if img.mode in ("P", "L") and "A" not in img.mode:
-        img = img.convert("RGB")
-    if img.mode == "LA":
-        img = img.convert("RGBA")
-    # Remove metadata
-    img.info.clear()
-    img.save(out_path, **params)
-
-
-def process_one(src_path: Path, widths: List[int], quality: int, dry_run: bool) -> List[Path]:
-    created: List[Path] = []
+def install_pillow():
+    """Attempt to install Pillow automatically."""
     try:
-        with Image.open(src_path) as im:
-            im = ImageOps.exif_transpose(im)
-            base = src_path.with_suffix("")
-            is_png_like = src_path.suffix.lower() == ".png" or ("A" in im.getbands())
-            for w in widths:
-                tw, th = calc_target_size(im, w)
-                # Skip generating redundant sizes
-                if tw < 1 or th < 1:
-                    continue
-                out_path = base.parent / f"{base.name}-{tw}.webp"
-                if should_skip(src_path, out_path):
-                    continue
-                if dry_run:
-                    created.append(out_path)
-                    continue
-                # High-quality Lanczos resize
-                to_save = im
-                if (tw, th) != im.size:
-                    to_save = im.resize((tw, th), Image.Resampling.LANCZOS)
-                to_webp(to_save, out_path, quality=quality, lossless_for_png=is_png_like)
-                created.append(out_path)
+        print("Installing Pillow...")
+        subprocess.check_call([sys.executable, "-m", "pip", "install", "Pillow"])
+        return True
+    except subprocess.CalledProcessError:
+        return False
+
+def get_file_size(filepath: Path) -> int:
+    """Get file size in bytes."""
+    return filepath.stat().st_size
+
+def format_size(size_bytes: int) -> str:
+    """Format size in bytes to human readable format."""
+    for unit in ['B', 'KB', 'MB', 'GB']:
+        if size_bytes < 1024.0:
+            return f"{size_bytes:.1f} {unit}"
+        size_bytes /= 1024.0
+    return f"{size_bytes:.1f} TB"
+
+def create_backup(filepath: Path, backup_dir: Path) -> Path:
+    """Create a backup of the original file."""
+    backup_dir.mkdir(exist_ok=True)
+    backup_path = backup_dir / filepath.name
+    shutil.copy2(filepath, backup_path)
+    return backup_path
+
+def optimize_image(filepath: Path, quality: int = 85, backup: bool = True) -> Tuple[bool, str, int, int]:
+    """
+    Optimize a single image file.
+
+    Args:
+        filepath: Path to the image file
+        quality: JPEG quality (1-100, higher = better quality)
+        backup: Whether to create a backup
+
+    Returns:
+        Tuple of (success, message, original_size, new_size)
+    """
+    try:
+        from PIL import Image, ImageOps
+
+        original_size = get_file_size(filepath)
+
+        # Create backup if requested
+        if backup:
+            backup_dir = filepath.parent / 'backups'
+            backup_path = create_backup(filepath, backup_dir)
+            print(f"  Backup created: {backup_path}")
+
+        # Open and optimize the image
+        with Image.open(filepath) as img:
+            # Convert RGBA to RGB for JPEG if necessary
+            if filepath.suffix.lower() == '.jpg' or filepath.suffix.lower() == '.jpeg':
+                if img.mode in ('RGBA', 'LA', 'P'):
+                    # Create a white background
+                    background = Image.new('RGB', img.size, (255, 255, 255))
+                    if img.mode == 'P':
+                        img = img.convert('RGBA')
+                    background.paste(img, mask=img.split()[-1] if img.mode == 'RGBA' else None)
+                    img = background
+
+            # Apply auto-orientation based on EXIF data
+            img = ImageOps.exif_transpose(img)
+
+            # Optimize and save
+            optimize_params = {
+                'optimize': True,
+                'quality': quality
+            }
+
+            if filepath.suffix.lower() == '.png':
+                # For PNG, use different optimization
+                optimize_params = {
+                    'optimize': True,
+                    'compress_level': 6  # 0-9, higher = more compression
+                }
+
+            # Save optimized image
+            img.save(filepath, **optimize_params)
+
+        new_size = get_file_size(filepath)
+        saved_bytes = original_size - new_size
+        saved_percent = (saved_bytes / original_size) * 100 if original_size > 0 else 0
+
+        message = f"Optimized: {format_size(original_size)} → {format_size(new_size)} (saved {saved_percent:.1f}%)"
+
+        return True, message, original_size, new_size
+
     except Exception as e:
-        print(f"[ERROR] {src_path}: {e}", file=sys.stderr)
-    return created
+        return False, f"Error optimizing {filepath}: {str(e)}", original_size, original_size
 
+def find_images(directory: Path, extensions: List[str] = None) -> List[Path]:
+    """Find all image files in the directory."""
+    if extensions is None:
+        extensions = ['.jpg', '.jpeg', '.png']
+
+    images = []
+    for ext in extensions:
+        images.extend(directory.glob(f"*{ext}"))
+        images.extend(directory.glob(f"*{ext.upper()}"))
+
+    return sorted(images)
 
 def main():
-    parser = argparse.ArgumentParser(description="Optimize images to responsive WebP variants")
-    parser.add_argument("--src", default="assets/image/Portfolio", help="Source directory to scan")
-    parser.add_argument("--widths", default=None, help="Comma-separated list of widths, e.g., 1920,1280,640")
-    parser.add_argument("--quality", type=int, default=82, help="WebP quality for photos (ignored if lossless)")
-    parser.add_argument("--dry", action="store_true", help="Dry run: print what would be created")
+    parser = argparse.ArgumentParser(description='Optimize JPG and PNG images in portfolio')
+    parser.add_argument('--directory', '-d',
+                       default='/Volumes/TEAM-SSD/WebstormProjects/nuxt-portfolio/public/images/portfolio',
+                       help='Directory containing images to optimize')
+    parser.add_argument('--quality', '-q', type=int, default=85,
+                       help='JPEG quality (1-100, default: 85)')
+    parser.add_argument('--no-backup', action='store_true',
+                       help='Skip creating backup files')
+    parser.add_argument('--extensions', nargs='+', default=['.jpg', '.jpeg', '.png'],
+                       help='File extensions to process')
+    parser.add_argument('--dry-run', action='store_true',
+                       help='Show what would be optimized without making changes')
 
     args = parser.parse_args()
 
-    src = Path(args.src)
-    if not src.exists() or not src.is_dir():
-        print(f"Source directory not found: {src}", file=sys.stderr)
-        return 1
+    # Check dependencies
+    has_pillow, error_msg = check_dependencies()
+    if not has_pillow:
+        print(f"Error: {error_msg}")
+        print("Attempting to install Pillow automatically...")
+        if install_pillow():
+            print("Pillow installed successfully!")
+            has_pillow, error_msg = check_dependencies()
+            if not has_pillow:
+                print(f"Still having issues: {error_msg}")
+                sys.exit(1)
+        else:
+            print("Failed to install Pillow automatically.")
+            print("Please install it manually with: pip3 install Pillow")
+            sys.exit(1)
 
-    widths = parse_widths(args.widths)
+    directory = Path(args.directory)
+    if not directory.exists():
+        print(f"Error: Directory {directory} does not exist")
+        sys.exit(1)
 
-    print(f"Scanning {src} for images...")
-    total = 0
-    created_total = 0
-    for p in iter_images(src):
-        total += 1
-        created = process_one(p, widths=widths, quality=args.quality, dry_run=args.dry)
-        created_total += len(created)
-        for out in created:
-            print(f"+ {out.relative_to(Path.cwd()) if Path.cwd() in out.parents else out}")
+    print(f"Image Optimization Script")
+    print(f"========================")
+    print(f"Directory: {directory}")
+    print(f"Quality: {args.quality}")
+    print(f"Extensions: {', '.join(args.extensions)}")
+    print(f"Backup: {'No' if args.no_backup else 'Yes'}")
+    print(f"Mode: {'Dry run' if args.dry_run else 'Live'}")
+    print()
 
-    print(f"Done. Processed {total} images. Created {created_total} files.")
-    return 0
+    # Find images
+    images = find_images(directory, args.extensions)
 
+    if not images:
+        print("No images found to optimize.")
+        return
+
+    print(f"Found {len(images)} image(s) to optimize:")
+    for img in images:
+        size = format_size(get_file_size(img))
+        print(f"  {img.name} ({size})")
+    print()
+
+    if args.dry_run:
+        print("Dry run complete. Use --dry-run=false to perform actual optimization.")
+        return
+
+    # Optimize images
+    total_original_size = 0
+    total_new_size = 0
+    successful_optimizations = 0
+
+    for i, image_path in enumerate(images, 1):
+        print(f"[{i}/{len(images)}] Processing {image_path.name}...")
+
+        success, message, original_size, new_size = optimize_image(
+            image_path,
+            quality=args.quality,
+            backup=not args.no_backup
+        )
+
+        print(f"  {message}")
+
+        if success:
+            successful_optimizations += 1
+            total_original_size += original_size
+            total_new_size += new_size
+
+        print()
+
+    # Summary
+    print("Optimization Summary")
+    print("===================")
+    print(f"Images processed: {len(images)}")
+    print(f"Successful optimizations: {successful_optimizations}")
+    print(f"Failed optimizations: {len(images) - successful_optimizations}")
+
+    if total_original_size > 0:
+        total_saved = total_original_size - total_new_size
+        total_saved_percent = (total_saved / total_original_size) * 100
+        print(f"Total size before: {format_size(total_original_size)}")
+        print(f"Total size after: {format_size(total_new_size)}")
+        print(f"Total saved: {format_size(total_saved)} ({total_saved_percent:.1f}%)")
+
+    if not args.no_backup:
+        backup_dir = directory / 'backups'
+        print(f"\nBackup files stored in: {backup_dir}")
+        print("You can safely delete the backup directory after verifying the optimized images.")
 
 if __name__ == "__main__":
-    sys.exit(main())
+    main()
