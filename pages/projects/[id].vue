@@ -15,19 +15,17 @@
       <!-- Project Hero Section -->
       <div class="mb-12">
         <div class="relative h-64 md:h-80 rounded-2xl overflow-hidden mb-8">
-          <NuxtImg
+          <img
             v-if="project?.coverImage"
             :src="project?.coverImage"
             :alt="project?.title"
-            class="w-full h-full object-cover"
+            class="w-full h-full object-cover blur-sm scale-110"
             loading="lazy"
-            format="webp"
-            sizes="100vw"
           />
-          <div :class="`absolute inset-0 bg-gradient-to-br ${project?.gradient} opacity-30`"></div>
-          <div class="absolute inset-0 bg-black bg-opacity-40"></div>
+          <div :class="`absolute inset-0 bg-gradient-to-br ${project?.gradient} opacity-40`"></div>
+          <div class="absolute inset-0 bg-black bg-opacity-60"></div>
           <div class="absolute inset-0 flex items-center justify-center">
-            <h1 class="text-4xl md:text-6xl font-bold text-white text-center px-4">
+            <h1 class="text-4xl md:text-6xl font-bold text-white text-center px-4 drop-shadow-2xl">
               {{ project?.title }}
             </h1>
           </div>
@@ -84,13 +82,11 @@
                 class="relative group cursor-pointer overflow-hidden rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300"
                 @click="openImageModal(image, index)"
               >
-                <NuxtImg
+                <img
                   :src="image"
                   :alt="`${project.title} screenshot ${index + 1}`"
                   class="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-300"
                   loading="lazy"
-                  format="webp"
-                  sizes="(min-width: 768px) 50vw, 100vw"
                 />
                 <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-300 flex items-center justify-center">
                   <div class="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
@@ -251,12 +247,10 @@
         </button>
 
         <!-- Image -->
-        <NuxtImg
+        <img
           :src="selectedImage"
           :alt="`${project?.title} screenshot ${selectedImageIndex + 1}`"
           class="max-w-full max-h-full object-contain rounded-lg shadow-2xl"
-          sizes="90vw"
-          format="webp"
         />
 
         <!-- Image Counter -->

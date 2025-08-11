@@ -90,6 +90,10 @@ export function getPortfolioProjects() {
         'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/IMG_2685.jpg',
         'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/IMG_2683.jpg',
         'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/IMG_2684.jpg',
+        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Screenshot_20221031_092648.jpg',
+        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Screenshot_20221031_092649.jpg',
+        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/myboost-dashboard.jpg',
+        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/myboost-profile.jpg',
       ],
       gradient: getRandomGradient(),
       features: [
