@@ -19,14 +19,13 @@ const closeMobileMenu = () => {
         <div class="flex justify-between items-center">
           <div class="logo flex-shrink-0">
             <nuxt-link to="/" class="block">
-              <NuxtImg
+              <img
                 class="h-12 w-auto sm:h-16"
                 :src="logoSrc"
                 alt="Logo"
                 width="96"
                 height="96"
                 loading="lazy"
-                sizes="(max-width: 640px) 48px, 64px"
               />
             </nuxt-link>
           </div>

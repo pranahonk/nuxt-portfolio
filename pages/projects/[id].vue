@@ -15,18 +15,14 @@
       <!-- Project Hero Section -->
       <div class="mb-12">
         <div class="relative h-64 md:h-80 rounded-2xl overflow-hidden mb-8">
-          <NuxtImg
+          <img
             v-if="project?.coverImage"
             :src="project?.coverImage"
             :alt="project?.title"
             class="w-full h-full object-cover"
             width="1024"
             height="320"
-            format="webp"
-            quality="80"
             loading="eager"
-            fetchpriority="high"
-            preload
           />
           <div :class="`absolute inset-0 bg-gradient-to-br ${project?.gradient} opacity-40`"></div>
           <div class="absolute inset-0 bg-black bg-opacity-60"></div>
@@ -84,14 +80,12 @@
                 class="relative group cursor-pointer overflow-hidden rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300"
                 @click="openImageModal(image, index)"
               >
-                <NuxtImg
+                <img
                   :src="image"
                   :alt="`${project.title} screenshot ${index + 1}`"
                   class="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-300"
                   width="400"
                   height="256"
-                format="webp"
-                  quality="80"
                   loading="lazy"
                 />
                 <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-300 flex items-center justify-center">
@@ -104,7 +98,7 @@
               </div>
             </div>
           </section>
-          
+
           <section class="mb-12">
             <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">Key Features</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">

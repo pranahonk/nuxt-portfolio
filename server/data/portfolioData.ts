@@ -2,16 +2,16 @@ import { getOptimizedImagePath } from '~/utils/imageHelper'
 
 function getRandomGradient() {
   const gradients = [
-    'from-[#FEE140] via-[#FA709A] to-[#FEE140]', 
-    'from-[#A18CD1] via-[#FBC2EB] to-[#A18CD1]', 
-    'from-[#43CEA2] via-[#185A9D] to-[#43CEA2]', 
-    'from-[#FF512F] via-[#F09819] to-[#FF512F]', 
-    'from-[#654EA3] via-[#EAAFC8] to-[#654EA3]', 
-    'from-[#00B4DB] via-[#0083B0] to-[#00B4DB]', 
-    'from-[#DCE35B] via-[#45B649] to-[#DCE35B]', 
-    'from-[#F7971E] via-[#FFD200] to-[#F7971E]', 
+    'from-[#FEE140] via-[#FA709A] to-[#FEE140]',
+    'from-[#A18CD1] via-[#FBC2EB] to-[#A18CD1]',
+    'from-[#43CEA2] via-[#185A9D] to-[#43CEA2]',
+    'from-[#FF512F] via-[#F09819] to-[#FF512F]',
+    'from-[#654EA3] via-[#EAAFC8] to-[#654EA3]',
+    'from-[#00B4DB] via-[#0083B0] to-[#00B4DB]',
+    'from-[#DCE35B] via-[#45B649] to-[#DCE35B]',
+    'from-[#F7971E] via-[#FFD200] to-[#F7971E]',
     'from-[#7F00FF] via-[#E100FF] to-[#7F00FF]',
-    'from-[#12c2e9] via-[#c471ed] to-[#f64f59]', 
+    'from-[#12c2e9] via-[#c471ed] to-[#f64f59]',
   ]
   return gradients[Math.floor(Math.random() * gradients.length)]
 }
@@ -90,10 +90,6 @@ export function getPortfolioProjects() {
         getOptimizedImagePath('IMG_2685.jpg'),
         getOptimizedImagePath('IMG_2683.jpg'),
         getOptimizedImagePath('IMG_2684.jpg'),
-        getOptimizedImagePath('Screenshot_20221031_092648.jpg'),
-        getOptimizedImagePath('Screenshot_20221031_092649.jpg'),
-        getOptimizedImagePath('myboost-dashboard.jpg'),
-        getOptimizedImagePath('myboost-profile.jpg'),
       ],
       gradient: getRandomGradient(),
       features: [
@@ -488,8 +484,4 @@ export function getPortfolioProjects() {
       duration: 'Project Timeline',
     },
   ]
-}
-
-export function getProjectById(id: string) {
-  return getPortfolioProjects().find(project => project.id === id)
 }
