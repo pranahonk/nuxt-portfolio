@@ -8,8 +8,15 @@ const config = useRuntimeConfig()
       <div class="px-10 flex justify-between items-center">
         <div class="logo">
           <nuxt-link to="/">
-
-            <img class="h-full w-full max-h-24" :src='config.public.devLogo' />
+            <NuxtImg
+              class="h-full w-full max-h-24"
+              :src="config.public.devLogo"
+              alt="Logo"
+              width="96"
+              height="96"
+              loading="lazy"
+              sizes="96px"
+            />
           </nuxt-link>
         </div>
 

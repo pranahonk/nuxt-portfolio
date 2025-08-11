@@ -10,7 +10,16 @@ const config = useRuntimeConfig();
     <div class="m-auto">
       <h2 class="text-xl md:text-2xl lg:text-3xl font-semibold">
         <section class="hero container max-w-screen-lg mx-auto flex justify-center">
-          <img class="grid place-items-center rounded-full h-56 w-56" src="~/assets/image/avatar-transparent.png" alt="Avatars" />
+          <NuxtImg
+            class="grid place-items-center rounded-full h-56 w-56"
+            src="~/assets/image/avatar-transparent.png"
+            alt="Avatars"
+            width="224"
+            height="224"
+            format="webp"
+            loading="lazy"
+            sizes="224px"
+          />
         </section>
         <span class="font-normal dark:text-gray-300">Hey, I am </span>
         {{ config.public.devName }}
