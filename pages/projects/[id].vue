@@ -30,7 +30,7 @@
             v-if="project?.coverImage"
             :src="project?.coverImage"
             :alt="project?.title"
-            class="w-full h-full object-cover"
+            class="w-full h-full object-cover blur-md"
           />
           <div :class="`absolute inset-0 bg-gradient-to-br ${project?.gradient} opacity-30`"></div>
           <div class="absolute inset-0 bg-black bg-opacity-40"></div>
