@@ -4,7 +4,16 @@ export default defineNuxtConfig({
     prerender: {
       routes: ['/'],
       crawlLinks: true
+    },
+    routeRules: {
+      '/': { headers: { 'cache-control': 's-maxage=31536000' } },
+      '/**': { headers: { 'cache-control': 's-maxage=31536000' } },
+      '/_nuxt/**': { headers: { 'cache-control': 's-maxage=31536000' } }
     }
+  },
+  sourcemap: {
+    server: true,
+    client: true
   },
   image: {
     domains: ['www.notion.so', 's3.us-west-2.amazonaws.com', 'miro.medium.com', 'user-images.githubusercontent.com', 'binus.ac.id', 'raw.githubusercontent.com'],
@@ -18,13 +27,22 @@ export default defineNuxtConfig({
   },
   app: {
     head: {
+      htmlAttrs: {
+        lang: 'en'
+      },
       title: "Prana Apsara Wijaya's Portfolio",
       meta: [
-        { charset: "utf-8" }, 
+        { charset: "utf-8" },
         { name: "viewport", content: "width=device-width, initial-scale=1" },
+        { name: "description", content: "Prana Apsara Wijaya's portfolio - a passionate Javascript developer from Indonesia who loves to build and deliver quality products." },
         { name: "google-site-verification", content: "Pxn-EftTSqZBgx5TI5vHBM9oiZ6QxvRtG-qIeuA6TMM" }
       ],
-      link: [{ rel: "icon", type: "image/png", href: "/logo.png" }],
+      link: [
+        { rel: "apple-touch-icon", sizes: "180x180", href: "/apple-touch-icon.png" },
+        { rel: "icon", type: "image/png", sizes: "32x32", href: "/favicon-32x32.png" },
+        { rel: "icon", type: "image/png", sizes: "16x16", href: "/favicon-16x16.png" },
+        { rel: "manifest", href: "/site.webmanifest" }
+      ],
     },
   },
   devtools: { enabled: true },

@@ -22,10 +22,11 @@ const logoSrc = computed(() => config.public.devLogo || '/logo.png')
         </div>
 
         <div class="flex flex-row">
+          <nuxt-link class="nav-link" to="/">Home</nuxt-link>
           <nuxt-link class="nav-link" to="/posts">Blog</nuxt-link>
           <nuxt-link class="nav-link" to="/about">About</nuxt-link>
           <nuxt-link class="nav-link" to="/projects">Projects</nuxt-link>
-          
+
           <ColorSwitcher/>
         </div>
       </div>
