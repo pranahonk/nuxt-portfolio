@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir:*)",
+      "Bash(ls:*)",
+      "Bash(find:*)",
+      "Bash(npm install:*)",
+      "Bash(npm run generate:*)",
+      "WebFetch(domain:prana-wijaya.netlify.app)",
+      "Bash(git rm:*)",
+      "Bash(yarn generate)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(curl:*)",
+      "Bash(mv:*)"
+    ],
+    "deny": []
+  }
+}

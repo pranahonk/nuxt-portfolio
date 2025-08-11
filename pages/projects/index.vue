@@ -1,13 +1,15 @@
 <template>
-  <div id="projects" class="mt-16">
-    <!-- Projects Section Header -->
-    <div class="text-center mb-12">
-      <h2 class="text-4xl font-bold text-gray-900 dark:text-white mb-4">Projects</h2>
-      <p class="text-lg text-gray-600 dark:text-gray-300">Things I've built so far</p>
-    </div>
+  <div class="wrapper-small">
+    <div class="py-16">
+      <!-- Page Header -->
+      <div class="text-center mb-16">
+        <h1 class="text-5xl font-bold text-gray-900 dark:text-white mb-6">My Projects</h1>
+        <p class="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+          Explore the projects I've built, from concept to completion. Each project represents a unique challenge and learning experience.
+        </p>
+      </div>
 
-    <!-- Projects Grid -->
-    <div class="wrapper-small">
+      <!-- Projects Grid -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         <div
           v-for="(project, index) in portfolioProjects"
@@ -69,7 +71,7 @@
                 rel="noopener noreferrer"
                 class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
               >
-                <Github class="w-4 h-4" />
+                <IconGithub class="w-4 h-4" />
                 View Code
               </a>
             </div>
@@ -99,6 +101,14 @@ interface Project {
   coverImage?: string;
   gradient: string;
 }
+
+// Set page meta
+useHead({
+  title: 'Projects - My Portfolio',
+  meta: [
+    { name: 'description', content: 'Explore my portfolio of projects, from web applications to mobile apps and everything in between.' }
+  ]
+});
 
 // Fetch portfolio projects from static API
 const portfolioProjects: Project[] = await $fetch('/api/portfolio/projects') as Project[];

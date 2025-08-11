@@ -16,6 +16,7 @@ const config = useRuntimeConfig()
         <div class="flex flex-row">
           <nuxt-link class="nav-link" to="/posts">Blog</nuxt-link>
           <nuxt-link class="nav-link" to="/about">About</nuxt-link>
+          <nuxt-link class="nav-link" to="/projects">Projects</nuxt-link>
           <nuxt-link class="nav-link" to="/portfolio">Portfolio</nuxt-link>
           <ColorSwitcher/>
         </div>

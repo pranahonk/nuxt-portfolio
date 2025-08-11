@@ -2,6 +2,7 @@
 const config = useRuntimeConfig();
 const { $notion } = useNuxtApp();
 const { data, error } = await useAsyncData("notion-portfolio", () => $notion.getPageBlocks(config.public.notionPortfolioPageId));
+console.log(data)
 </script>
 
 <template>

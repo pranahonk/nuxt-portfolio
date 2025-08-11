@@ -5,7 +5,7 @@ const { data } = await useAsyncData("notion-index", async () => {
   const table = await $notion.getPageTable(config.public.notionTableId);
   return JSON.parse(JSON.stringify(table));
 });
-const projects = data; // Use the same data for projects
+// Projects component now fetches its own data
 </script>
 
 <template>
@@ -15,6 +15,6 @@ const projects = data; // Use the same data for projects
     </div>
 
     <Blogs :posts="data" title="Featured blogs"/>
-    <Projects :projects="projects"/>
+    <Projects/>
   </div>
 </template>
