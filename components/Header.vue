@@ -1,5 +1,6 @@
 <script setup lang="ts">
 const config = useRuntimeConfig()
+const logoSrc = computed(() => config.public.devLogo || '/logo.png')
 </script>
 
 <template>
@@ -10,7 +11,7 @@ const config = useRuntimeConfig()
           <nuxt-link to="/">
             <NuxtImg
               class="h-full w-full max-h-24"
-              :src="config.public.devLogo"
+              :src="logoSrc"
               alt="Logo"
               width="96"
               height="96"

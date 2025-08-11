@@ -16,17 +16,15 @@
         >
           <!-- Project Image with Gradient Overlay -->
           <div class="relative h-48 overflow-hidden">
-            <div :class="`absolute inset-0 bg-gradient-to-br ${project.gradient} opacity-90`"></div>
-            <NuxtImg
+            <div :class="`absolute inset-0 bg-gradient-to-br ${project.gradient} opacity-30`"></div>
+            <img
               v-if="project.coverImage"
               :src="project.coverImage"
               :alt="project.title"
-              class="w-full h-full object-cover mix-blend-overlay"
+              class="w-full h-full object-cover"
               loading="lazy"
-              format="webp"
-              sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
             />
-            <div class="absolute inset-0 bg-black bg-opacity-20"></div>
+            <div class="absolute inset-0 bg-black bg-opacity-10"></div>
           </div>
 
           <!-- Project Content -->
@@ -110,6 +108,7 @@ const portfolioProjects: Project[] = await $fetch('/api/portfolio/projects') as 
 .line-clamp-3 {
   display: -webkit-box;
   -webkit-line-clamp: 3;
+  line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }

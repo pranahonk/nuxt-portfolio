@@ -83,7 +83,7 @@ export default {
         return thumbnail[0].url
       }
       else{
-        return "/_nuxt/avatar-transparent.0715ac4b.png"
+        return "/logo.png"
       }
     }
   },

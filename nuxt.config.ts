@@ -5,7 +5,7 @@ export default defineNuxtConfig({
     // }
   },
   image: {
-    domains: ['www.notion.so', 's3.us-west-2.amazonaws.com', 'miro.medium.com', 'user-images.githubusercontent.com', 'binus.ac.id'],
+    domains: ['www.notion.so', 's3.us-west-2.amazonaws.com', 'miro.medium.com', 'user-images.githubusercontent.com', 'binus.ac.id', 'raw.githubusercontent.com'],
     provider: 'ipx',
     ipx: {
       modifiers: {
