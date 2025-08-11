@@ -1,8 +1,10 @@
 export default defineNuxtConfig({
+  ssr: false,
   nitro: {
-    // prerender: {
-    //   routes: ['/']
-    // }
+    prerender: {
+      routes: ['/'],
+      crawlLinks: true
+    }
   },
   image: {
     domains: ['www.notion.so', 's3.us-west-2.amazonaws.com', 'miro.medium.com', 'user-images.githubusercontent.com', 'binus.ac.id', 'raw.githubusercontent.com'],
