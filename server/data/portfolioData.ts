@@ -26,7 +26,7 @@ export function getPortfolioProjects() {
       fullDescription:
         'I developed the Occu-Med Job Analysis Portal, a comprehensive platform for managing occupational medical information. My responsibilities included building the secure login and registration system, and creating the main dashboard for handling referrals, results, and client reports. I engineered a dynamic data table with advanced filtering and pagination, and a multi-step modal for creating new referrals. The application features a clean, professional UI built with a focus on user experience and data management.',
       techStack: ['.NET / C#', 'Vue.js', 'Tailwind CSS', 'RESTful APIs'],
-      liveUrl: 'https://nusameta.com',
+      liveUrl: 'https://dev-portal.occu-med.com/#/',
       codeUrl: 'https://github.com/example',
       openSource: false,
       public: true,
@@ -79,7 +79,7 @@ export function getPortfolioProjects() {
         'React Query',
         'Docker',
       ],
-      liveUrl: 'https://myboost.id',
+      liveUrl: 'https://www.linkedin.com/company/adsi/posts/?feedView=all',
       codeUrl: 'https://github.com/example',
       openSource: false,
       public: true,
@@ -185,7 +185,7 @@ export function getPortfolioProjects() {
       fullDescription:
         'Telunjuk is a shopping search engine that acts as your best friend in finding, comparing prices, and buying the things you need. The platform displays shopping recommendations with prices, discounts, and promos from dozens of trusted online stores. Led platform revamp from CodeIgniter to Nuxt.js with significant performance improvements.',
       techStack: ['Nuxt.js', 'Vue.js', 'Elasticsearch', 'BigQuery', 'Google Analytics'],
-      liveUrl: 'https://www.telunjuk.com/',
+      liveUrl: 'https://www.linkedin.com/company/telunjuk-com/',
       codeUrl: 'https://github.com/example',
       openSource: false,
       public: true,
@@ -228,7 +228,7 @@ export function getPortfolioProjects() {
       fullDescription:
         'Blanja is a joint-venture between Telkom Indonesia and eBay with thousands of merchants offering various products. Built comprehensive checkout system, payment integrations including credit card processing and KAI train ticketing, and collaborated on platform-wide improvements.',
       techStack: ['Vue.js', 'JavaScript', 'RESTful APIs', 'Payment Gateways'],
-      liveUrl: 'https://blanja.com/',
+      liveUrl: 'https://www.linkedin.com/company/blanja-com/posts/?feedView=all',
       codeUrl: 'https://github.com/example',
       openSource: false,
       public: true,
@@ -405,7 +405,7 @@ export function getPortfolioProjects() {
       fullDescription:
         'Xetia is a company with a strong hold in Artificial Intelligence, capable of carrying out various analyses by utilizing the most updated technology to perform all digital activities instantly.',
       techStack: ['AI/ML', 'JavaScript', 'Modern Web Technologies'],
-      liveUrl: 'https://xetia.io/',
+      liveUrl: 'https://apps.apple.com/id/app/hararu/id1575895928',
       codeUrl: 'https://github.com/example',
       openSource: false,
       public: true,
