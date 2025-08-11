@@ -1,3 +1,5 @@
+import { getOptimizedImagePath } from '~/utils/imageHelper'
+
 function getRandomGradient() {
   const gradients = [
     'from-[#FEE140] via-[#FA709A] to-[#FEE140]', // warm sunrise
@@ -29,13 +31,12 @@ export function getPortfolioProjects() {
       openSource: false,
       public: true,
       tags: ['full-stack', 'vue', 'dotnet', 'enterprise'],
-      coverImage:
-        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Screenshot_2025-07-21_at_12.38.14.png',
+      coverImage: getOptimizedImagePath('Screenshot_2025-07-21_at_12.38.14.png'),
       images: [
-        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Screenshot_2025-07-21_at_12.38.14.png',
-        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Screenshot_2025-07-21_at_12.38.21.png',
-        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Screenshot_2025-07-21_at_12.39.07.png',
-        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Screenshot_2025-07-21_at_12.39.21.png',
+        getOptimizedImagePath('Screenshot_2025-07-21_at_12.38.14.png'),
+        getOptimizedImagePath('Screenshot_2025-07-21_at_12.38.21.png'),
+        getOptimizedImagePath('Screenshot_2025-07-21_at_12.39.07.png'),
+        getOptimizedImagePath('Screenshot_2025-07-21_at_12.39.21.png'),
       ],
       gradient: getRandomGradient(),
       features: [
@@ -83,17 +84,16 @@ export function getPortfolioProjects() {
       openSource: false,
       public: true,
       tags: ['frontend', 'react', 'redux', 'merchant'],
-      coverImage:
-        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Screenshot_20221031_092647.jpg',
+      coverImage: getOptimizedImagePath('Screenshot_20221031_092647.jpg'),
       images: [
-        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Screenshot_20221031_092647.jpg',
-        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/IMG_2685.jpg',
-        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/IMG_2683.jpg',
-        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/IMG_2684.jpg',
-        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Screenshot_20221031_092648.jpg',
-        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Screenshot_20221031_092649.jpg',
-        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/myboost-dashboard.jpg',
-        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/myboost-profile.jpg',
+        getOptimizedImagePath('Screenshot_20221031_092647.jpg'),
+        getOptimizedImagePath('IMG_2685.jpg'),
+        getOptimizedImagePath('IMG_2683.jpg'),
+        getOptimizedImagePath('IMG_2684.jpg'),
+        getOptimizedImagePath('Screenshot_20221031_092648.jpg'),
+        getOptimizedImagePath('Screenshot_20221031_092649.jpg'),
+        getOptimizedImagePath('myboost-dashboard.jpg'),
+        getOptimizedImagePath('myboost-profile.jpg'),
       ],
       gradient: getRandomGradient(),
       features: [
@@ -142,15 +142,14 @@ export function getPortfolioProjects() {
       openSource: false,
       public: true,
       tags: ['frontend', 'nextjs', 'pwa', 'streaming'],
-      coverImage:
-        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/rplus.jpg',
+      coverImage: getOptimizedImagePath('rplus.jpg'),
       images: [
-        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/rplus.jpg',
-        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Untitled-min.png',
-        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Untitled_(1)-min.png',
-        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Untitled_(2)-min.png',
-        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Untitled.png',
-        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Untitled%201.png',
+        getOptimizedImagePath('rplus.jpg'),
+        getOptimizedImagePath('Untitled-min.png'),
+        getOptimizedImagePath('Untitled_(1)-min.png'),
+        getOptimizedImagePath('Untitled_(2)-min.png'),
+        getOptimizedImagePath('Untitled.png'),
+        getOptimizedImagePath('Untitled 1.png'),
       ],
       gradient: getRandomGradient(),
       features: [
@@ -191,16 +190,15 @@ export function getPortfolioProjects() {
       openSource: false,
       public: true,
       tags: ['frontend', 'vue', 'nuxt', 'ecommerce'],
-      coverImage:
-        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Untitled%202.png',
+      coverImage: getOptimizedImagePath('Untitled 2.png'),
       images: [
-        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Untitled%202.png',
-        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Untitled%203.png',
-        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Untitled%204.png',
-        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Untitled%205.png',
-        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Untitled%206.png',
-        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Untitled%207.png',
-        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Untitled%208.png',
+        getOptimizedImagePath('Untitled 2.png'),
+        getOptimizedImagePath('Untitled 3.png'),
+        getOptimizedImagePath('Untitled 4.png'),
+        getOptimizedImagePath('Untitled 5.png'),
+        getOptimizedImagePath('Untitled 6.png'),
+        getOptimizedImagePath('Untitled 7.png'),
+        getOptimizedImagePath('Untitled 8.png'),
       ],
       gradient: getRandomGradient(),
       features: [
@@ -235,12 +233,11 @@ export function getPortfolioProjects() {
       openSource: false,
       public: true,
       tags: ['frontend', 'vue', 'ecommerce', 'payments'],
-      coverImage:
-        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Untitled%209.png',
+      coverImage: getOptimizedImagePath('Untitled 9.png'),
       images: [
-        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Untitled%209.png',
-        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Untitled%2010.png',
-        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Untitled%2011.png',
+        getOptimizedImagePath('Untitled 9.png'),
+        getOptimizedImagePath('Untitled 10.png'),
+        getOptimizedImagePath('Untitled 11.png'),
       ],
       gradient: getRandomGradient(),
       features: [
@@ -281,13 +278,12 @@ export function getPortfolioProjects() {
       openSource: false,
       public: true,
       tags: ['full-stack', 'laravel', 'react', 'media'],
-      coverImage:
-        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Untitled%2013.png',
+      coverImage: getOptimizedImagePath('Untitled 13.png'),
       images: [
-        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Untitled%2013.png',
-        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Untitled%2014.png',
-        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Untitled%2015.png',
-        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Untitled%2016.png',
+        getOptimizedImagePath('Untitled 13.png'),
+        getOptimizedImagePath('Untitled 14.png'),
+        getOptimizedImagePath('Untitled 15.png'),
+        getOptimizedImagePath('Untitled 16.png'),
       ],
       gradient: getRandomGradient(),
       features: [
@@ -328,10 +324,9 @@ export function getPortfolioProjects() {
       openSource: false,
       public: true,
       tags: ['frontend', 'vue', 'bi', 'analytics'],
-      coverImage:
-        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Untitled%208.png',
+      coverImage: getOptimizedImagePath('Untitled 8.png'),
       images: [
-        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Untitled%208.png',
+        getOptimizedImagePath('Untitled 8.png'),
       ],
       gradient: getRandomGradient(),
       features: [
@@ -372,10 +367,9 @@ export function getPortfolioProjects() {
       openSource: false,
       public: true,
       tags: ['sales', 'webapp', 'business', 'javascript'],
-      coverImage:
-        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Untitled%2012.png',
+      coverImage: getOptimizedImagePath('Untitled 12.png'),
       images: [
-        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Untitled%2012.png',
+        getOptimizedImagePath('Untitled 12.png'),
       ],
       gradient: getRandomGradient(),
       features: [
@@ -416,13 +410,12 @@ export function getPortfolioProjects() {
       openSource: false,
       public: true,
       tags: ['ai', 'platform', 'web'],
-      coverImage:
-        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Untitled%2017.png',
+      coverImage: getOptimizedImagePath('Untitled 17.png'),
       images: [
-        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Untitled%2017.png',
-        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Untitled%2018.png',
-        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Untitled%2019.png',
-        'https://raw.githubusercontent.com/pranahonk/ImagesCDN/master/Untitled%2020.png',
+        getOptimizedImagePath('Untitled 17.png'),
+        getOptimizedImagePath('Untitled 18.png'),
+        getOptimizedImagePath('Untitled 19.png'),
+        getOptimizedImagePath('Untitled 20.png'),
       ],
       gradient: getRandomGradient(),
       features: [
