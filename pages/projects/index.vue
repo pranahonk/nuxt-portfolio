@@ -17,12 +17,12 @@
           class="group relative bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 overflow-hidden"
         >
           <!-- Project Image with Gradient Overlay -->
-          <div class="relative h-48 overflow-hidden bg-gray-100 dark:bg-gray-900">
+          <div class="relative h-48 overflow-hidden">
             <img
               v-if="project.coverImage"
               :src="project.coverImage"
               :alt="project.title"
-              class="w-full h-full object-contain"
+              class="w-full h-full object-cover"
               loading="lazy"
             />
             <div :class="`absolute inset-0 bg-gradient-to-br ${project.gradient} opacity-30`"></div>

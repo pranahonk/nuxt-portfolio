@@ -10,18 +10,7 @@
 
     <!-- Project Content -->
     <div v-else-if="project" class="py-16">
-      <!-- Back Button -->
-      <div class="mb-8">
-        <NuxtLink
-          to="/projects"
-          class="inline-flex items-center text-purple-600 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-300 transition-colors"
-        >
-          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-          </svg>
-          Back to Projects
-        </NuxtLink>
-      </div>
+      
 
       <!-- Project Hero Section -->
       <div class="mb-12">
@@ -30,7 +19,8 @@
             v-if="project?.coverImage"
             :src="project?.coverImage"
             :alt="project?.title"
-            class="w-full h-full object-cover blur-md"
+            class="w-full h-full object-cover"
+            loading="lazy"
           />
           <div :class="`absolute inset-0 bg-gradient-to-br ${project?.gradient} opacity-30`"></div>
           <div class="absolute inset-0 bg-black bg-opacity-40"></div>
