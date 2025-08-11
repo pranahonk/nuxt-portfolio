@@ -18,12 +18,17 @@
         >
           <!-- Project Image with Gradient Overlay -->
           <div class="relative h-48 overflow-hidden">
-            <img
+            <NuxtImg
               v-if="project.coverImage"
               :src="project.coverImage"
               :alt="project.title"
               class="w-full h-full object-cover"
-              loading="lazy"
+              width="380"
+              height="192"
+              format="webp"
+              quality="80"
+              :loading="index < 3 ? 'eager' : 'lazy'"
+              :fetchpriority="index === 0 ? 'high' : 'auto'"
             />
             <div :class="`absolute inset-0 bg-gradient-to-br ${project.gradient} opacity-30`"></div>
             <div class="absolute inset-0 bg-black bg-opacity-40"></div>
