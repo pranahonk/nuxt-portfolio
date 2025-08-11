@@ -101,7 +101,8 @@ interface Project {
 }
 
 // Fetch portfolio projects from static API
-const portfolioProjects: Project[] = await $fetch('/api/portfolio/projects') as Project[];
+const { getPortfolioProjects } = await import('~/server/data/portfolioData');
+const portfolioProjects: Project[] = getPortfolioProjects();
 </script>
 
 <style scoped>
