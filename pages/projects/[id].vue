@@ -280,10 +280,24 @@ interface Project {
   learnings: string[];
 }
 
+import { getPortfolioProjects } from '~/server/data/portfolioData';
+
 const route = useRoute();
 const projectId = route.params.id as string;
 
-const { data: project, error, pending } = await useFetch<Project>(`/api/portfolio/projects/${projectId}`);
+// Use static data instead of API call for better static generation
+const projects = getPortfolioProjects();
+const project = ref(projects.find(p => p.id === projectId));
+const error = ref(null);
+const pending = ref(false);
+
+// Handle case where project is not found
+if (!project.value) {
+  throw createError({
+    statusCode: 404,
+    statusMessage: 'Project Not Found'
+  });
+}
 
 // Image modal state
 const selectedImage = ref<string>('');
