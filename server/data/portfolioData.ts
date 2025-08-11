@@ -2,16 +2,16 @@ import { getOptimizedImagePath } from '~/utils/imageHelper'
 
 function getRandomGradient() {
   const gradients = [
-    'from-[#FEE140] via-[#FA709A] to-[#FEE140]', // warm sunrise
-    'from-[#A18CD1] via-[#FBC2EB] to-[#A18CD1]', // soft purple-pink
-    'from-[#43CEA2] via-[#185A9D] to-[#43CEA2]', // teal to blue
-    'from-[#FF512F] via-[#F09819] to-[#FF512F]', // orange sunset
-    'from-[#654EA3] via-[#EAAFC8] to-[#654EA3]', // purple-pink blend
-    'from-[#00B4DB] via-[#0083B0] to-[#00B4DB]', // ocean blue
-    'from-[#DCE35B] via-[#45B649] to-[#DCE35B]', // green fresh
-    'from-[#F7971E] via-[#FFD200] to-[#F7971E]', // golden yellow
-    'from-[#7F00FF] via-[#E100FF] to-[#7F00FF]', // vibrant violet
-    'from-[#12c2e9] via-[#c471ed] to-[#f64f59]', // bright rainbow
+    'from-[#FEE140] via-[#FA709A] to-[#FEE140]', 
+    'from-[#A18CD1] via-[#FBC2EB] to-[#A18CD1]', 
+    'from-[#43CEA2] via-[#185A9D] to-[#43CEA2]', 
+    'from-[#FF512F] via-[#F09819] to-[#FF512F]', 
+    'from-[#654EA3] via-[#EAAFC8] to-[#654EA3]', 
+    'from-[#00B4DB] via-[#0083B0] to-[#00B4DB]', 
+    'from-[#DCE35B] via-[#45B649] to-[#DCE35B]', 
+    'from-[#F7971E] via-[#FFD200] to-[#F7971E]', 
+    'from-[#7F00FF] via-[#E100FF] to-[#7F00FF]',
+    'from-[#12c2e9] via-[#c471ed] to-[#f64f59]', 
   ]
   return gradients[Math.floor(Math.random() * gradients.length)]
 }

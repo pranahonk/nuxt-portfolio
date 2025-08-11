@@ -51,7 +51,8 @@ export default defineNuxtConfig({
     "@nuxt/devtools",
     "@nuxt/image",
     ["vue3-notion/nuxt", { css: true }],
-    '@nuxtjs/color-mode'],
+    '@nuxtjs/color-mode'
+  ],
   colorMode: {
     classSuffix: '',
     preference: 'system',
@@ -59,8 +60,14 @@ export default defineNuxtConfig({
   },
   postcss: {
     plugins: {
-      tailwindcss: {},
-      autoprefixer: {},
+      'postcss-import': {},
+      'tailwindcss/nesting': {},
+      'tailwindcss': {},
+      'autoprefixer': {},
+      'postcss-nested': {},
+      'postcss-preset-env': {
+        features: { 'nesting-rules': false },
+      },
     },
   },
   runtimeConfig: {
