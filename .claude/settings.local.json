@@ -13,7 +13,10 @@
       "Bash(git commit:*)",
       "Bash(curl:*)",
       "Bash(mv:*)",
-      "Bash(netlify deploy:*)"
+      "Bash(netlify deploy:*)",
+      "Bash(yarn install)",
+      "Bash(rm:*)",
+      "Bash(yarn install:*)"
     ],
     "deny": []
   }
