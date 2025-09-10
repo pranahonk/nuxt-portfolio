@@ -1,5 +1,6 @@
 export default defineNuxtConfig({
   ssr: false,
+
   nitro: {
     prerender: {
       routes: ['/'],
@@ -11,10 +12,12 @@ export default defineNuxtConfig({
       '/_nuxt/**': { headers: { 'cache-control': 's-maxage=31536000' } }
     }
   },
+
   sourcemap: {
     server: true,
     client: true
   },
+
   image: {
     domains: ['www.notion.so', 's3.us-west-2.amazonaws.com', 'miro.medium.com', 'user-images.githubusercontent.com', 'binus.ac.id', 'raw.githubusercontent.com'],
     provider: 'ipx',
@@ -25,6 +28,7 @@ export default defineNuxtConfig({
       }
     }
   },
+
   app: {
     head: {
       htmlAttrs: {
@@ -45,19 +49,23 @@ export default defineNuxtConfig({
       ],
     },
   },
+
   devtools: { enabled: true },
   css: ['~/assets/css/main.css'],
+
   modules: [
     "@nuxt/devtools",
     "@nuxt/image",
     ["vue3-notion/nuxt", { css: true }],
     '@nuxtjs/color-mode'
   ],
+
   colorMode: {
     classSuffix: '',
     preference: 'system',
     fallback: 'light'
   },
+
   postcss: {
     plugins: {
       'postcss-import': {},
@@ -70,6 +78,7 @@ export default defineNuxtConfig({
       },
     },
   },
+
   vite: {
     css: {
       preprocessorOptions: {
@@ -79,6 +88,7 @@ export default defineNuxtConfig({
       }
     }
   },
+
   runtimeConfig: {
     public: {
       baseURL: process.env.BASE_URL,
@@ -94,5 +104,7 @@ export default defineNuxtConfig({
       devLinkedinLink: process.env.DEV_LINKEDIN_LINK,
       devLogo: process.env.DEV_LOGO,
     },
-  }
+  },
+
+  compatibilityDate: '2025-09-08'
 });
