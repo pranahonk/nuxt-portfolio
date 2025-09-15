@@ -8,7 +8,14 @@ export default defineNuxtConfig({
     routeRules: {
       '/': { headers: { 'cache-control': 's-maxage=31536000' } },
       '/**': { headers: { 'cache-control': 's-maxage=31536000' } },
-      '/_nuxt/**': { headers: { 'cache-control': 's-maxage=31536000' } }
+      '/_nuxt/**': { headers: { 'cache-control': 's-maxage=31536000' } },
+      '/cms/**': {
+        headers: {
+          'cache-control': 'no-cache, no-store, must-revalidate',
+          'X-Robots-Tag': 'noindex, nofollow, noarchive, nosnippet'
+        },
+        robots: false
+      }
     }
   },
   sourcemap: {
@@ -51,7 +58,8 @@ export default defineNuxtConfig({
     "@nuxt/devtools",
     "@nuxt/image",
     ["vue3-notion/nuxt", { css: true }],
-    '@nuxtjs/color-mode'
+    '@nuxtjs/color-mode',
+    '@vueuse/nuxt'
   ],
   colorMode: {
     classSuffix: '',
@@ -80,6 +88,8 @@ export default defineNuxtConfig({
     }
   },
   runtimeConfig: {
+    jwtSecret: process.env.JWT_SECRET || 'your-jwt-secret-here',
+    cmsPassword: process.env.CMS_PASSWORD || 'admin123',
     public: {
       baseURL: process.env.BASE_URL,
       githubUsername: process.env.GITHUB_USERNAME,

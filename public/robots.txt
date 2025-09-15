@@ -1,4 +1,8 @@
 User-agent: *
 Allow: /
 
+# Block CMS access from search engines
+Disallow: /cms/
+Disallow: /api/cms/
+
 Sitemap: https://prana-wijaya.netlify.app/sitemap.xml
