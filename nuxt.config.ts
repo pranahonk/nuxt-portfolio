@@ -1,5 +1,6 @@
 export default defineNuxtConfig({
   ssr: false,
+
   nitro: {
     prerender: {
       routes: ['/'],
@@ -18,10 +19,12 @@ export default defineNuxtConfig({
       }
     }
   },
+
   sourcemap: {
     server: true,
     client: true
   },
+
   image: {
     domains: ['www.notion.so', 's3.us-west-2.amazonaws.com', 'miro.medium.com', 'user-images.githubusercontent.com', 'binus.ac.id', 'raw.githubusercontent.com'],
     provider: 'ipx',
@@ -32,6 +35,7 @@ export default defineNuxtConfig({
       }
     }
   },
+
   app: {
     head: {
       htmlAttrs: {
@@ -52,8 +56,10 @@ export default defineNuxtConfig({
       ],
     },
   },
+
   devtools: { enabled: true },
   css: ['~/assets/css/main.css'],
+
   modules: [
     "@nuxt/devtools",
     "@nuxt/image",
@@ -61,11 +67,13 @@ export default defineNuxtConfig({
     '@nuxtjs/color-mode',
     '@vueuse/nuxt'
   ],
+
   colorMode: {
     classSuffix: '',
     preference: 'system',
     fallback: 'light'
   },
+
   postcss: {
     plugins: {
       'postcss-import': {},
@@ -78,6 +86,7 @@ export default defineNuxtConfig({
       },
     },
   },
+
   vite: {
     css: {
       preprocessorOptions: {
@@ -87,6 +96,7 @@ export default defineNuxtConfig({
       }
     }
   },
+
   runtimeConfig: {
     jwtSecret: process.env.JWT_SECRET || 'your-jwt-secret-here',
     cmsPassword: process.env.CMS_PASSWORD || 'admin123',
@@ -104,5 +114,7 @@ export default defineNuxtConfig({
       devLinkedinLink: process.env.DEV_LINKEDIN_LINK,
       devLogo: process.env.DEV_LOGO,
     },
-  }
+  },
+
+  compatibilityDate: '2025-09-08'
 });
