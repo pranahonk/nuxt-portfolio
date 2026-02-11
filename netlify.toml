@@ -1,8 +1,8 @@
 [build]
-  publish = ".output/public"
+  publish = "dist"
 
 [build.environment]
-  NODE_VERSION = "18"
+  NODE_VERSION = "22"
 
 [[headers]]
   for = "/assets/*"
