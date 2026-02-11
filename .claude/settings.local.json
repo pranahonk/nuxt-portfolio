@@ -19,7 +19,9 @@
       "Bash(yarn install:*)",
       "Bash(yarn add:*)",
       "Bash(git restore:*)",
-      "Bash(yarn remove:*)"
+      "Bash(yarn remove:*)",
+      "Bash(netlify env:list:*)",
+      "Bash(netlify env:set:*)"
     ],
     "deny": []
   }
