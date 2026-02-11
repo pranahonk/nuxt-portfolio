@@ -1,6 +1,35 @@
 <script setup lang="ts">
+import { onMounted, watch } from 'vue'
+
 const route = useRoute()
 const { data: post, pending, error } = await useFetch(`/api/posts/${route.params.slug}`)
+
+// Handle broken images in post content
+const setupContentImageHandlers = () => {
+  const contentEl = document.querySelector('.prose')
+  if (contentEl) {
+    const images = contentEl.querySelectorAll('img')
+    images.forEach((img) => {
+      img.onerror = () => {
+        img.src = '/logo.png'
+        img.classList.add('image-fallback')
+      }
+      // Add background color while loading
+      img.classList.add('bg-gray-200', 'dark:bg-gray-700')
+    })
+  }
+}
+
+onMounted(() => {
+  setupContentImageHandlers()
+})
+
+watch(post, () => {
+  // Re-setup handlers when post data changes
+  nextTick(() => {
+    setupContentImageHandlers()
+  })
+})
 
 useHead({
   title: () => post.value?.title ? `${post.value.title} - Blog` : 'Blog Post'
@@ -12,6 +41,11 @@ const formatDate = (date: string) => {
     month: 'long',
     day: 'numeric'
   })
+}
+
+const handleImageError = (event: Event) => {
+  const img = event.target as HTMLImageElement
+  img.src = '/logo.png'
 }
 </script>
 
@@ -53,11 +87,12 @@ const formatDate = (date: string) => {
         </NuxtLink>
 
         <!-- Featured Image -->
-        <div v-if="post.thumbnail?.[0]?.url" class="mb-6 rounded-xl overflow-hidden">
+        <div v-if="post.thumbnail?.[0]?.url" class="mb-6 rounded-xl overflow-hidden bg-gray-200 dark:bg-gray-700">
           <img
             :src="post.thumbnail[0].url"
             :alt="post.title"
             class="w-full h-64 md:h-80 object-cover"
+            @error="handleImageError"
           />
         </div>
 
@@ -114,6 +149,16 @@ const formatDate = (date: string) => {
 /* Prose styling overrides */
 .prose img {
   border-radius: 0.5rem;
+  background-color: rgb(229 231 235); /* bg-gray-200 */
+}
+
+.dark .prose img {
+  background-color: rgb(55 65 81); /* bg-gray-700 */
+}
+
+.prose img.image-fallback {
+  object-fit: contain;
+  padding: 2rem;
 }
 
 .prose pre {

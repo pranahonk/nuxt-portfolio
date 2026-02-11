@@ -18,8 +18,9 @@
             <img
               :alt="post.title"
               :src="getImage(post.thumbnail)"
-              class="rounded-xl h-44 w-96 object-cover object-center"
+              class="rounded-xl h-44 w-96 object-cover object-center bg-gray-200 dark:bg-gray-700"
               loading="lazy"
+              @error="handleImageError"
             />
           </nuxt-link>
         </div>
@@ -85,6 +86,9 @@ export default {
       else{
         return "/logo.png"
       }
+    },
+    handleImageError(event) {
+      event.target.src = '/logo.png'
     }
   },
 }
