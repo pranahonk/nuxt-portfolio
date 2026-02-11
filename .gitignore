@@ -29,3 +29,6 @@ Thumbs.db
 
 # Claude Code local settings
 .claude/
+
+# NPM lock file (using Yarn)
+package-lock.json
