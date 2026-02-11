@@ -1,41 +1,22 @@
-import { promises as fs } from 'fs'
-import { join } from 'path'
-
-const ARTICLES_DIR = join(process.cwd(), 'server/data/articles')
+import { articles } from '~/server/data/articlesData'
 
 export default defineEventHandler(async () => {
   try {
-    await fs.access(ARTICLES_DIR)
-  } catch {
-    return []
-  }
+    const posts = articles
+      .filter(article => article.published)
+      .map(article => ({
+        slug: article.slug,
+        title: article.title,
+        description: article.excerpt,
+        created_at: article.createdAt,
+        tags: article.tags || [],
+        thumbnail: article.featuredImage ? [{ url: article.featuredImage }] : null
+      }))
+      .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
 
-  try {
-    const files = await fs.readdir(ARTICLES_DIR)
-    const posts = []
-
-    for (const file of files) {
-      if (file.endsWith('.json')) {
-        const content = await fs.readFile(join(ARTICLES_DIR, file), 'utf-8')
-        const article = JSON.parse(content)
-
-        // Only return published articles
-        if (article.published) {
-          posts.push({
-            slug: article.slug,
-            title: article.title,
-            description: article.excerpt,
-            created_at: article.createdAt,
-            tags: article.tags || [],
-            thumbnail: article.featuredImage ? [{ url: article.featuredImage }] : null
-          })
-        }
-      }
-    }
-
-    // Sort by created date, newest first
-    return posts.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+    return posts
   } catch (error) {
+    console.error('Error fetching posts:', error)
     return []
   }
 })

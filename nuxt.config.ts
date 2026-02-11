@@ -7,6 +7,10 @@ export default defineNuxtConfig({
       routes: ['/'],
       crawlLinks: true
     },
+    netlify: {
+      // Don't add SPA fallback - we handle it in netlify.toml
+      'netlify.toml': false
+    },
     routeRules: {
       '/': { headers: { 'cache-control': 's-maxage=31536000' } },
       '/**': { headers: { 'cache-control': 's-maxage=31536000' } },

@@ -51,3 +51,9 @@
   for = "/*.jpg"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/api/*"
+  [headers.values]
+    Content-Type = "application/json"
+    Cache-Control = "public, max-age=60"
