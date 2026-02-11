@@ -1,7 +1,6 @@
 [build]
-  command = "yarn generate"
-  publish = ".output/public"
-  functions = ".netlify/functions-internal"
+  command = "yarn build"
+  publish = "dist"
 
 [build.environment]
   NODE_VERSION = "22"
