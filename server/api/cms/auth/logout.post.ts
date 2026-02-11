@@ -8,7 +8,7 @@ export default defineEventHandler(async (event) => {
 
   // Clear the authentication cookie
   setCookie(event, 'cms-token', '', {
-    httpOnly: true,
+    httpOnly: false,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'strict',
     maxAge: 0

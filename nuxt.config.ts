@@ -100,6 +100,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     jwtSecret: process.env.JWT_SECRET || 'your-jwt-secret-here',
     cmsPassword: process.env.CMS_PASSWORD || 'admin123',
+    notionToken: process.env.NOTION_TOKEN,
     public: {
       baseURL: process.env.BASE_URL,
       githubUsername: process.env.GITHUB_USERNAME,

@@ -208,55 +208,65 @@
     </div>
 
     <!-- Image Modal -->
-    <div
-      v-if="isModalOpen"
-      class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-90 p-4"
-      @click="closeImageModal"
-    >
-      <div class="relative max-w-4xl max-h-full" @click.stop>
-        <!-- Close Button -->
+    <Teleport to="body">
+      <div
+        v-if="isModalOpen"
+        class="fixed inset-0 z-[9999] flex items-center justify-center bg-black/95"
+        @click="closeImageModal"
+      >
+        <!-- Close Button - Fixed position, always visible -->
         <button
           @click="closeImageModal"
-          class="absolute -top-12 right-0 text-white hover:text-gray-300 transition-colors z-10"
+          class="fixed top-4 right-4 z-[10000] text-white hover:text-gray-300 transition-colors bg-black/50 hover:bg-black/70 rounded-full p-3"
+          aria-label="Close image"
         >
           <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
 
-        <!-- Navigation Buttons -->
+        <!-- Image Counter - Fixed position top -->
+        <div class="fixed top-6 left-1/2 transform -translate-x-1/2 z-[10000] text-white text-sm bg-black/50 px-4 py-2 rounded-full">
+          {{ selectedImageIndex + 1 }} / {{ project?.images?.length || 0 }}
+        </div>
+
+        <!-- Navigation Button - Previous -->
         <button
           v-if="project?.images && selectedImageIndex > 0"
-          @click="prevImage"
-          class="absolute left-4 top-1/2 transform -translate-y-1/2 text-white hover:text-gray-300 transition-colors z-10 bg-black bg-opacity-50 rounded-full p-2"
+          @click.stop="prevImage"
+          class="fixed left-4 top-1/2 transform -translate-y-1/2 z-[10000] text-white hover:text-gray-300 transition-colors bg-black/50 hover:bg-black/70 rounded-full p-3"
+          aria-label="Previous image"
         >
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
           </svg>
         </button>
 
+        <!-- Navigation Button - Next -->
         <button
           v-if="project?.images && selectedImageIndex < project.images.length - 1"
-          @click="nextImage"
-          class="absolute right-4 top-1/2 transform -translate-y-1/2 text-white hover:text-gray-300 transition-colors z-10 bg-black bg-opacity-50 rounded-full p-2"
+          @click.stop="nextImage"
+          class="fixed right-4 top-1/2 transform -translate-y-1/2 z-[10000] text-white hover:text-gray-300 transition-colors bg-black/50 hover:bg-black/70 rounded-full p-3"
+          aria-label="Next image"
         >
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
           </svg>
         </button>
 
-        <img
-          :src="selectedImage"
-          :alt="`${project?.title} screenshot ${selectedImageIndex + 1}`"
-          class="max-w-full max-h-full object-contain rounded-lg shadow-2xl"
-        />
-
-        <!-- Image Counter -->
-        <div class="absolute -bottom-12 left-1/2 transform -translate-x-1/2 text-white text-sm">
-          {{ selectedImageIndex + 1 }} / {{ project?.images?.length || 0 }}
+        <!-- Image Container -->
+        <div
+          class="w-full h-full flex items-center justify-center p-4 md:p-16"
+          @click.stop
+        >
+          <img
+            :src="selectedImage"
+            :alt="`${project?.title} screenshot ${selectedImageIndex + 1}`"
+            class="max-w-full max-h-full object-contain rounded-lg shadow-2xl"
+          />
         </div>
       </div>
-    </div>
+    </Teleport>
   </div>
 </template>
 

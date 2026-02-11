@@ -7,6 +7,13 @@
             <h1 class="text-xl font-semibold text-gray-900 dark:text-white">Content Management System</h1>
           </div>
           <div class="flex items-center space-x-4">
+            <button
+              @click="importFromNotion"
+              :disabled="importing"
+              class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors disabled:opacity-50"
+            >
+              {{ importing ? 'Importing...' : 'Import from Notion' }}
+            </button>
             <NuxtLink
               to="/cms/articles/new"
               class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
@@ -117,6 +124,32 @@ useHead({
 })
 
 const { data: articles, pending, error, refresh } = await useFetch('/api/cms/articles')
+
+const importing = ref(false)
+
+const importFromNotion = async () => {
+  if (!confirm('Import articles from Notion? Existing articles with the same slug will be skipped.')) {
+    return
+  }
+
+  importing.value = true
+
+  try {
+    const result = await $fetch('/api/cms/import-notion', { method: 'POST' })
+
+    let message = `Import completed!\n\nImported: ${result.imported}\nSkipped: ${result.skipped}`
+    if (result.errors > 0) {
+      message += `\nErrors: ${result.errors}`
+    }
+
+    alert(message)
+    refresh()
+  } catch (err: any) {
+    alert(`Import failed: ${err.data?.message || err.message || 'Unknown error'}`)
+  } finally {
+    importing.value = false
+  }
+}
 
 const handleLogout = async () => {
   try {
