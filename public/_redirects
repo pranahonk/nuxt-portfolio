@@ -1,7 +1,8 @@
-# Rewrite /api/posts to the static JSON file
-/api/posts  /api/posts.json  200
+# CMS API routes - must use serverless functions
+/api/cms/*  /.netlify/functions/server/api/cms/:splat  200
 
-# Rewrite /api/posts/[slug] to the static JSON files
+# Public posts API - serve static JSON files
+/api/posts  /api/posts.json  200
 /api/posts/:slug  /api/posts/:slug.json  200
 
 # SPA fallback for client-side routing - must be LAST

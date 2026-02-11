@@ -21,7 +21,19 @@
       "Bash(git restore:*)",
       "Bash(yarn remove:*)",
       "Bash(netlify env:list:*)",
-      "Bash(netlify env:set:*)"
+      "Bash(netlify env:set:*)",
+      "Bash(yarn build:*)",
+      "Bash(git push:*)",
+      "Bash(git remote set-url:*)",
+      "Bash(netlify functions:list:*)",
+      "Bash(netlify api listSiteDeploys:*)",
+      "Bash(grep:*)",
+      "Bash(cat:*)",
+      "Bash(netlify dev:*)",
+      "Bash(pkill:*)",
+      "Bash(lsof:*)",
+      "Bash(node -e:*)",
+      "Bash(node scripts/generate-posts-json.js:*)"
     ],
     "deny": []
   }
