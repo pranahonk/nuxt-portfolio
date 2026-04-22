@@ -44,6 +44,7 @@ export default defineEventHandler(async (event) => {
   }
 
   if (getMethod(event) === 'POST') {
+    assertCmsAuth(event)
     // Create new article
     const article = await readBody(event)
     const id = Date.now().toString()

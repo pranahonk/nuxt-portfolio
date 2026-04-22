@@ -140,6 +140,7 @@ async function getPageContent(token: string, pageId: string): Promise<string> {
 }
 
 export default defineEventHandler(async (event) => {
+  assertCmsAuth(event)
   const config = useRuntimeConfig()
   const notionToken = config.notionToken
   const notionTableId = config.public.notionTableId

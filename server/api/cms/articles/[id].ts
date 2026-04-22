@@ -20,6 +20,10 @@ export default defineEventHandler(async (event) => {
     }
   }
 
+  if (getMethod(event) === 'PUT' || getMethod(event) === 'DELETE') {
+    assertCmsAuth(event)
+  }
+
   if (getMethod(event) === 'PUT') {
     // Update article
     try {
