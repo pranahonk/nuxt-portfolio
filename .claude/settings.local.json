@@ -33,7 +33,17 @@
       "Bash(pkill:*)",
       "Bash(lsof:*)",
       "Bash(node -e:*)",
-      "Bash(node scripts/generate-posts-json.js:*)"
+      "Bash(node scripts/generate-posts-json.js:*)",
+      "Bash(gh repo *)",
+      "Bash(git remote *)",
+      "Bash(gh issue *)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:shrub-swamp-0d4.notion.site)",
+      "WebSearch",
+      "Bash(python3 -c ' *)",
+      "Bash(curl -s -X POST https://www.notion.so/api/v3/loadPageChunk -H 'Content-Type: application/json' -d '{ *)",
+      "Bash(python3)",
+      "Bash(npx nuxi *)"
     ],
     "deny": []
   }
