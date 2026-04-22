@@ -1,23 +1,12 @@
 <script setup lang="ts">
-interface Post {
-  slug: string
-  title: string
-  description: string
-  created_at: string
-  tags: string[]
-  thumbnail: { url: string }[] | null
-}
+const { data, pending, error } = useLazyFetch('/api/posts/')
 
-const { data: rawPosts, pending, error } = await useFetch<Post[]>('/api/posts/', {
-  key: 'posts-list',
-  getCachedData: () => undefined
-})
-
-const posts = computed(() =>
-  [...(rawPosts.value || [])].sort(
+const posts = computed(() => {
+  const list = (data.value as any[]) || []
+  return [...list].sort(
     (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
   )
-)
+})
 </script>
 
 <template>
@@ -31,7 +20,7 @@ const posts = computed(() =>
     </div>
 
     <div v-else-if="error" class="text-center py-8">
-      <div class="text-red-600 dark:text-red-400">Error loading posts</div>
+      <div class="text-red-600 dark:text-red-400">Error loading posts. Try refreshing.</div>
     </div>
 
     <div v-else-if="!posts.length" class="text-center py-16">
