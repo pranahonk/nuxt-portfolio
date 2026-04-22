@@ -6,19 +6,19 @@
     </div>
 
 
-    <div class="flex flex-wrap justify-center items-center text-4xl mt-5">
-      <IconJavascript class="m-2 md:m-4"/>
-      <IconVuejs class="m-2 md:m-4"/>
-      <IconNuxt class="m-2 md:m-4"/>
-      <IconReact class="m-2 md:m-4"/>
-      <IconAngular class="m-2 md:m-4"/>
-      <IconScss class="m-2 md:m-4" />
-      <IconBootstrap class="m-2 md:m-4" />
-      <IconTailwind class="m-2 md:m-4"/>
-      <IconPython class="m-2 md:m-4"/>
-      <IconPhp class="m-2 md:m-4" />
-      <IconNode class="m-2 md:m-4"/>
-      <IconJava class="m-2 md:m-4"/>
+    <div class="flex flex-wrap justify-center items-center text-3xl sm:text-4xl mt-5 max-w-2xl mx-auto px-4">
+      <IconJavascript class="m-2 sm:m-3 md:m-4"/>
+      <IconVuejs class="m-2 sm:m-3 md:m-4"/>
+      <IconNuxt class="m-2 sm:m-3 md:m-4"/>
+      <IconReact class="m-2 sm:m-3 md:m-4"/>
+      <IconAngular class="m-2 sm:m-3 md:m-4"/>
+      <IconScss class="m-2 sm:m-3 md:m-4" />
+      <IconBootstrap class="m-2 sm:m-3 md:m-4" />
+      <IconTailwind class="m-2 sm:m-3 md:m-4"/>
+      <IconPython class="m-2 sm:m-3 md:m-4"/>
+      <IconPhp class="m-2 sm:m-3 md:m-4" />
+      <IconNode class="m-2 sm:m-3 md:m-4"/>
+      <IconJava class="m-2 sm:m-3 md:m-4"/>
     </div>
   </div>
 </template>
