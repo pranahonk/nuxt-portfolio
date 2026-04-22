@@ -1,0 +1,15 @@
+{
+  "id": "1776855989439sdxlthwgn",
+  "title": "Beyond Marker Clustering",
+  "slug": "beyond-marker-clustering",
+  "content": "<p>🔗 Source: https://dev.to/markosmilja/beyond-marker-clustering-1jmj</p>\n<p>Learn about a better way to manage thousands of map markers by using priority-based ranking instead of traditional clustering.</p>\n",
+  "excerpt": "Learn about a better way to manage thousands of map markers by using priority-based ranking instead of traditional clustering.",
+  "published": true,
+  "createdAt": "2026-04-22T10:25:00.000Z",
+  "updatedAt": "2026-04-22T11:06:29.439Z",
+  "tags": [
+    "javascript",
+    "dev-to"
+  ],
+  "featuredImage": ""
+}

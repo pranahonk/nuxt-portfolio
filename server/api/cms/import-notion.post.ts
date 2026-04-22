@@ -48,23 +48,38 @@ function extractProperty(property: any): any {
 }
 
 async function queryNotionDatabase(token: string, databaseId: string): Promise<any[]> {
-  const response = await fetch(`${NOTION_API_BASE}/databases/${databaseId}/query`, {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${token}`,
-      'Notion-Version': '2022-06-28',
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({})
-  })
+  const allResults: any[] = []
+  let cursor: string | undefined
 
-  if (!response.ok) {
-    const error = await response.text()
-    throw new Error(`Notion API error: ${response.status} - ${error}`)
-  }
+  do {
+    const body: Record<string, any> = {
+      page_size: 100,
+      filter: { property: 'public', checkbox: { equals: true } },
+      sorts: [{ timestamp: 'created_time', direction: 'descending' }]
+    }
+    if (cursor) body.start_cursor = cursor
 
-  const data = await response.json()
-  return data.results || []
+    const response = await fetch(`${NOTION_API_BASE}/databases/${databaseId}/query`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Notion-Version': '2022-06-28',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(body)
+    })
+
+    if (!response.ok) {
+      const error = await response.text()
+      throw new Error(`Notion API error: ${response.status} - ${error}`)
+    }
+
+    const data = await response.json()
+    allResults.push(...(data.results || []))
+    cursor = data.has_more ? data.next_cursor : undefined
+  } while (cursor)
+
+  return allResults
 }
 
 async function getPageBlocks(token: string, pageId: string): Promise<any[]> {
