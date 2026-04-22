@@ -1,6 +1,6 @@
 <script setup lang="ts">
-const config = useRuntimeConfig()
-const logoSrc = computed(() => config.public.devLogo || '/logo.png')
+import avatarSrc from '~/assets/image/avatar-transparent.png'
+
 const mobileMenuOpen = ref(false)
 
 const toggleMobileMenu = () => {
@@ -20,12 +20,11 @@ const closeMobileMenu = () => {
           <div class="logo flex-shrink-0">
             <nuxt-link to="/" class="block">
               <img
-                class="h-12 w-auto sm:h-16"
-                :src="logoSrc"
+                class="h-10 w-10 sm:h-12 sm:w-12 rounded-full object-cover"
+                :src="avatarSrc"
                 alt="Logo"
-                width="96"
-                height="96"
-                loading="lazy"
+                width="48"
+                height="48"
               />
             </nuxt-link>
           </div>
