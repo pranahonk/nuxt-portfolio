@@ -5,5 +5,8 @@
 /api/posts  /api/posts.json  200
 /api/posts/:slug  /api/posts/:slug.json  200
 
+# News sync API
+/api/news/*  /.netlify/functions/server/api/news/:splat  200
+
 # SPA fallback for client-side routing - must be LAST
 /*  /index.html  200

@@ -57,3 +57,8 @@
   [headers.values]
     Content-Type = "application/json"
     Cache-Control = "public, max-age=60"
+
+[[headers]]
+  for = "/api/news/*"
+  [headers.values]
+    Cache-Control = "no-store"

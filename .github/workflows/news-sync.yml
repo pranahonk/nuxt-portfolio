@@ -1,0 +1,33 @@
+name: Tech News Sync
+
+on:
+  schedule:
+    # Every 6 hours: 00:00, 06:00, 12:00, 18:00 UTC
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+    # Allows manual trigger from the GitHub Actions UI
+
+permissions: {}   # no GitHub token access needed — this job only calls an external URL
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Trigger news sync
+        run: |
+          STATUS=$(curl -s -o /tmp/resp.json -w "%{http_code}" \
+            -X POST \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            -H "Content-Type: application/json" \
+            https://prana-wijaya.netlify.app/api/news/sync)
+
+          echo "HTTP Status: $STATUS"
+          echo "Response:"
+          cat /tmp/resp.json
+
+          if [ "$STATUS" != "200" ]; then
+            echo "Sync failed with HTTP $STATUS"
+            exit 1
+          fi
