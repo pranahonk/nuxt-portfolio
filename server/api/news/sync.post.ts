@@ -113,16 +113,17 @@ async function createNotionPage(notion: Client, dbId: string, article: Article):
       title: {
         title: [{ text: { content: article.title } }],
       },
-      // ⚠ Property names below must match your Notion DB column names exactly (case-sensitive).
-      // If pages.create() returns 400, Notion's error body names the invalid property.
-      Tags: {
+      tags: {
         multi_select: article.tags.map(t => ({ name: t })),
       },
-      Description: {
+      description: {
         rich_text: [{ text: { content: article.description.slice(0, 2000) } }],
       },
-      Published: {
+      public: {
         checkbox: false,
+      },
+      created_at: {
+        date: { start: new Date().toISOString() },
       },
     },
     children: [
