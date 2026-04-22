@@ -27,7 +27,6 @@ const config = useRuntimeConfig();
 
       <!-- Role with typewriter -->
       <h2 class="flex flex-wrap items-center justify-center gap-2 font-bold text-primary dark:text-primary text-xl sm:text-2xl md:text-3xl lg:text-4xl mb-4">
-        <span>a happy</span>
         <span class="typewriter">{{ config.public.devRole.trim() }}</span>
       </h2>
 

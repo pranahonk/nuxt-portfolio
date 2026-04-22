@@ -1,17 +1,30 @@
 <script setup lang="ts">
 const config = useRuntimeConfig()
-
 const toolkit = [
-  { category: 'Web Development', items: ['React', 'Vue', 'Svelte'] },
-  { category: 'Mobile Development', items: ['React Native', 'SwiftUI'] },
-  { category: 'Backend Development', items: ['Node.js'] },
-]
-
-const stack = [
-  { label: 'Environment', items: 'Git, GitHub, pip, Agile (Scrum), JIRA, CI, CircleCI and Test Driven Development' },
-  { label: 'Code', items: 'Python, Django Framework, Flask, Celery' },
-  { label: 'Data', items: 'PostgreSQL, Redis, MySQL, SQL Server and SQLite' },
-  { label: 'Deployment', items: 'Docker, Amazon Web Services (AWS), Heroku, Nginx, Celery and RabbitMQ' },
+  {
+    category: 'Frontend',
+    items: ['JavaScript/ES6+', 'TypeScript', 'React.js', 'Next.js', 'Vue.js', 'Angular', 'Nuxt.js', 'Tailwind CSS', 'SCSS/Sass', 'Bootstrap', 'Redux/Zustand/Pinia/Vuex', 'Webpack/Gulp', 'GSAP', 'PWA/Service Workers', 'SSR/CSR/SSG/ISR'],
+  },
+  {
+    category: 'Backend',
+    items: ['Node.js', 'Express.js', 'NestJS', 'PHP/Laravel', 'Python', 'Django', 'Flask', 'C#/.NET/Blazor', 'Java/Spring/AEM'],
+  },
+  {
+    category: 'Database',
+    items: ['MySQL', 'PostgreSQL', 'MongoDB', 'Redis', 'Elasticsearch', 'Firestore', 'Prisma ORM'],
+  },
+  {
+    category: 'Mobile',
+    items: ['React Native', 'Flutter/Dart', 'Swift/SwiftUI'],
+  },
+  {
+    category: 'DevOps',
+    items: ['Git', 'Docker', 'CI/CD', 'Nginx', 'AWS SES/S3', 'Linux/Bash', 'Ansible', 'RabbitMQ'],
+  },
+  {
+    category: 'AI & Automation',
+    items: ['Claude Code', 'Cursor', 'GitHub Copilot', 'OpenAI API', 'Playwright Automation'],
+  },
 ]
 </script>
 
@@ -53,7 +66,7 @@ const stack = [
         <IconDoubleDown class="h-4 w-4" />
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-10">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-10">
         <div
           v-for="tool in toolkit"
           :key="tool.category"
@@ -71,29 +84,6 @@ const stack = [
               {{ item }}
             </span>
           </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- What will I do? -->
-    <div class="mt-16">
-      <div class="flex justify-center items-center text-base font-semibold text-gray-600 dark:text-gray-300">
-        <h2 class="text-center">What will I do?</h2>
-        <IconDoubleDown class="h-4 w-4" />
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-10">
-        <div
-          v-for="item in stack"
-          :key="item.label"
-          class="bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 p-6"
-        >
-          <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-3">
-            🚀 {{ item.label }}
-          </h3>
-          <p class="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">
-            {{ item.items }}
-          </p>
         </div>
       </div>
     </div>
