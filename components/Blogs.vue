@@ -16,12 +16,22 @@
         <div class="img max-w-lg md:max-w-sm mx-auto m-2">
           <nuxt-link :to="`/posts/${post.slug}`">
             <img
+              v-if="getImage(post.thumbnail)"
               :alt="post.title"
               :src="getImage(post.thumbnail)"
-              class="rounded-xl h-44 w-96 object-cover object-center bg-gray-200 dark:bg-gray-700"
+              class="rounded-xl h-44 w-96 object-cover object-center"
               loading="lazy"
-              @error="handleImageError"
+              @error="handleImageError($event, post)"
             />
+            <div
+              v-else
+              :class="gradientClass(post.title)"
+              class="rounded-xl h-44 w-96 flex items-center justify-center"
+            >
+              <span class="text-white text-4xl font-bold select-none drop-shadow">
+                {{ post.title?.[0]?.toUpperCase() ?? '?' }}
+              </span>
+            </div>
           </nuxt-link>
         </div>
         <div class="flex flex-col justify-between max-w-lg mx-auto">
@@ -78,17 +88,26 @@ export default {
       const options = { year: 'numeric', month: 'long', day: 'numeric' }
       return new Date(date).toLocaleDateString('en', options)
     },
-    getImage(thumbnail){
-      if(thumbnail && thumbnail[0]?.url){
-        return thumbnail[0].url
-      }
-      else{
-        return "/logo.png"
-      }
+    getImage(thumbnail) {
+      return thumbnail?.[0]?.url || null
     },
-    handleImageError(event) {
-      event.target.src = '/logo.png'
-    }
+    handleImageError(event, post) {
+      post.thumbnail = null
+    },
+    gradientClass(title) {
+      const gradients = [
+        'bg-gradient-to-br from-blue-500 to-purple-600',
+        'bg-gradient-to-br from-green-400 to-teal-600',
+        'bg-gradient-to-br from-orange-400 to-red-500',
+        'bg-gradient-to-br from-pink-500 to-purple-500',
+        'bg-gradient-to-br from-yellow-400 to-orange-500',
+        'bg-gradient-to-br from-teal-400 to-cyan-600',
+        'bg-gradient-to-br from-indigo-500 to-blue-600',
+        'bg-gradient-to-br from-rose-400 to-pink-600',
+      ]
+      const idx = (title?.charCodeAt(0) ?? 0) % gradients.length
+      return gradients[idx]
+    },
   },
 }
 </script>
