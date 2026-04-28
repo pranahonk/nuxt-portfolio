@@ -34,7 +34,7 @@
             </div>
           </nuxt-link>
         </div>
-        <div class="flex flex-col justify-between max-w-lg mx-auto">
+        <div class="flex flex-col justify-between max-w-lg mx-auto md:flex-1 md:mx-0">
           <div class="txt md:px-5 lg:px-0">
             <nuxt-link :to="`/posts/${post.slug}`">
               <h2
