@@ -52,8 +52,8 @@ watch(pending, (isPending) => {
       <h1 class="text-3xl font-bold text-center text-gray-800 dark:text-gray-100 mb-8">All Blog Posts</h1>
     </div>
 
-    <div v-if="pending" class="text-center py-8">
-      <div class="text-gray-500 dark:text-gray-400">Loading posts...</div>
+    <div v-if="pending" class="wrapper-small md:px-10">
+      <SkeletonBlogCard v-for="n in 3" :key="n" />
     </div>
 
     <div v-else-if="error" class="text-center py-8">
