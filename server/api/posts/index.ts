@@ -1,31 +1,83 @@
-import { promises as fs } from 'fs'
-import { join } from 'path'
+import { generateSlug } from '../../utils/slug'
 
-const ARTICLES_DIR = join(process.cwd(), 'server/data/articles')
+const NOTION_API = 'https://api.notion.com/v1'
 
 export default defineEventHandler(async () => {
-  try {
-    const files = await fs.readdir(ARTICLES_DIR)
-    const posts = []
+  const config = useRuntimeConfig()
+  const notionToken = config.notionToken
+  const dbId = config.public.notionTableId
+  if (!notionToken || !dbId) return []
 
-    for (const file of files) {
-      if (!file.endsWith('.json')) continue
-      const content = await fs.readFile(join(ARTICLES_DIR, file), 'utf-8')
-      const article = JSON.parse(content)
-      if (!article.published) continue
+  const posts: Array<{
+    slug: string
+    title: string
+    description: string
+    created_at: string
+    tags: string[]
+    thumbnail: Array<{ url: string }> | null
+  }> = []
+
+  let cursor: string | undefined
+  do {
+    const body: Record<string, unknown> = {
+      page_size: 100,
+      filter: { property: 'public', checkbox: { equals: true } },
+      sorts: [{ timestamp: 'created_time', direction: 'descending' }],
+    }
+    if (cursor) body.start_cursor = cursor
+
+    const res = await fetch(`${NOTION_API}/databases/${dbId}/query`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${notionToken}`,
+        'Notion-Version': '2022-06-28',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+    })
+    if (!res.ok) break
+
+    const data: {
+      results: Array<{
+        id: string
+        created_time: string
+        cover?: { external?: { url: string }; file?: { url: string } }
+        properties: Record<string, {
+          type: string
+          title?: Array<{ plain_text: string }>
+          rich_text?: Array<{ plain_text: string }>
+          multi_select?: Array<{ name: string }>
+          date?: { start: string }
+        }>
+      }>
+      has_more: boolean
+      next_cursor: string | null
+    } = await res.json()
+
+    for (const page of data.results ?? []) {
+      const props = page.properties
+      const titleProp = props.title ?? props.Name ?? props.name
+      const title = titleProp?.title?.[0]?.plain_text ?? ''
+      if (!title) continue
+
+      const slug = generateSlug(title)
+      const description = props.description?.rich_text?.[0]?.plain_text ?? ''
+      const tags = props.tags?.multi_select?.map(t => t.name) ?? []
+      const createdAt = props.created_at?.date?.start ?? page.created_time
+      const coverUrl = page.cover?.external?.url || page.cover?.file?.url || null
+
       posts.push({
-        slug: article.slug,
-        title: article.title,
-        description: article.excerpt,
-        created_at: article.createdAt,
-        tags: article.tags || [],
-        thumbnail: article.featuredImage ? [{ url: article.featuredImage }] : null
+        slug,
+        title,
+        description,
+        created_at: new Date(createdAt).toISOString(),
+        tags,
+        thumbnail: coverUrl ? [{ url: coverUrl }] : null,
       })
     }
 
-    return posts.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
-  } catch (error) {
-    console.error('Error fetching posts:', error)
-    return []
-  }
+    cursor = data.has_more ? (data.next_cursor ?? undefined) : undefined
+  } while (cursor)
+
+  return posts
 })

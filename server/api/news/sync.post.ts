@@ -1,4 +1,7 @@
 import { Client } from '@notionhq/client'
+import { generateSlug } from '../../utils/slug'
+import { fetchContentFromUrl } from '../../utils/content-fetcher'
+import { setCachedPost } from '../../utils/post-store'
 
 const HN_API = 'https://hacker-news.firebaseio.com/v0'
 const DEVTO_API = 'https://dev.to/api'
@@ -9,6 +12,7 @@ interface Article {
   url: string
   description: string
   tags: string[]
+  thumbnail?: string
 }
 
 function assertAuth(event: Parameters<typeof getHeader>[0], secret: string) {
@@ -54,13 +58,17 @@ async function fetchDevTo(): Promise<Article[]> {
       { headers: { 'User-Agent': 'prana-portfolio/newssync' } }
     )
     if (!res.ok) continue
-    const articles: Array<{ title: string; url: string; description?: string }> = await res.json()
+    const articles: Array<{
+      title: string; url: string; description?: string
+      cover_image?: string; social_image?: string
+    }> = await res.json()
     for (const a of articles) {
       results.push({
         title: a.title,
         url: a.url,
         description: a.description ?? '',
         tags: [tag, 'dev-to'],
+        thumbnail: a.cover_image || a.social_image || '',
       })
     }
   }
@@ -109,6 +117,7 @@ async function getExistingTitles(token: string, dbId: string): Promise<Set<strin
 async function createNotionPage(notion: Client, dbId: string, article: Article): Promise<void> {
   await notion.pages.create({
     parent: { database_id: dbId },
+    ...(article.thumbnail ? { cover: { external: { url: article.thumbnail } } } : {}),
     properties: {
       title: {
         title: [{ text: { content: article.title } }],
@@ -194,6 +203,21 @@ export default defineEventHandler(async (event) => {
       await createNotionPage(notion, dbId, article)
       existingTitles.add(key)
       added++
+      if (article.url.includes('dev.to/')) {
+        const enriched = await fetchContentFromUrl(article.url)
+        if (enriched) {
+          const slug = generateSlug(article.title)
+          await setCachedPost(slug, {
+            slug,
+            title: article.title,
+            content: `<p><a href="${article.url}" target="_blank" rel="noopener noreferrer">🔗 Read original article</a></p>\n` + enriched.content,
+            thumbnail: enriched.thumbnail || article.thumbnail || '',
+            excerpt: enriched.excerpt || article.description,
+            created_at: new Date().toISOString(),
+            tags: article.tags,
+          })
+        }
+      }
       await new Promise(r => setTimeout(r, 350))
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : String(err)

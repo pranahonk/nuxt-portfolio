@@ -1,10 +1,6 @@
 # CMS API routes - must use serverless functions
 /api/cms/*  /.netlify/functions/server/api/cms/:splat  200
 
-# Public posts API - serve static JSON files
-/api/posts  /api/posts.json  200
-/api/posts/:slug  /api/posts/:slug.json  200
-
 # News sync API
 /api/news/*  /.netlify/functions/server/api/news/:splat  200
 
