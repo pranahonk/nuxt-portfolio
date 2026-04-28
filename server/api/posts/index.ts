@@ -1,5 +1,5 @@
 import { generateSlug } from '../../utils/slug'
-import { articles as localArticles } from '../data/articlesData'
+import { articles as localArticles } from '../../data/articlesData'
 
 const NOTION_API = 'https://api.notion.com/v1'
 
