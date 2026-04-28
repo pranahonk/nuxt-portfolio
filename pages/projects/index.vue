@@ -14,7 +14,7 @@
         <NuxtLink
           v-for="(project, index) in portfolioProjects"
           :key="project.id || index"
-          :to="`/projects/${project.id}`"
+          :to="`/projects/${project.slug}`"
           class="group relative bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 overflow-hidden cursor-pointer block"
         >
           <!-- Project Image with Gradient Overlay -->
@@ -96,6 +96,7 @@
 <script setup lang="ts">
 interface Project {
   id: string;
+  slug: string;
   title: string;
   description: string;
   techStack: string[];
@@ -108,9 +109,13 @@ interface Project {
 
 // Set page meta
 useHead({
-  title: 'Projects - My Portfolio',
+  title: 'Projects - Prana Wijaya Portfolio',
   meta: [
-    { name: 'description', content: 'Explore my portfolio of projects, from web applications to mobile apps and everything in between.' }
+    { name: 'description', content: 'Explore my portfolio of projects, from web applications to mobile apps and everything in between.' },
+    { property: 'og:title', content: 'Projects - Prana Wijaya Portfolio' },
+    { property: 'og:description', content: 'Explore my portfolio of projects, from web applications to mobile apps and everything in between.' },
+    { property: 'og:type', content: 'website' },
+    { property: 'og:url', content: 'https://www.pwijaya.com/projects' },
   ]
 });
 

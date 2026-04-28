@@ -275,10 +275,10 @@
 import { getPortfolioProjects } from '~/server/data/portfolioData';
 
 const route = useRoute();
-const projectId = route.params.id as string;
+const projectSlug = route.params.slug as string;
 
 const projects = getPortfolioProjects();
-const project = ref(projects.find(p => p.id === projectId));
+const project = ref(projects.find(p => (p as any).slug === projectSlug));
 const pending = ref(false);
 
 if (!project.value) {
@@ -346,11 +346,18 @@ onUnmounted(() => {
   document.body.style.overflow = 'auto';
 });
 
+const canonicalUrl = `https://www.pwijaya.com/projects/${projectSlug}`
 useHead({
-  title: `${project.value?.title} - Project Details`,
+  title: `${project.value?.title} - Prana Wijaya Portfolio`,
   meta: [
-    { name: 'description', content: project.value?.description || 'Project details' }
-  ]
+    { name: 'description', content: project.value?.description || 'Project details' },
+    { property: 'og:title', content: `${project.value?.title} - Prana Wijaya Portfolio` },
+    { property: 'og:description', content: project.value?.description || 'Project details' },
+    { property: 'og:image', content: project.value?.coverImage || 'https://www.pwijaya.com/logo.png' },
+    { property: 'og:url', content: canonicalUrl },
+    { property: 'og:type', content: 'website' },
+  ],
+  link: [{ rel: 'canonical', href: canonicalUrl }],
 });
 </script>
 

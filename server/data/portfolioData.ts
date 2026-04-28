@@ -20,6 +20,7 @@ export function getPortfolioProjects() {
   return [
     {
       id: '1',
+      slug: 'occumed-job-analysis-portal',
       title: 'OccuMed Job Analysis Portal',
       description:
         'A comprehensive platform for managing occupational medical information with secure authentication, dynamic data tables, and advanced filtering capabilities.',
@@ -66,6 +67,7 @@ export function getPortfolioProjects() {
     },
     {
       id: '2',
+      slug: 'myboost-kedai-merchant-platform',
       title: 'MyBoost Kedai Merchant Platform',
       description:
         'A modern, mobile-responsive React web application for merchant management within the MyBoost ecosystem.',
@@ -119,6 +121,7 @@ export function getPortfolioProjects() {
     },
     {
       id: '3',
+      slug: 'rcti-plus-streaming-platform',
       title: 'RCTI+ Streaming Platform',
       description:
         'A mobile app with AVOD and live streaming services, microservices architecture, and PWA capabilities.',
@@ -175,6 +178,7 @@ export function getPortfolioProjects() {
     },
     {
       id: '4',
+      slug: 'telunjuk-shopping-search-engine',
       title: 'Telunjuk Shopping Search Engine',
       description:
         'Shopping search engine comparing prices across multiple e-commerce platforms.',
@@ -218,6 +222,7 @@ export function getPortfolioProjects() {
     },
     {
       id: '5',
+      slug: 'blanja-ecommerce-marketplace',
       title: 'Blanja E-commerce Marketplace',
       description:
         'A joint-venture marketplace between Telkom Indonesia and eBay, featuring comprehensive e-commerce functionality and payment integrations.',
@@ -263,6 +268,7 @@ export function getPortfolioProjects() {
     },
     {
       id: '6',
+      slug: 'indoesports-media-platform',
       title: 'Indoesports Media Platform',
       description:
         'Esports industry media platform covering tournaments, game information, and business news with full-stack Laravel and React implementation.',
@@ -309,6 +315,7 @@ export function getPortfolioProjects() {
     },
     {
       id: '7',
+      slug: 'compas-business-intelligence',
       title: 'Compas Business Intelligence',
       description:
         'E-commerce market insight platform providing actionable business intelligence tools for strategic decision making.',
@@ -352,6 +359,7 @@ export function getPortfolioProjects() {
     },
     {
       id: '8',
+      slug: 'sakoo-sales-management-platform',
       title: 'Sakoo Sales Management Platform',
       description:
         'A web-based application integrating offline and online sales channels with comprehensive business management features.',
@@ -395,6 +403,7 @@ export function getPortfolioProjects() {
     },
     {
       id: '9',
+      slug: 'xetia-ai-platform',
       title: 'Xetia AI Platform',
       description:
         'An Artificial Intelligence platform capable of performing various analyses using cutting-edge technology for instant digital activities.',
@@ -441,6 +450,7 @@ export function getPortfolioProjects() {
     },
     {
       id: '10',
+      slug: 'brilian-muda-health-cms',
       title: 'Brilian Muda Health CMS',
       description:
         'A content management system developed for Kalbe Farma in the health sector, providing comprehensive healthcare content management.',
@@ -485,6 +495,7 @@ export function getPortfolioProjects() {
     },
     {
       id: '11',
+      slug: 'bilby-faith-bible-app',
       title: 'Bilby — Faith Bible App',
       description:
         'A cross-platform offline Bible app built with Flutter and published on the App Store and Google Play, featuring daily verses, saved verses, and church content.',
@@ -530,6 +541,7 @@ export function getPortfolioProjects() {
     },
     {
       id: '12',
+      slug: 'dicty-ios-dictionary-app',
       title: 'Dicty — iOS Dictionary App',
       description:
         'A native iOS dictionary app built with SwiftUI and published on the App Store, featuring real-time word lookup, audio pronunciations, bookmarks, and debounced search.',
@@ -575,6 +587,7 @@ export function getPortfolioProjects() {
     },
     {
       id: '13',
+      slug: 'pemuda-huang-community-platform',
       title: 'Pemuda Huang Community Platform',
       description:
         'A full-stack Next.js community platform for Pemuda Huang, featuring authentication, onboarding flows, and a component showcase.',
@@ -615,6 +628,7 @@ export function getPortfolioProjects() {
     },
     {
       id: '14',
+      slug: 'rcti-plus-graphql-gateway',
       title: 'RCTI+ GraphQL Gateway',
       description:
         'A GraphQL federation gateway for the RCTI+ streaming platform built with Go and gqlgen, aggregating multiple downstream microservices.',
@@ -652,6 +666,7 @@ export function getPortfolioProjects() {
     },
     {
       id: '15',
+      slug: 'rcti-plus-core-identity-provider',
       title: 'RCTI+ Core Identity Provider',
       description:
         'A Go-based identity and authentication microservice handling user identity for the RCTI+ platform.',
@@ -687,6 +702,7 @@ export function getPortfolioProjects() {
     },
     {
       id: '16',
+      slug: 'rcti-plus-video-live-api',
       title: 'RCTI+ Video Live API',
       description:
         'A high-performance Go microservice powering live video streaming ingestion and delivery for the RCTI+ platform.',
@@ -723,6 +739,7 @@ export function getPortfolioProjects() {
     },
     {
       id: '17',
+      slug: 'rcti-plus-video-content-api',
       title: 'RCTI+ Video Content API',
       description:
         'A Python microservice managing VOD (video on demand) content metadata, search, and delivery for the RCTI+ platform.',
@@ -760,6 +777,7 @@ export function getPortfolioProjects() {
     },
     {
       id: '18',
+      slug: 'rcti-plus-ugc-vote-service',
       title: 'RCTI+ UGC Vote Service',
       description:
         'A Go microservice handling user-generated content voting, tallying, and leaderboard logic for RCTI+ interactive features.',
@@ -794,6 +812,7 @@ export function getPortfolioProjects() {
     },
     {
       id: '19',
+      slug: 'rcti-plus-ugc-rule-engine',
       title: 'RCTI+ UGC Rule Engine',
       description:
         'A Go microservice that evaluates configurable business rules governing user-generated content eligibility and moderation on RCTI+.',
@@ -828,6 +847,7 @@ export function getPortfolioProjects() {
     },
     {
       id: '20',
+      slug: 'rcti-plus-ugc-monetization-service',
       title: 'RCTI+ UGC Monetization Service',
       description:
         'A Go microservice managing revenue sharing, reward calculation, and payout logic for user-generated content creators on RCTI+.',
@@ -865,6 +885,7 @@ export function getPortfolioProjects() {
     },
     {
       id: '21',
+      slug: 'rcti-plus-sitemap-generator',
       title: 'RCTI+ Sitemap Generator',
       description:
         'A PHP/Laravel Blade service that dynamically generates and serves XML sitemaps for the RCTI+ platform to improve SEO crawlability.',
@@ -900,6 +921,7 @@ export function getPortfolioProjects() {
     },
     {
       id: '22',
+      slug: 'roov-mono-api',
       title: 'Roov Mono API',
       description:
         'A Go monorepo API powering the Roov music platform with HTTP, RPC, and messaging infrastructure organised by domain.',
@@ -937,6 +959,7 @@ export function getPortfolioProjects() {
     },
     {
       id: '23',
+      slug: 'rcti-plus-android-tv-app',
       title: 'RCTI+ Android TV App',
       description:
         'A native Kotlin Android TV application delivering the full RCTI+ streaming experience on big screens with TV-optimised navigation.',
@@ -975,6 +998,7 @@ export function getPortfolioProjects() {
     },
     {
       id: '24',
+      slug: 'mole-open-source',
       title: 'Mole — Open Source Contribution',
       description:
         'Contributed merged PRs to Mole, a 49K-star macOS/Windows system cleaner CLI — adding deep Brave Browser cleanup support and a Windows version-fallback fix.',
