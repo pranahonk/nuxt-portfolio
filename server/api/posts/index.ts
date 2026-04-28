@@ -79,5 +79,31 @@ export default defineEventHandler(async () => {
     cursor = data.has_more ? (data.next_cursor ?? undefined) : undefined
   } while (cursor)
 
+  // Fallback: serve local JSON articles when Notion returns nothing
+  if (posts.length === 0) {
+    const { promises: fs } = await import('fs')
+    const { join } = await import('path')
+    const ARTICLES_DIR = join(process.cwd(), 'server/data/articles')
+    try {
+      const files = await fs.readdir(ARTICLES_DIR)
+      for (const file of files) {
+        if (!file.endsWith('.json')) continue
+        const raw = await fs.readFile(join(ARTICLES_DIR, file), 'utf-8')
+        const a = JSON.parse(raw)
+        if (!a.published) continue
+        posts.push({
+          slug: a.slug as string,
+          title: a.title as string,
+          description: (a.excerpt ?? '') as string,
+          created_at: new Date(a.createdAt as string).toISOString(),
+          tags: (a.tags ?? []) as string[],
+          thumbnail: a.featuredImage ? [{ url: a.featuredImage as string }] : null,
+        })
+      }
+    } catch {
+      // articles dir absent in some deploy environments — skip
+    }
+  }
+
   return posts
 })
