@@ -973,5 +973,43 @@ export function getPortfolioProjects() {
       company: 'RCTI+',
       duration: 'Mar 2021 - Sep 2022',
     },
+    {
+      id: '24',
+      title: 'Mole — Open Source Contribution',
+      description:
+        'Contributed merged PRs to Mole, a 49K-star macOS/Windows system cleaner CLI — adding deep Brave Browser cleanup support and a Windows version-fallback fix.',
+      fullDescription:
+        'Mole is a popular open-source macOS and Windows system cleaner CLI (Shell/PowerShell) with 49K+ GitHub stars, serving as a free alternative to CleanMyMac and DaisyDisk. It deep-cleans browser caches, GPU shader caches, CRX extensions, and unused app data to free significant disk space. My contributions include PR #637 (merged) adding 89 lines of deep Brave Browser cleanup — cache, GPU cache, shader cache, and CRX cleanup support — PR #636 (merged) fixing a hardcoded Windows version fallback to 1.29.1, and PR #670 (submitted) adding missing shader and Dawn cache cleanup paths for Chrome.',
+      techStack: ['Shell', 'Bash', 'PowerShell', 'macOS', 'CLI'],
+      liveUrl: 'https://github.com/tw93/Mole',
+      codeUrl: 'https://github.com/tw93/Mole/pulls?q=is%3Apr+author%3Apranahonk',
+      openSource: true,
+      public: true,
+      tags: ['open-source', 'cli', 'macos', 'shell', 'contribution'],
+      coverImage: 'https://gw.alipayobjects.com/zos/k/ro/ZzF8e8.png',
+      images: ['https://gw.alipayobjects.com/zos/k/ro/ZzF8e8.png'],
+      gradient: getRandomGradient(),
+      features: [
+        '49K+ GitHub stars — widely used macOS/Windows system cleaner',
+        'PR #637 (merged): deep Brave Browser cleanup — cache, GPU, shader, CRX',
+        'PR #636 (merged): fix hardcoded Windows version fallback to 1.29.1',
+        'PR #670 (submitted): missing shader and Dawn cache cleanup for Chrome',
+        'Shell + PowerShell scripts for cross-platform deep cleaning',
+        'Free open-source alternative to CleanMyMac and DaisyDisk',
+      ],
+      challenges: [
+        'Understanding Brave Browser internal cache path structure across macOS versions',
+        'Ensuring cleanup scripts are safe and idempotent (no data loss)',
+        'Cross-platform testing macOS vs Windows path conventions',
+      ],
+      learnings: [
+        'Contributing to large open-source projects with strict code review',
+        'Shell scripting patterns for reliable file system operations',
+        'macOS application data directory conventions',
+      ],
+      role: 'Open Source Contributor',
+      company: 'Open Source (tw93/Mole)',
+      duration: 'Apr 2024',
+    },
   ]
 }
