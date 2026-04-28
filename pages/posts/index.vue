@@ -17,19 +17,29 @@ const hasMore = computed(() => visibleCount.value < allPosts.value.length)
 const sentinel = ref<HTMLElement | null>(null)
 const isLoading = ref(false)
 
+async function loadMore() {
+  if (isLoading.value || !hasMore.value) return
+  isLoading.value = true
+  visibleCount.value += PAGE_SIZE
+  await nextTick()
+  isLoading.value = false
+  // If the sentinel is still in the viewport after DOM update, keep loading
+  if (hasMore.value && sentinel.value) {
+    const rect = sentinel.value.getBoundingClientRect()
+    if (rect.top < window.innerHeight) {
+      await loadMore()
+    }
+  }
+}
+
 const { pause, resume } = useIntersectionObserver(
   sentinel,
-  async ([entry]) => {
-    if (!entry?.isIntersecting || !hasMore.value || isLoading.value) return
-    isLoading.value = true
-    visibleCount.value += PAGE_SIZE
-    await nextTick()
-    isLoading.value = false
+  ([entry]) => {
+    if (entry?.isIntersecting) loadMore()
   },
-  { threshold: 0.1 },
+  { threshold: 0 },
 )
 
-// Pause the observer while data is still fetching to avoid premature triggers
 watch(pending, (isPending) => {
   if (isPending) pause()
   else resume()
