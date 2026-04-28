@@ -581,7 +581,7 @@ export function getPortfolioProjects() {
       fullDescription:
         'Pemuda Huang is a full-stack web application built with Next.js App Router and deployed on Vercel. The platform provides community management features including Auth.js authentication with Prisma adapter, onboarding flows, locale/internationalisation support, and a Radix UI component showcase. Media assets are handled through Cloudinary and the database layer uses Prisma ORM backed by PostgreSQL.',
       techStack: ['Next.js', 'TypeScript', 'Prisma', 'Auth.js', 'Radix UI', 'Tailwind CSS', 'Cloudinary', 'PostgreSQL'],
-      liveUrl: 'https://pemudahuang-app.vercel.app',
+      liveUrl: 'https://margahuang.org/id',
       codeUrl: 'https://github.com/pranahonk/pemudahuang-app',
       openSource: true,
       public: true,
