@@ -13,7 +13,7 @@
         :key="post.slug"
         class="project-card md:flex mt-10"
       >
-        <div class="img max-w-lg md:max-w-sm mx-auto m-2">
+        <div class="img max-w-lg md:max-w-sm mx-auto md:mx-0 m-2 md:mr-4">
           <nuxt-link :to="`/posts/${post.slug}`">
             <img
               v-if="getImage(post.thumbnail)"
