@@ -15,12 +15,25 @@ const visiblePosts = computed(() => allPosts.value.slice(0, visibleCount.value))
 const hasMore = computed(() => visibleCount.value < allPosts.value.length)
 
 const sentinel = ref<HTMLElement | null>(null)
+const isLoading = ref(false)
 
-useIntersectionObserver(sentinel, ([entry]) => {
-  if (entry?.isIntersecting && hasMore.value) {
+const { pause, resume } = useIntersectionObserver(
+  sentinel,
+  async ([entry]) => {
+    if (!entry?.isIntersecting || !hasMore.value || isLoading.value) return
+    isLoading.value = true
     visibleCount.value += PAGE_SIZE
-  }
-})
+    await nextTick()
+    isLoading.value = false
+  },
+  { threshold: 0.1 },
+)
+
+// Pause the observer while data is still fetching to avoid premature triggers
+watch(pending, (isPending) => {
+  if (isPending) pause()
+  else resume()
+}, { immediate: true })
 </script>
 
 <template>
