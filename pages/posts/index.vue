@@ -1,11 +1,25 @@
 <script setup lang="ts">
+const PAGE_SIZE = 10
+
 const { data, pending, error } = useLazyFetch('/api/posts')
 
-const posts = computed(() => {
+const allPosts = computed(() => {
   const list = (data.value as any[]) || []
   return [...list].sort(
     (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
   )
+})
+
+const visibleCount = ref(PAGE_SIZE)
+const visiblePosts = computed(() => allPosts.value.slice(0, visibleCount.value))
+const hasMore = computed(() => visibleCount.value < allPosts.value.length)
+
+const sentinel = ref<HTMLElement | null>(null)
+
+useIntersectionObserver(sentinel, ([entry]) => {
+  if (entry?.isIntersecting && hasMore.value) {
+    visibleCount.value += PAGE_SIZE
+  }
 })
 </script>
 
@@ -23,11 +37,19 @@ const posts = computed(() => {
       <div class="text-red-600 dark:text-red-400">Error loading posts. Try refreshing.</div>
     </div>
 
-    <div v-else-if="!posts.length" class="text-center py-16">
+    <div v-else-if="!allPosts.length" class="text-center py-16">
       <h2 class="text-2xl font-semibold text-gray-700 dark:text-gray-300 mb-4">No posts yet</h2>
       <p class="text-gray-500 dark:text-gray-400">Check back soon for new content!</p>
     </div>
 
-    <Blogs v-else :posts="posts" title="All Posts"/>
+    <template v-else>
+      <Blogs :posts="visiblePosts" title="All Posts"/>
+      <div ref="sentinel" class="py-10 text-center">
+        <span v-if="hasMore" class="text-gray-400 dark:text-gray-500 text-sm">Loading more...</span>
+        <span v-else class="text-gray-400 dark:text-gray-500 text-sm">
+          You've reached the end · {{ allPosts.length }} posts total
+        </span>
+      </div>
+    </template>
   </div>
 </template>
