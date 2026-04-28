@@ -56,9 +56,8 @@ The app is a Nuxt 3 SPA (`ssr: false`) deployed to Netlify. Nitro preset is `net
 Both dev and production route through the same Nitro function:
 
 - `server/api/posts/index.ts` and `server/api/posts/[slug].ts` read from `server/data/articlesData.ts`.
-- `netlify.toml` force-redirects `/api/*` → the Netlify Function so all API routes go through Nitro.
-- `public/api/posts.json` exists as a generated snapshot but is NOT in the active redirect chain.
-- **Do NOT create a `public/api/posts/` directory.** Netlify infrastructure issues a 301 trailing-slash redirect for any path that matches a directory name, which fires before the `netlify.toml` force-redirect and causes Nitro to receive `/api/posts/` (no matching route) and return `index.html` instead of JSON.
+- `public/_redirects` maps `/api/*` → the Netlify Function **before** the `/*  /index.html` SPA fallback. This is the critical routing rule — Netlify Functions 2.0 with `path: "/*"` + `preferStatic: true` processes `_redirects` rules before `netlify.toml` redirects. Any API path not listed in `_redirects` before `/*` will receive `index.html` (HTML) instead of JSON.
+- **Do NOT create a `public/api/posts/` directory.** Netlify infrastructure issues a 301 trailing-slash redirect for any path that matches a directory name, which bypasses all redirect rules and causes Nitro to receive `/api/posts/` (no matching route) and return `index.html`.
 - `scripts/generate-posts-json.js` only writes `public/api/posts.json`; it no longer writes individual per-post files.
 
 When adding or editing a post, update the JSON files under `server/data/articles/`, then run `node scripts/generate-posts-json.js` to regenerate the `public/api/` static files.

@@ -1,8 +1,7 @@
-# CMS API routes - must use serverless functions
+# All API routes - must use serverless function (specific rules before general catch-all)
 /api/cms/*  /.netlify/functions/server/api/cms/:splat  200
-
-# News sync API
 /api/news/*  /.netlify/functions/server/api/news/:splat  200
+/api/*  /.netlify/functions/server/api/:splat  200
 
 # SPA fallback for client-side routing - must be LAST
 /*  /index.html  200
