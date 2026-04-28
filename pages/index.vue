@@ -1,7 +1,7 @@
 <script setup lang="ts">
 // Fetch latest published posts from CMS
-const { data } = await useFetch('/api/posts', {
-  transform: (posts: any[]) => posts?.slice(0, 3) || [] // Show max 3 featured posts
+const { data } = useLazyFetch('/api/posts', {
+  transform: (posts: any[]) => posts?.slice(0, 3) || []
 })
 </script>
 
