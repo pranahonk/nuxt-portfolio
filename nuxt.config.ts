@@ -13,8 +13,9 @@ export default defineNuxtConfig({
     },
     routeRules: {
       '/': { headers: { 'cache-control': 's-maxage=31536000' } },
-      '/**': { headers: { 'cache-control': 's-maxage=31536000' } },
       '/_nuxt/**': { headers: { 'cache-control': 's-maxage=31536000' } },
+      '/api/**': { headers: { 'cache-control': 'no-store' } },
+      '/**': { headers: { 'cache-control': 's-maxage=31536000' } },
       '/cms/**': {
         headers: {
           'cache-control': 'no-cache, no-store, must-revalidate',
