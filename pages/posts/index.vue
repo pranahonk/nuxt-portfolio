@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { data, pending, error } = useLazyFetch('/api/posts/')
+const { data, pending, error } = useLazyFetch('/api/posts')
 
 const posts = computed(() => {
   const list = (data.value as any[]) || []
