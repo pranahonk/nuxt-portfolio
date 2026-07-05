@@ -5,7 +5,7 @@ import { buildSafeSourceLink, getNotionCoverUrl, isSafeRemoteUrl } from '../../u
 
 const NOTION_API = 'https://api.notion.com/v1'
 const NOTION_VERSION = '2022-06-28'
-const ENRICH_BUDGET_MS = 22_000
+const ENRICH_BUDGET_MS = 8_000
 const ENRICH_FETCH_TIMEOUT_MS = 6_000
 const NOTION_API_TIMEOUT_MS = 4_000
 const NOTION_RATE_LIMIT_MS = 350
