@@ -18,6 +18,7 @@ jobs:
       - name: Trigger news sync
         run: |
           STATUS=$(curl -s -o /tmp/resp.json -w "%{http_code}" \
+            --max-time 30 \
             -X POST \
             -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
             -H "Content-Type: application/json" \
@@ -29,5 +30,23 @@ jobs:
 
           if [ "$STATUS" != "200" ]; then
             echo "Sync failed with HTTP $STATUS"
+            exit 1
+          fi
+
+      - name: Enrich cached post content
+        run: |
+          STATUS=$(curl -s -o /tmp/resp-enrich.json -w "%{http_code}" \
+            --max-time 30 \
+            -X POST \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            -H "Content-Type: application/json" \
+            https://prana-wijaya.netlify.app/api/news/enrich)
+
+          echo "HTTP Status: $STATUS"
+          echo "Response:"
+          cat /tmp/resp-enrich.json
+
+          if [ "$STATUS" != "200" ]; then
+            echo "Enrich failed with HTTP $STATUS"
             exit 1
           fi
