@@ -5,6 +5,7 @@
 [functions]
   directory = ".netlify/functions-internal"
   node_bundler = "esbuild"
+  timeout = 26
 
 [build.environment]
   NODE_VERSION = "22"

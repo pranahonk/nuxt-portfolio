@@ -3,6 +3,7 @@ import { join } from 'path'
 import { generateSlug } from '../../utils/slug'
 import { getCachedPost, setCachedPost } from '../../utils/post-store'
 import { fetchContentFromUrl } from '../../utils/content-fetcher'
+import { buildSafeSourceLink, getNotionCoverUrl, isSafeRemoteUrl } from '../../utils/content-security'
 
 const ARTICLES_DIR = join(process.cwd(), 'server/data/articles')
 const NOTION_API = 'https://api.notion.com/v1'
@@ -126,7 +127,9 @@ export default defineEventHandler(async (event) => {
     }
   }
 
-  if (!sourceUrl) throw createError({ statusCode: 404, statusMessage: 'Post content not available yet' })
+  if (!sourceUrl || !isSafeRemoteUrl(sourceUrl)) {
+    throw createError({ statusCode: 404, statusMessage: 'Post content not available yet' })
+  }
 
   const enriched = await fetchContentFromUrl(sourceUrl)
   if (!enriched) throw createError({ statusCode: 503, statusMessage: 'Could not fetch article content' })
@@ -136,16 +139,13 @@ export default defineEventHandler(async (event) => {
     multi_select?: Array<{ name: string }>
     date?: { start: string }
   }>
-  const cover = matchedPage.cover as { external?: { url: string }; file?: { url: string } } | null
   const description = props.description?.rich_text?.[0]?.plain_text ?? ''
   const tags = props.tags?.multi_select?.map(t => t.name) ?? []
   const createdAt = new Date(
     (props.created_at?.date?.start ?? matchedPage.created_time) as string
   ).toISOString()
-  const thumbnail = cover?.external?.url || cover?.file?.url || enriched.thumbnail || ''
-  const content =
-    `<p><a href="${sourceUrl}" target="_blank" rel="noopener noreferrer">🔗 Read original article</a></p>\n` +
-    enriched.content
+  const thumbnail = getNotionCoverUrl(matchedPage) || enriched.thumbnail || ''
+  const content = buildSafeSourceLink(sourceUrl) + enriched.content
 
   const stored = {
     slug, title: matchedTitle, content, thumbnail,
