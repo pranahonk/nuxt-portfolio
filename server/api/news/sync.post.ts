@@ -1,8 +1,8 @@
 import { Client } from '@notionhq/client'
-import { generateSlug } from '../../utils/slug'
-import { fetchContentFromUrl } from '../../utils/content-fetcher'
-import { setCachedPost } from '../../utils/post-store'
 
+const SYNC_BUDGET_MS = 8_000
+const EXTERNAL_FETCH_TIMEOUT_MS = 4_000
+const NOTION_RATE_LIMIT_MS = 350
 const HN_API = 'https://hacker-news.firebaseio.com/v0'
 const DEVTO_API = 'https://dev.to/api'
 const NOTION_API = 'https://api.notion.com/v1'
@@ -23,53 +23,73 @@ function assertAuth(event: Parameters<typeof getHeader>[0], secret: string) {
 }
 
 async function fetchHackerNews(): Promise<Article[]> {
-  const res = await fetch(`${HN_API}/topstories.json`)
-  if (!res.ok) return []
-  const ids: number[] = await res.json()
+  try {
+    const res = await fetch(`${HN_API}/topstories.json`, {
+      signal: AbortSignal.timeout(EXTERNAL_FETCH_TIMEOUT_MS),
+    })
+    if (!res.ok) return []
+    const ids: number[] = await res.json()
 
-  const results: Article[] = []
-  for (let i = 0; i < 80 && results.length < 20; i += 10) {
-    const batch = ids.slice(i, i + 10)
-    const items = await Promise.all(
-      batch.map(id =>
-        fetch(`${HN_API}/item/${id}.json`).then(r => (r.ok ? r.json() : null))
+    const results: Article[] = []
+    for (let i = 0; i < 80 && results.length < 20; i += 10) {
+      const batch = ids.slice(i, i + 10)
+      const items = await Promise.all(
+        batch.map(async (id) => {
+          try {
+            const response = await fetch(`${HN_API}/item/${id}.json`, {
+              signal: AbortSignal.timeout(EXTERNAL_FETCH_TIMEOUT_MS),
+            })
+            return response.ok ? response.json() : null
+          } catch {
+            return null
+          }
+        })
       )
-    )
-    for (const item of items) {
-      if (!item || item.type !== 'story' || !item.url) continue
-      if ((item.score ?? 0) < 50) continue
-      results.push({
-        title: item.title ?? 'Untitled',
-        url: item.url,
-        description: `HN score: ${item.score} · by ${item.by ?? 'unknown'}`,
-        tags: ['hacker-news', 'tech'],
-      })
+      for (const item of items) {
+        if (!item || item.type !== 'story' || !item.url) continue
+        if ((item.score ?? 0) < 50) continue
+        results.push({
+          title: item.title ?? 'Untitled',
+          url: item.url,
+          description: `HN score: ${item.score} · by ${item.by ?? 'unknown'}`,
+          tags: ['hacker-news', 'tech'],
+        })
+      }
     }
+    return results
+  } catch {
+    return []
   }
-  return results
 }
 
 async function fetchDevTo(): Promise<Article[]> {
   const TAGS = ['ai', 'javascript', 'programming']
   const results: Article[] = []
   for (const tag of TAGS) {
-    const res = await fetch(
-      `${DEVTO_API}/articles?tag=${tag}&per_page=5&top=7`,
-      { headers: { 'User-Agent': 'prana-portfolio/newssync' } }
-    )
-    if (!res.ok) continue
-    const articles: Array<{
-      title: string; url: string; description?: string
-      cover_image?: string; social_image?: string
-    }> = await res.json()
-    for (const a of articles) {
-      results.push({
-        title: a.title,
-        url: a.url,
-        description: a.description ?? '',
-        tags: [tag, 'dev-to'],
-        thumbnail: a.cover_image || a.social_image || '',
-      })
+    try {
+      const res = await fetch(
+        `${DEVTO_API}/articles?tag=${tag}&per_page=5&top=7`,
+        {
+          headers: { 'User-Agent': 'prana-portfolio/newssync' },
+          signal: AbortSignal.timeout(EXTERNAL_FETCH_TIMEOUT_MS),
+        }
+      )
+      if (!res.ok) continue
+      const articles: Array<{
+        title: string; url: string; description?: string
+        cover_image?: string; social_image?: string
+      }> = await res.json()
+      for (const a of articles) {
+        results.push({
+          title: a.title,
+          url: a.url,
+          description: a.description ?? '',
+          tags: [tag, 'dev-to'],
+          thumbnail: a.cover_image || a.social_image || '',
+        })
+      }
+    } catch {
+      continue
     }
   }
   return results
@@ -91,6 +111,7 @@ async function getExistingTitles(token: string, dbId: string): Promise<Set<strin
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(body),
+      signal: AbortSignal.timeout(EXTERNAL_FETCH_TIMEOUT_MS),
     })
     if (!res.ok) break
 
@@ -129,7 +150,7 @@ async function createNotionPage(notion: Client, dbId: string, article: Article):
         rich_text: [{ text: { content: article.description.slice(0, 2000) } }],
       },
       public: {
-        checkbox: false,
+        checkbox: true,
       },
       created_at: {
         date: { start: new Date().toISOString() },
@@ -174,6 +195,8 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 500, statusMessage: 'NOTION_TABLE_ID not configured' })
   }
 
+  const deadline = Date.now() + SYNC_BUDGET_MS
+
   const [hnArticles, devtoArticles] = await Promise.all([
     fetchHackerNews(),
     fetchDevTo(),
@@ -192,8 +215,13 @@ export default defineEventHandler(async (event) => {
 
   let added = 0
   let skipped = 0
+  let budgetExhausted = false
 
   for (const article of allArticles) {
+    if (Date.now() >= deadline) {
+      budgetExhausted = true
+      break
+    }
     const key = article.title.toLowerCase().trim()
     if (existingTitles.has(key)) {
       skipped++
@@ -203,27 +231,12 @@ export default defineEventHandler(async (event) => {
       await createNotionPage(notion, dbId, article)
       existingTitles.add(key)
       added++
-      if (article.url.includes('dev.to/')) {
-        const enriched = await fetchContentFromUrl(article.url)
-        if (enriched) {
-          const slug = generateSlug(article.title)
-          await setCachedPost(slug, {
-            slug,
-            title: article.title,
-            content: `<p><a href="${article.url}" target="_blank" rel="noopener noreferrer">🔗 Read original article</a></p>\n` + enriched.content,
-            thumbnail: enriched.thumbnail || article.thumbnail || '',
-            excerpt: enriched.excerpt || article.description,
-            created_at: new Date().toISOString(),
-            tags: article.tags,
-          })
-        }
-      }
-      await new Promise(r => setTimeout(r, 350))
+      await new Promise(r => setTimeout(r, NOTION_RATE_LIMIT_MS))
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : String(err)
       console.error(`Notion create failed for "${article.title}":`, msg)
     }
   }
 
-  return { added, skipped, total: allArticles.length }
+  return { added, skipped, total: allArticles.length, budgetExhausted }
 })
