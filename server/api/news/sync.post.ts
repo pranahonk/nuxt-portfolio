@@ -150,7 +150,7 @@ async function createNotionPage(notion: Client, dbId: string, article: Article):
         rich_text: [{ text: { content: article.description.slice(0, 2000) } }],
       },
       public: {
-        checkbox: false,
+        checkbox: true,
       },
       created_at: {
         date: { start: new Date().toISOString() },
