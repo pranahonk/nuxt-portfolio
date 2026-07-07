@@ -95,41 +95,47 @@ async function fetchDevTo(): Promise<Article[]> {
   return results
 }
 
-async function getExistingTitles(token: string, dbId: string): Promise<Set<string>> {
+async function getExistingTitles(token: string, dbId: string, deadline: number): Promise<Set<string>> {
   const known = new Set<string>()
   let cursor: string | undefined
 
   do {
+    if (Date.now() >= deadline) break
+
     const body: Record<string, unknown> = { page_size: 100 }
     if (cursor) body.start_cursor = cursor
 
-    const res = await fetch(`${NOTION_API}/databases/${dbId}/query`, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Notion-Version': '2022-06-28',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(body),
-      signal: AbortSignal.timeout(EXTERNAL_FETCH_TIMEOUT_MS),
-    })
-    if (!res.ok) break
+    try {
+      const res = await fetch(`${NOTION_API}/databases/${dbId}/query`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Notion-Version': '2022-06-28',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(body),
+        signal: AbortSignal.timeout(EXTERNAL_FETCH_TIMEOUT_MS),
+      })
+      if (!res.ok) break
 
-    const data: {
-      results: Array<{ properties: Record<string, { title?: Array<{ plain_text: string }> }> }>
-      has_more: boolean
-      next_cursor: string | null
-    } = await res.json()
+      const data: {
+        results: Array<{ properties: Record<string, { title?: Array<{ plain_text: string }> }> }>
+        has_more: boolean
+        next_cursor: string | null
+      } = await res.json()
 
-    for (const page of data.results ?? []) {
-      const prop =
-        page.properties?.Name ??
-        page.properties?.Title ??
-        page.properties?.title
-      const text = prop?.title?.[0]?.plain_text ?? ''
-      if (text) known.add(text.toLowerCase().trim())
+      for (const page of data.results ?? []) {
+        const prop =
+          page.properties?.Name ??
+          page.properties?.Title ??
+          page.properties?.title
+        const text = prop?.title?.[0]?.plain_text ?? ''
+        if (text) known.add(text.toLowerCase().trim())
+      }
+      cursor = data.has_more ? (data.next_cursor ?? undefined) : undefined
+    } catch {
+      break
     }
-    cursor = data.has_more ? (data.next_cursor ?? undefined) : undefined
   } while (cursor)
 
   return known
@@ -210,7 +216,7 @@ export default defineEventHandler(async (event) => {
     return true
   })
 
-  const existingTitles = await getExistingTitles(notionToken, dbId)
+  const existingTitles = await getExistingTitles(notionToken, dbId, deadline)
   const notion = new Client({ auth: notionToken })
 
   let added = 0
