@@ -15,6 +15,37 @@ interface Article {
   thumbnail?: string
 }
 
+const SOURCE_URL_PROPERTY_CANDIDATES = ['source_url', 'Source URL'] as const
+
+type SourceUrlPropertyName = (typeof SOURCE_URL_PROPERTY_CANDIDATES)[number]
+
+function normalizeSourceUrl(url: string): string {
+  return url.trim()
+}
+
+function getTitleKey(title: string): string {
+  return title.toLowerCase().trim()
+}
+
+function extractSourceUrlPropertyName(
+  properties: Record<string, unknown>
+): SourceUrlPropertyName | null {
+  for (const candidate of SOURCE_URL_PROPERTY_CANDIDATES) {
+    const property = properties[candidate] as { type?: string } | undefined
+    if (property?.type === 'url') return candidate
+  }
+  return null
+}
+
+function extractExistingSourceUrl(properties: Record<string, unknown>): string | null {
+  for (const candidate of SOURCE_URL_PROPERTY_CANDIDATES) {
+    const property = properties[candidate] as { url?: string | null } | undefined
+    const value = property?.url?.trim()
+    if (value) return normalizeSourceUrl(value)
+  }
+  return null
+}
+
 function assertAuth(event: Parameters<typeof getHeader>[0], secret: string) {
   const header = getHeader(event, 'authorization') ?? ''
   if (!secret || header !== `Bearer ${secret}`) {
@@ -210,7 +241,7 @@ export default defineEventHandler(async (event) => {
 
   const seen = new Set<string>()
   const allArticles = [...hnArticles, ...devtoArticles].filter(a => {
-    const key = a.title.toLowerCase().trim()
+    const key = getTitleKey(a.title)
     if (seen.has(key)) return false
     seen.add(key)
     return true
@@ -228,7 +259,7 @@ export default defineEventHandler(async (event) => {
       budgetExhausted = true
       break
     }
-    const key = article.title.toLowerCase().trim()
+    const key = getTitleKey(article.title)
     if (existingTitles.has(key)) {
       skipped++
       continue
