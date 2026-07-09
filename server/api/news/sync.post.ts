@@ -126,9 +126,21 @@ async function fetchDevTo(): Promise<Article[]> {
   return results
 }
 
-async function getExistingTitles(token: string, dbId: string, deadline: number): Promise<Set<string>> {
-  const known = new Set<string>()
+async function getExistingSourceState(
+  token: string,
+  dbId: string,
+  deadline: number
+): Promise<{
+  sourceUrls: Set<string>
+  legacyTitleKeys: Set<string>
+  writablePropertyName: SourceUrlPropertyName
+}> {
+  const sourceUrls = new Set<string>()
+  const legacyTitleKeys = new Set<string>()
+  let writablePropertyName: SourceUrlPropertyName | null = null
   let cursor: string | undefined
+  let pagesObserved = 0
+  let sawSuccessfulQuery = false
 
   do {
     if (Date.now() >= deadline) break
@@ -150,29 +162,68 @@ async function getExistingTitles(token: string, dbId: string, deadline: number):
       if (!res.ok) break
 
       const data: {
-        results: Array<{ properties: Record<string, { title?: Array<{ plain_text: string }> }> }>
+        results: Array<{ properties: Record<string, unknown> }>
         has_more: boolean
         next_cursor: string | null
       } = await res.json()
 
+      sawSuccessfulQuery = true
+      pagesObserved += data.results?.length ?? 0
+
       for (const page of data.results ?? []) {
-        const prop =
-          page.properties?.Name ??
-          page.properties?.Title ??
-          page.properties?.title
-        const text = prop?.title?.[0]?.plain_text ?? ''
-        if (text) known.add(text.toLowerCase().trim())
+        const properties = page.properties ?? {}
+
+        if (!writablePropertyName) {
+          writablePropertyName = extractSourceUrlPropertyName(properties)
+        }
+
+        const existingUrl = extractExistingSourceUrl(properties)
+        if (existingUrl) {
+          sourceUrls.add(existingUrl)
+          continue
+        }
+
+        const titleProp =
+          (properties.Name as { title?: Array<{ plain_text: string }> } | undefined) ??
+          (properties.Title as { title?: Array<{ plain_text: string }> } | undefined) ??
+          (properties.title as { title?: Array<{ plain_text: string }> } | undefined)
+        const title = titleProp?.title?.[0]?.plain_text ?? ''
+        if (title) legacyTitleKeys.add(getTitleKey(title))
       }
+
       cursor = data.has_more ? (data.next_cursor ?? undefined) : undefined
     } catch {
       break
     }
   } while (cursor)
 
-  return known
+  if (sawSuccessfulQuery && pagesObserved === 0) {
+    throw createError({
+      statusCode: 500,
+      statusMessage: 'Notion database is empty; add at least one row with a source_url or Source URL property',
+    })
+  }
+
+  if (!writablePropertyName && pagesObserved > 0) {
+    throw createError({
+      statusCode: 500,
+      statusMessage: 'Notion database must expose a url property named source_url or Source URL',
+    })
+  }
+
+  return {
+    sourceUrls,
+    legacyTitleKeys,
+    writablePropertyName: writablePropertyName ?? SOURCE_URL_PROPERTY_CANDIDATES[0],
+  }
 }
 
-async function createNotionPage(notion: Client, dbId: string, article: Article): Promise<void> {
+async function createNotionPage(
+  notion: Client,
+  dbId: string,
+  article: Article,
+  writablePropertyName: SourceUrlPropertyName
+): Promise<void> {
   await notion.pages.create({
     parent: { database_id: dbId },
     ...(article.thumbnail ? { cover: { external: { url: article.thumbnail } } } : {}),
@@ -191,6 +242,9 @@ async function createNotionPage(notion: Client, dbId: string, article: Article):
       },
       created_at: {
         date: { start: new Date().toISOString() },
+      },
+      [writablePropertyName]: {
+        url: article.url,
       },
     },
     children: [
@@ -247,7 +301,11 @@ export default defineEventHandler(async (event) => {
     return true
   })
 
-  const existingTitles = await getExistingTitles(notionToken, dbId, deadline)
+  const {
+    sourceUrls: existingSourceUrls,
+    legacyTitleKeys,
+    writablePropertyName,
+  } = await getExistingSourceState(notionToken, dbId, deadline)
   const notion = new Client({ auth: notionToken })
 
   let added = 0
@@ -259,14 +317,17 @@ export default defineEventHandler(async (event) => {
       budgetExhausted = true
       break
     }
-    const key = getTitleKey(article.title)
-    if (existingTitles.has(key)) {
+    const sourceUrlKey = normalizeSourceUrl(article.url)
+    const titleKey = getTitleKey(article.title)
+
+    if (existingSourceUrls.has(sourceUrlKey) || legacyTitleKeys.has(titleKey)) {
       skipped++
       continue
     }
     try {
-      await createNotionPage(notion, dbId, article)
-      existingTitles.add(key)
+      await createNotionPage(notion, dbId, article, writablePropertyName)
+      existingSourceUrls.add(sourceUrlKey)
+      legacyTitleKeys.add(titleKey)
       added++
       await new Promise(r => setTimeout(r, NOTION_RATE_LIMIT_MS))
     } catch (err: unknown) {
