@@ -126,6 +126,33 @@ async function fetchDevTo(): Promise<Article[]> {
   return results
 }
 
+/**
+ * Fetches the Notion database schema directly to detect the writable URL
+ * property name without requiring existing rows.  Used when the database is
+ * empty (first-ever sync / bootstrap path).
+ */
+async function fetchWritablePropertyFromDbSchema(
+  token: string,
+  dbId: string
+): Promise<SourceUrlPropertyName | null> {
+  try {
+    const res = await fetch(`${NOTION_API}/databases/${dbId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Notion-Version': '2022-06-28',
+      },
+      signal: AbortSignal.timeout(EXTERNAL_FETCH_TIMEOUT_MS),
+    })
+    if (!res.ok) return null
+    const data: { properties?: Record<string, { type?: string }> } = await res.json()
+    return extractSourceUrlPropertyName(
+      (data.properties ?? {}) as Record<string, unknown>
+    )
+  } catch {
+    return null
+  }
+}
+
 async function getExistingSourceState(
   token: string,
   dbId: string,
@@ -197,24 +224,42 @@ async function getExistingSourceState(
     }
   } while (cursor)
 
-  if (sawSuccessfulQuery && pagesObserved === 0) {
+  // The query loop never completed successfully — credentials or network issue.
+  if (!sawSuccessfulQuery) {
     throw createError({
       statusCode: 500,
-      statusMessage: 'Notion database is empty; add at least one row with a source_url or Source URL property',
+      statusMessage: 'Failed to query Notion database; check NOTION_TOKEN and NOTION_TABLE_ID',
     })
   }
 
-  if (!writablePropertyName && pagesObserved > 0) {
+  // Pages were present but none exposed the expected URL property — clear schema error.
+  if (pagesObserved > 0 && !writablePropertyName) {
     throw createError({
       statusCode: 500,
       statusMessage: 'Notion database must expose a url property named source_url or Source URL',
     })
   }
 
+  // Database is empty (first-ever sync / bootstrap).  We cannot infer the
+  // writable property name from page rows, so probe the database schema
+  // directly.  This allows bootstrapping without requiring a manual seed row.
+  if (pagesObserved === 0 && !writablePropertyName) {
+    writablePropertyName = await fetchWritablePropertyFromDbSchema(token, dbId)
+    if (!writablePropertyName) {
+      throw createError({
+        statusCode: 500,
+        statusMessage:
+          'Notion database is empty and schema has no url property named ' +
+          'source_url or Source URL; add this column to the database before the first sync',
+      })
+    }
+  }
+
+  // writablePropertyName is guaranteed non-null here: all null paths above throw.
   return {
     sourceUrls,
     legacyTitleKeys,
-    writablePropertyName: writablePropertyName ?? SOURCE_URL_PROPERTY_CANDIDATES[0],
+    writablePropertyName: writablePropertyName as SourceUrlPropertyName,
   }
 }
 
