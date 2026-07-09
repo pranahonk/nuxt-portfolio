@@ -17,7 +17,13 @@ interface Article {
 
 const SOURCE_URL_PROPERTY_CANDIDATES = ['source_url', 'Source URL'] as const
 
-type SourceUrlPropertyName = (typeof SOURCE_URL_PROPERTY_CANDIDATES)[number]
+type SourceUrlPropertyName = string
+
+type SourceUrlPropertyResolution =
+  | { kind: 'found'; propertyName: SourceUrlPropertyName }
+  | { kind: 'missing' }
+  | { kind: 'ambiguous'; propertyNames: string[] }
+  | { kind: 'error'; statusMessage: string }
 
 function normalizeSourceUrl(url: string): string {
   return url.trim()
@@ -27,23 +33,70 @@ function getTitleKey(title: string): string {
   return title.toLowerCase().trim()
 }
 
-function extractSourceUrlPropertyName(
-  properties: Record<string, unknown>
-): SourceUrlPropertyName | null {
-  for (const candidate of SOURCE_URL_PROPERTY_CANDIDATES) {
-    const property = properties[candidate] as { type?: string } | undefined
-    if (property?.type === 'url') return candidate
-  }
-  return null
+function getUrlPropertyNames(properties: Record<string, unknown>): string[] {
+  return Object.entries(properties)
+    .filter(([, property]) => (property as { type?: string } | undefined)?.type === 'url')
+    .map(([name]) => name)
 }
 
-function extractExistingSourceUrl(properties: Record<string, unknown>): string | null {
+function resolveSourceUrlPropertyName(
+  properties: Record<string, unknown>
+): SourceUrlPropertyResolution {
   for (const candidate of SOURCE_URL_PROPERTY_CANDIDATES) {
-    const property = properties[candidate] as { url?: string | null } | undefined
-    const value = property?.url?.trim()
-    if (value) return normalizeSourceUrl(value)
+    const property = properties[candidate] as { type?: string } | undefined
+    if (property?.type === 'url') {
+      return { kind: 'found', propertyName: candidate }
+    }
   }
-  return null
+
+  const urlPropertyNames = getUrlPropertyNames(properties)
+  if (urlPropertyNames.length === 1) {
+    return { kind: 'found', propertyName: urlPropertyNames[0] }
+  }
+  if (urlPropertyNames.length > 1) {
+    return { kind: 'ambiguous', propertyNames: urlPropertyNames }
+  }
+  return { kind: 'missing' }
+}
+
+function extractExistingSourceUrl(
+  properties: Record<string, unknown>,
+  propertyName?: string | null
+): string | null {
+  const resolution: SourceUrlPropertyResolution = propertyName
+    ? { kind: 'found', propertyName }
+    : resolveSourceUrlPropertyName(properties)
+
+  if (resolution.kind !== 'found') return null
+
+  const property = properties[resolution.propertyName] as { url?: string | null } | undefined
+  const value = property?.url?.trim()
+  return value ? normalizeSourceUrl(value) : null
+}
+
+function buildMissingSourceUrlPropertyMessage(urlPropertyNames: string[]): string {
+  if (urlPropertyNames.length > 1) {
+    return (
+      'Notion database has multiple url properties and none match source_url or Source URL: ' +
+      urlPropertyNames.join(', ')
+    )
+  }
+
+  return 'Notion database must expose a url property named source_url or Source URL'
+}
+
+function buildEmptyDbSourceUrlPropertyMessage(urlPropertyNames: string[]): string {
+  if (urlPropertyNames.length > 1) {
+    return (
+      'Notion database is empty and has multiple url properties; rename one to source_url or Source URL, or leave only one url property: ' +
+      urlPropertyNames.join(', ')
+    )
+  }
+
+  return (
+    'Notion database is empty and schema has no url property named ' +
+    'source_url or Source URL; add this column to the database before the first sync'
+  )
 }
 
 function assertAuth(event: Parameters<typeof getHeader>[0], secret: string) {
@@ -134,7 +187,7 @@ async function fetchDevTo(): Promise<Article[]> {
 async function fetchWritablePropertyFromDbSchema(
   token: string,
   dbId: string
-): Promise<SourceUrlPropertyName | null> {
+): Promise<SourceUrlPropertyResolution> {
   try {
     const res = await fetch(`${NOTION_API}/databases/${dbId}`, {
       headers: {
@@ -143,13 +196,23 @@ async function fetchWritablePropertyFromDbSchema(
       },
       signal: AbortSignal.timeout(EXTERNAL_FETCH_TIMEOUT_MS),
     })
-    if (!res.ok) return null
+    if (!res.ok) {
+      const body = await res.text().catch(() => '')
+      return {
+        kind: 'error',
+        statusMessage: `Notion schema API returned ${res.status}: ${body.slice(0, 300)}`,
+      }
+    }
     const data: { properties?: Record<string, { type?: string }> } = await res.json()
-    return extractSourceUrlPropertyName(
+    return resolveSourceUrlPropertyName(
       (data.properties ?? {}) as Record<string, unknown>
     )
-  } catch {
-    return null
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err)
+    return {
+      kind: 'error',
+      statusMessage: `Failed to query Notion schema: ${message}`,
+    }
   }
 }
 
@@ -165,6 +228,7 @@ async function getExistingSourceState(
   const sourceUrls = new Set<string>()
   const legacyTitleKeys = new Set<string>()
   let writablePropertyName: SourceUrlPropertyName | null = null
+  let ambiguousUrlPropertyNames: string[] = []
   let cursor: string | undefined
   let pagesObserved = 0
   let sawSuccessfulQuery = false
@@ -207,10 +271,15 @@ async function getExistingSourceState(
         const properties = page.properties ?? {}
 
         if (!writablePropertyName) {
-          writablePropertyName = extractSourceUrlPropertyName(properties)
+          const resolution = resolveSourceUrlPropertyName(properties)
+          if (resolution.kind === 'found') {
+            writablePropertyName = resolution.propertyName
+          } else if (resolution.kind === 'ambiguous') {
+            ambiguousUrlPropertyNames = resolution.propertyNames
+          }
         }
 
-        const existingUrl = extractExistingSourceUrl(properties)
+        const existingUrl = extractExistingSourceUrl(properties, writablePropertyName)
         if (existingUrl) {
           sourceUrls.add(existingUrl)
           continue
@@ -239,11 +308,11 @@ async function getExistingSourceState(
     })
   }
 
-  // Pages were present but none exposed the expected URL property — clear schema error.
+  // Pages were present but none exposed a resolvable URL property — clear schema error.
   if (pagesObserved > 0 && !writablePropertyName) {
     throw createError({
       statusCode: 500,
-      statusMessage: 'Notion database must expose a url property named source_url or Source URL',
+      statusMessage: buildMissingSourceUrlPropertyMessage(ambiguousUrlPropertyNames),
     })
   }
 
@@ -251,13 +320,23 @@ async function getExistingSourceState(
   // writable property name from page rows, so probe the database schema
   // directly.  This allows bootstrapping without requiring a manual seed row.
   if (pagesObserved === 0 && !writablePropertyName) {
-    writablePropertyName = await fetchWritablePropertyFromDbSchema(token, dbId)
-    if (!writablePropertyName) {
+    const schemaResolution = await fetchWritablePropertyFromDbSchema(token, dbId)
+    if (schemaResolution.kind === 'found') {
+      writablePropertyName = schemaResolution.propertyName
+    } else if (schemaResolution.kind === 'ambiguous') {
       throw createError({
         statusCode: 500,
-        statusMessage:
-          'Notion database is empty and schema has no url property named ' +
-          'source_url or Source URL; add this column to the database before the first sync',
+        statusMessage: buildEmptyDbSourceUrlPropertyMessage(schemaResolution.propertyNames),
+      })
+    } else if (schemaResolution.kind === 'error') {
+      throw createError({
+        statusCode: 500,
+        statusMessage: schemaResolution.statusMessage,
+      })
+    } else {
+      throw createError({
+        statusCode: 500,
+        statusMessage: buildEmptyDbSourceUrlPropertyMessage([]),
       })
     }
   }
