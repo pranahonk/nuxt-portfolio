@@ -186,7 +186,13 @@ async function getExistingSourceState(
         body: JSON.stringify(body),
         signal: AbortSignal.timeout(EXTERNAL_FETCH_TIMEOUT_MS),
       })
-      if (!res.ok) break
+      if (!res.ok) {
+        const body = await res.text().catch(() => '')
+        throw createError({
+          statusCode: 500,
+          statusMessage: `Notion API returned ${res.status}: ${body.slice(0, 300)}`,
+        })
+      }
 
       const data: {
         results: Array<{ properties: Record<string, unknown> }>
@@ -219,7 +225,8 @@ async function getExistingSourceState(
       }
 
       cursor = data.has_more ? (data.next_cursor ?? undefined) : undefined
-    } catch {
+    } catch (err) {
+      if (err && typeof err === 'object' && 'statusCode' in err) throw err
       break
     }
   } while (cursor)
