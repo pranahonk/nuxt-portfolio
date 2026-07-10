@@ -173,7 +173,7 @@ async function fetchDevTo(): Promise<Article[]> {
   for (const tag of TAGS) {
     try {
       const res = await fetch(
-        `${DEVTO_API}/articles?tag=${tag}&per_page=5&top=7`,
+        `${DEVTO_API}/articles?tag=${tag}&per_page=10&top=3`,
         {
           headers: { 'User-Agent': 'prana-portfolio/newssync' },
           signal: AbortSignal.timeout(EXTERNAL_FETCH_TIMEOUT_MS),
