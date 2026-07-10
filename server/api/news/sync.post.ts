@@ -74,11 +74,32 @@ function extractExistingSourceUrl(
   return value ? normalizeSourceUrl(value) : null
 }
 
-function buildMissingSourceUrlPropertyMessage(urlPropertyNames: string[]): string {
+function formatPropertyDiagnostics(properties: Record<string, unknown>): string {
+  const summary = Object.entries(properties)
+    .map(([name, property]) => {
+      const type = (property as { type?: string } | undefined)?.type ?? 'unknown'
+      return `${name}:${type}`
+    })
+    .join(', ')
+
+  return summary || 'none'
+}
+
+function buildMissingSourceUrlPropertyMessage(
+  urlPropertyNames: string[],
+  propertyDiagnostics?: string
+): string {
   if (urlPropertyNames.length > 1) {
     return (
       'Notion database has multiple url properties and none match source_url or Source URL: ' +
       urlPropertyNames.join(', ')
+    )
+  }
+
+  if (propertyDiagnostics) {
+    return (
+      'Notion database must expose a url property named source_url or Source URL; ' +
+      `detected properties: ${propertyDiagnostics}`
     )
   }
 
@@ -229,6 +250,7 @@ async function getExistingSourceState(
   const legacyTitleKeys = new Set<string>()
   let writablePropertyName: SourceUrlPropertyName | null = null
   let ambiguousUrlPropertyNames: string[] = []
+  let propertyDiagnostics: string | null = null
   let cursor: string | undefined
   let pagesObserved = 0
   let sawSuccessfulQuery = false
@@ -276,6 +298,8 @@ async function getExistingSourceState(
             writablePropertyName = resolution.propertyName
           } else if (resolution.kind === 'ambiguous') {
             ambiguousUrlPropertyNames = resolution.propertyNames
+          } else if (!propertyDiagnostics) {
+            propertyDiagnostics = formatPropertyDiagnostics(properties)
           }
         }
 
@@ -296,7 +320,11 @@ async function getExistingSourceState(
       cursor = data.has_more ? (data.next_cursor ?? undefined) : undefined
     } catch (err) {
       if (err && typeof err === 'object' && 'statusCode' in err) throw err
-      break
+      const message = err instanceof Error ? err.message : String(err)
+      throw createError({
+        statusCode: 500,
+        statusMessage: `Failed to query Notion database: ${message}`,
+      })
     }
   } while (cursor)
 
@@ -312,7 +340,10 @@ async function getExistingSourceState(
   if (pagesObserved > 0 && !writablePropertyName) {
     throw createError({
       statusCode: 500,
-      statusMessage: buildMissingSourceUrlPropertyMessage(ambiguousUrlPropertyNames),
+      statusMessage: buildMissingSourceUrlPropertyMessage(
+        ambiguousUrlPropertyNames,
+        propertyDiagnostics ?? undefined
+      ),
     })
   }
 
@@ -417,12 +448,12 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 500, statusMessage: 'NOTION_TABLE_ID not configured' })
   }
 
-  const deadline = Date.now() + SYNC_BUDGET_MS
-
   const [hnArticles, devtoArticles] = await Promise.all([
     fetchHackerNews(),
     fetchDevTo(),
   ])
+
+  const deadline = Date.now() + SYNC_BUDGET_MS
 
   const seen = new Set<string>()
   const allArticles = [...hnArticles, ...devtoArticles].filter(a => {
