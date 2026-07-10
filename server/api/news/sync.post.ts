@@ -1,6 +1,6 @@
 import { Client } from '@notionhq/client'
 
-const SYNC_BUDGET_MS = 8_000
+const SYNC_BUDGET_MS = 18_000
 const EXTERNAL_FETCH_TIMEOUT_MS = 4_000
 const NOTION_RATE_LIMIT_MS = 350
 const HN_API = 'https://hacker-news.firebaseio.com/v0'
