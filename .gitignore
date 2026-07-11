@@ -32,3 +32,6 @@ Thumbs.db
 
 # NPM lock file (using Yarn)
 package-lock.json
+
+# graphify knowledge-graph output (local tooling)
+graphify-out/

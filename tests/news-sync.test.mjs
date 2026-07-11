@@ -179,3 +179,27 @@ test('news sync surfaces schema fetch failures instead of pretending the url col
     },
   )
 })
+
+test('news sync reports observed properties when existing rows have no url field', async () => {
+  setFetchMock({
+    notionResults: [
+      buildPage({
+        title: { type: 'title', title: [{ plain_text: 'Existing post' }] },
+        description: { type: 'rich_text', rich_text: [] },
+        public: { type: 'checkbox', checkbox: true },
+      }),
+    ],
+  })
+
+  await assert.rejects(
+    runSync(),
+    (error) => {
+      assert.equal(error.statusCode, 500)
+      assert.match(error.statusMessage, /detected properties/i)
+      assert.match(error.statusMessage, /title:title/)
+      assert.match(error.statusMessage, /description:rich_text/)
+      assert.match(error.statusMessage, /public:checkbox/)
+      return true
+    },
+  )
+})
