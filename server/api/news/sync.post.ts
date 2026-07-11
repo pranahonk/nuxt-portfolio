@@ -190,7 +190,7 @@ async function fetchDevTo(): Promise<Article[]> {
           url: a.url,
           description: a.description ?? '',
           tags: [tag, 'dev-to'],
-          thumbnail: a.cover_image || a.social_image || '',
+          thumbnail: a.cover_image || a.social_image || undefined,
         })
       }
     } catch {
@@ -456,7 +456,9 @@ export default defineEventHandler(async (event) => {
   const deadline = Date.now() + SYNC_BUDGET_MS
 
   const seen = new Set<string>()
-  const allArticles = [...hnArticles, ...devtoArticles].filter(a => {
+  // Dev.to articles have cover images; process them first so images land in
+  // Notion before budget runs out. HN articles have no thumbnails.
+  const allArticles = [...devtoArticles, ...hnArticles].filter(a => {
     const key = getTitleKey(a.title)
     if (seen.has(key)) return false
     seen.add(key)
