@@ -49,3 +49,33 @@ test('fetchNotionListing maps and sorts pages newest-first', async () => {
     globalThis.fetch = origFetch
   }
 })
+
+test('fetchNotionListing returns [] on mid-pagination failure (not partial)', async () => {
+  const origFetch = globalThis.fetch
+  let callCount = 0
+  globalThis.fetch = async () => {
+    callCount++
+    if (callCount === 1) {
+      return {
+        ok: true,
+        json: async () => ({
+          results: [
+            { id: '1', created_time: '2026-07-10T00:00:00Z', cover: null,
+              properties: { title: { type: 'title', title: [{ plain_text: 'Older' }] },
+                description: { type: 'rich_text', rich_text: [] },
+                tags: { type: 'multi_select', multi_select: [] },
+                created_at: { type: 'date', date: { start: '2026-07-10T00:00:00Z' } } } },
+          ],
+          has_more: true, next_cursor: 'x',
+        }),
+      }
+    }
+    return { ok: false, status: 500, json: async () => ({}) }
+  }
+  try {
+    const result = await fetchNotionListing('token', 'db')
+    assert.deepEqual(result, [], 'must return [] on mid-pagination failure, not partial data')
+  } finally {
+    globalThis.fetch = origFetch
+  }
+})

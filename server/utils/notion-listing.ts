@@ -27,7 +27,7 @@ export async function fetchNotionListing(
         },
         body: JSON.stringify(body),
       })
-      if (!res.ok) break
+      if (!res.ok) return []
 
       const data: {
         results: Array<{
