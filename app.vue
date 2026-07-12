@@ -2,7 +2,7 @@
 
 <template>
   <NuxtLayout>
-    <NuxtPage />
+    <NuxtPage :keepalive="{ include: ['posts-index'] }" />
   </NuxtLayout>
 </template>
 

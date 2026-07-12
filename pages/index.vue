@@ -1,7 +1,7 @@
 <script setup lang="ts">
 // Fetch latest published posts from CMS
-const { data } = useLazyFetch('/api/posts', {
-  transform: (posts: any[]) => posts?.slice(0, 3) || []
+const { data } = useLazyFetch<{ posts: any[]; total: number; hasMore: boolean }>('/api/posts?page=1&limit=10', {
+  transform: (res) => res?.posts?.slice(0, 3) || []
 })
 </script>
 
