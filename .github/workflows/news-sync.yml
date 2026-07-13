@@ -50,3 +50,16 @@ jobs:
             echo "Enrich failed with HTTP $STATUS"
             exit 1
           fi
+
+      # The generate script writes a build artifact (posts.json), so posts.json
+      # regeneration happens on the next Netlify build (git push). This step
+      # instead WARMS the Blob cache by hitting the API once post-enrich.
+      - name: Warm listing blob cache
+        run: |
+          STATUS=$(curl -s -o /tmp/resp-gen.json -w "%{http_code}" \
+            --max-time 60 \
+            -X POST \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            -H "Content-Type: application/json" \
+            https://prana-wijaya.netlify.app/api/posts?page=1&limit=1)
+          echo "Warm cache HTTP: $STATUS"
