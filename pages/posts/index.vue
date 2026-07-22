@@ -40,13 +40,8 @@ async function loadMore() {
   await fetchPage(page.value)
 }
 
-// Only fetch page 1 if we don't already have state (KeepAlive re-activation).
-onMounted(() => {
-  if (posts.value.length === 0) fetchPage(1)
-})
-
-// Background revalidate page 1 when returning to a kept-alive instance,
-// so newly-added posts appear without a visible reload.
+// onActivated fires on both first mount and KeepAlive re-activation.
+// Empty-state check handles initial load; back-nav revalidates.
 onActivated(async () => {
   if (posts.value.length === 0) { await fetchPage(1); return }
   try {
