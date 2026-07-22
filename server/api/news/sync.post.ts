@@ -2,6 +2,7 @@ import { Client } from '@notionhq/client'
 
 const SYNC_BUDGET_MS = 18_000
 const EXTERNAL_FETCH_TIMEOUT_MS = 4_000
+const NOTION_FETCH_TIMEOUT_MS = 12_000
 const NOTION_RATE_LIMIT_MS = 350
 const HN_API = 'https://hacker-news.firebaseio.com/v0'
 const DEVTO_API = 'https://dev.to/api'
@@ -270,7 +271,7 @@ async function getExistingSourceState(
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(body),
-        signal: AbortSignal.timeout(EXTERNAL_FETCH_TIMEOUT_MS),
+        signal: AbortSignal.timeout(NOTION_FETCH_TIMEOUT_MS),
       })
       if (!res.ok) {
         const body = await res.text().catch(() => '')
