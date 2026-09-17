@@ -1,5 +1,6 @@
 import { promises as fs } from 'fs'
 import { join } from 'path'
+import type { H3Event } from 'h3'
 import { generateSlug } from '../../utils/slug'
 import { getCachedPost, setCachedPost } from '../../utils/post-store'
 import { fetchContentFromUrl } from '../../utils/content-fetcher'
@@ -7,6 +8,55 @@ import { buildSafeSourceLink, getNotionCoverUrl, isSafeRemoteUrl } from '../../u
 
 const ARTICLES_DIR = join(process.cwd(), 'server/data/articles')
 const NOTION_API = 'https://api.notion.com/v1'
+
+type NotionRichText = { plain_text?: string; href?: string | null; annotations?: { bold?: boolean; italic?: boolean; code?: boolean } }
+type NotionBlock = { type: string; [key: string]: unknown }
+
+function escapeHtml(value: string): string {
+  return value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;')
+}
+
+function renderRichText(nodes: NotionRichText[] = []): string {
+  return nodes.map(node => {
+    let value = escapeHtml(node.plain_text ?? '')
+    if (node.annotations?.code) value = `<code>${value}</code>`
+    if (node.annotations?.bold) value = `<strong>${value}</strong>`
+    if (node.annotations?.italic) value = `<em>${value}</em>`
+    const href = node.href && /^https?:\/\//i.test(node.href) ? node.href : null
+    return href ? `<a href="${escapeHtml(href)}" target="_blank" rel="noopener noreferrer">${value}</a>` : value
+  }).join('')
+}
+
+async function fetchNotionBlocks(token: string, pageId: string): Promise<NotionBlock[]> {
+  const blocks: NotionBlock[] = []
+  let cursor: string | undefined
+  do {
+    const params = new URLSearchParams({ page_size: '100' })
+    if (cursor) params.set('start_cursor', cursor)
+    const response = await fetch(`${NOTION_API}/blocks/${pageId}/children?${params}`, {
+      headers: { Authorization: `Bearer ${token}`, 'Notion-Version': '2022-06-28' },
+    })
+    if (!response.ok) return []
+    const data = await response.json() as { results: NotionBlock[]; has_more: boolean; next_cursor: string | null }
+    blocks.push(...(data.results ?? []))
+    cursor = data.has_more ? (data.next_cursor ?? undefined) : undefined
+  } while (cursor)
+  return blocks
+}
+
+export function renderNotionBlocks(blocks: NotionBlock[]): string {
+  return blocks.map(block => {
+    const data = block[block.type] as { rich_text?: NotionRichText[] } | undefined
+    const text = renderRichText(data?.rich_text)
+    if (!text) return ''
+    if (block.type === 'heading_2') return `<h2>${text}</h2>`
+    if (block.type === 'heading_3') return `<h3>${text}</h3>`
+    if (block.type === 'bulleted_list_item') return `<ul><li>${text}</li></ul>`
+    if (block.type === 'numbered_list_item') return `<ol><li>${text}</li></ol>`
+    if (block.type === 'quote') return `<blockquote>${text}</blockquote>`
+    return block.type === 'paragraph' ? `<p>${text}</p>` : ''
+  }).join('\n')
+}
 
 function toResponse(post: {
   slug: string; title: string; content: string; thumbnail: string
@@ -24,7 +74,7 @@ function toResponse(post: {
   }
 }
 
-export default defineEventHandler(async (event) => {
+export default defineEventHandler(async (event: H3Event) => {
   const slug = getRouterParam(event, 'slug') ?? ''
   const config = useRuntimeConfig()
 
@@ -109,30 +159,17 @@ export default defineEventHandler(async (event) => {
   if (!matchedPage) throw createError({ statusCode: 404, statusMessage: 'Post not found' })
 
   // Extract source URL from Notion page blocks
-  const blocksRes = await fetch(
-    `${NOTION_API}/blocks/${matchedPage.id as string}/children?page_size=10`,
-    { headers: { Authorization: `Bearer ${notionToken}`, 'Notion-Version': '2022-06-28' } }
-  )
-
   let sourceUrl = ''
-  if (blocksRes.ok) {
-    const blocksData = await blocksRes.json() as {
-      results: Array<{ type: string; paragraph?: { rich_text: Array<{ plain_text: string }> } }>
-    }
-    for (const block of blocksData.results ?? []) {
+  const notionBlocks = await fetchNotionBlocks(notionToken, matchedPage.id as string)
+  if (notionBlocks.length) {
+    for (const block of notionBlocks) {
       if (block.type !== 'paragraph') continue
-      const text = block.paragraph?.rich_text?.map(t => t.plain_text).join('') ?? ''
+      const paragraph = block.paragraph as { rich_text?: Array<{ plain_text?: string }> } | undefined
+      const text = paragraph?.rich_text?.map(t => t.plain_text ?? '').join('') ?? ''
       const m = text.match(/Source: (https?:\/\/\S+)/)
       if (m) { sourceUrl = m[1]; break }
     }
   }
-
-  if (!sourceUrl || !isSafeRemoteUrl(sourceUrl)) {
-    throw createError({ statusCode: 404, statusMessage: 'Post content not available yet' })
-  }
-
-  const enriched = await fetchContentFromUrl(sourceUrl)
-  if (!enriched) throw createError({ statusCode: 503, statusMessage: 'Could not fetch article content' })
 
   const props = matchedPage.properties as Record<string, {
     rich_text?: Array<{ plain_text: string }>
@@ -144,12 +181,25 @@ export default defineEventHandler(async (event) => {
   const createdAt = new Date(
     (props.created_at?.date?.start ?? matchedPage.created_time) as string
   ).toISOString()
-  const thumbnail = getNotionCoverUrl(matchedPage) || enriched.thumbnail || ''
-  const content = buildSafeSourceLink(sourceUrl) + enriched.content
+  let thumbnail = getNotionCoverUrl(matchedPage)
+  let excerpt = description
+  let content = ''
+
+  if (sourceUrl && isSafeRemoteUrl(sourceUrl)) {
+    const enriched = await fetchContentFromUrl(sourceUrl)
+    if (!enriched) throw createError({ statusCode: 503, statusMessage: 'Could not fetch article content' })
+    thumbnail ||= enriched.thumbnail || ''
+    excerpt = enriched.excerpt || description
+    content = buildSafeSourceLink(sourceUrl) + enriched.content
+  } else {
+    content = renderNotionBlocks(notionBlocks)
+  }
+
+  if (!content) throw createError({ statusCode: 404, statusMessage: 'Post content not available yet' })
 
   const stored = {
     slug, title: matchedTitle, content, thumbnail,
-    excerpt: enriched.excerpt || description,
+    excerpt,
     created_at: createdAt, tags,
   }
   await setCachedPost(slug, stored)

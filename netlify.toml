@@ -19,10 +19,10 @@
   status = 200
   force = true
 
-# SPA fallback - this must be LAST
+# SSR fallback - this must be LAST
 [[redirects]]
   from = "/*"
-  to = "/index.html"
+  to = "/.netlify/functions/server/:splat"
   status = 200
 
 [[headers]]

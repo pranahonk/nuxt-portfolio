@@ -55,6 +55,13 @@ NOTION_ABOUT_PAGE_ID="34f33e041bc74cea89530902deef0012"
 NOTION_PORTFOLIO_PAGE_ID="316c052484be4a62b8c39bb5dcd36c01"
 NOTION_TABLE_ID="f906db55071f471eb418879a2d0b3c7f"
 
+# Daily article publisher (Mac mini)
+CUTAD_API_KEY=""
+LINKEDIN_ACCESS_TOKEN=""
+LINKEDIN_PERSON_URN=""
+
+The Mac mini launchd publisher runs at 05:30 and 17:30 WIB. Each slot creates one original portfolio article and one LinkedIn post linking to its canonical URL.
+
 
 then:
 
@@ -79,4 +86,3 @@ if you're using it too, we'd be happy to [feature](https://github.com/aymaneMx/n
 - :moon: The dark mode : [eggsy](https://github.com/eggsy/website)
 - :art: the minimal design : [Monotone](https://github.com/dev-ggaurav/Monotone)
 - :star: The open source section : [mouadziani](https://github.com/MouadZIANI/mouadziani.com) and [smakosh](https://github.com/smakosh/smakosh.com)
-

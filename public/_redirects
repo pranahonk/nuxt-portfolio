@@ -3,5 +3,5 @@
 /api/news/*  /.netlify/functions/server/api/news/:splat  200
 /api/*  /.netlify/functions/server/api/:splat  200
 
-# SPA fallback for client-side routing - must be LAST
-/*  /index.html  200
+# Render pages server-side so crawlers and social previews receive page metadata.
+/*  /.netlify/functions/server/:splat  200

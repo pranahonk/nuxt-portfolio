@@ -1,11 +1,12 @@
 export default defineNuxtConfig({
-  ssr: false,
+  ssr: true,
 
   nitro: {
     preset: 'netlify',
     prerender: {
       routes: ['/'],
-      crawlLinks: true
+      crawlLinks: false,
+      ignore: ['/cms', '/cms/**']
     },
     netlify: {
       // Don't add SPA fallback - we handle it in netlify.toml
@@ -15,6 +16,8 @@ export default defineNuxtConfig({
       '/': { headers: { 'cache-control': 's-maxage=31536000' } },
       '/_nuxt/**': { headers: { 'cache-control': 's-maxage=31536000' } },
       '/api/**': { headers: { 'cache-control': 'no-store' } },
+      '/posts': { headers: { 'cache-control': 's-maxage=300, stale-while-revalidate=60' } },
+      '/sitemap.xml': { headers: { 'cache-control': 's-maxage=300, stale-while-revalidate=60' } },
       '/**': { headers: { 'cache-control': 's-maxage=31536000' } },
       '/cms/**': {
         headers: {

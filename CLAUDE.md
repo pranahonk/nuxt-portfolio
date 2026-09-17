@@ -49,7 +49,7 @@ DEV_LOGO=
 
 ## Architecture
 
-The app is a Nuxt 3 SPA (`ssr: false`) deployed to Netlify. Nitro preset is `netlify` which compiles server routes to Netlify Functions.
+The app is a Nuxt 3 SSR application deployed to Netlify. Nitro preset is `netlify` which compiles pages and server routes to Netlify Functions.
 
 ### Data flow — blog posts
 
@@ -79,7 +79,7 @@ The `about` page and individual Notion pages (`/page/[id]`) use `vue3-notion` + 
 `netlify.toml` and `public/_redirects` both define redirect rules. The order matters:
 - `/api/cms/*` → Netlify Functions (must come before SPA fallback)
 - `/api/posts` and `/api/posts/:slug` → static JSON files
-- `/*` → `/index.html` (SPA fallback, must be last)
+- `/*` → the Netlify server function (SSR fallback, must be last)
 
 The `nuxt.config.ts` sets `netlify.toml: false` on the Nitro Netlify plugin to avoid Nuxt generating a conflicting `netlify.toml`.
 

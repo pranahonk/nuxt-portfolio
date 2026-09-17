@@ -5,4 +5,4 @@ Allow: /
 Disallow: /cms/
 Disallow: /api/cms/
 
-Sitemap: https://prana-wijaya.netlify.app/sitemap.xml
+Sitemap: https://www.pwijaya.com/sitemap.xml

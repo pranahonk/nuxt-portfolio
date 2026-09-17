@@ -31,9 +31,36 @@ watch(post, () => {
   })
 })
 
-useHead({
-  title: () => post.value?.title ? `${post.value.title} - Blog` : 'Blog Post'
+const canonicalUrl = computed(() => `https://www.pwijaya.com/posts/${route.params.slug}`)
+
+useSeoMeta({
+  title: () => post.value?.title ? `${post.value.title} | Prana Wijaya` : 'Blog Post | Prana Wijaya',
+  description: () => post.value?.description || 'Software engineering and technology insights from Prana Wijaya.',
+  ogTitle: () => post.value?.title,
+  ogDescription: () => post.value?.description,
+  ogType: 'article',
+  ogUrl: () => canonicalUrl.value,
+  ogImage: () => post.value?.thumbnail?.[0]?.url || 'https://www.pwijaya.com/logo.png',
+  twitterCard: 'summary_large_image',
 })
+
+useHead(() => ({
+  link: [{ rel: 'canonical', href: canonicalUrl.value }],
+  script: post.value ? [{
+    type: 'application/ld+json',
+    children: JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'BlogPosting',
+      headline: post.value.title,
+      description: post.value.description,
+      datePublished: post.value.created_at,
+      dateModified: post.value.updated_at,
+      mainEntityOfPage: canonicalUrl.value,
+      author: { '@type': 'Person', name: 'Prana Apsara Wijaya', url: 'https://www.linkedin.com/in/prana-wijaya/' },
+      image: post.value.thumbnail?.[0]?.url,
+    }),
+  }] : [],
+}))
 
 const formatDate = (date: string) => {
   return new Date(date).toLocaleDateString('en', {

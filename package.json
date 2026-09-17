@@ -12,7 +12,8 @@
     "pregenerate": "rm -rf .nuxt .output",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "start": "node .output/server/index.mjs"
+    "start": "node .output/server/index.mjs",
+    "publish:daily": "node --env-file=.env scripts/daily-article.mjs"
   },
   "dependencies": {
     "@mozilla/readability": "^0.6.0",
