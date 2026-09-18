@@ -5,6 +5,7 @@ import { generateSlug } from '../../utils/slug'
 import { getCachedPost, setCachedPost } from '../../utils/post-store'
 import { fetchContentFromUrl } from '../../utils/content-fetcher'
 import { buildSafeSourceLink, getNotionCoverUrl, isSafeRemoteUrl } from '../../utils/content-security'
+import { buildHashVerification } from '../../utils/article-blocks'
 
 const ARTICLES_DIR = join(process.cwd(), 'server/data/articles')
 const NOTION_API = 'https://api.notion.com/v1'
@@ -61,8 +62,9 @@ export function renderNotionBlocks(blocks: NotionBlock[]): string {
 function toResponse(post: {
   slug: string; title: string; content: string; thumbnail: string
   excerpt: string; created_at: string; tags: string[]
+  content_hash?: string; computed_content_hash?: string
 }) {
-  return {
+  const response: Record<string, unknown> = {
     slug: post.slug,
     title: post.title,
     content: post.content,
@@ -72,6 +74,11 @@ function toResponse(post: {
     tags: post.tags,
     thumbnail: post.thumbnail ? [{ url: post.thumbnail }] : null,
   }
+  if (post.content_hash || post.computed_content_hash) {
+    response.content_hash = post.content_hash ?? ''
+    response.computed_content_hash = post.computed_content_hash ?? ''
+  }
+  return response
 }
 
 export default defineEventHandler(async (event: H3Event) => {
@@ -181,6 +188,8 @@ export default defineEventHandler(async (event: H3Event) => {
   const createdAt = new Date(
     (props.created_at?.date?.start ?? matchedPage.created_time) as string
   ).toISOString()
+  const storedContentHash = props.content_hash?.rich_text?.[0]?.plain_text ?? ''
+  const linkedinCopy = props.linkedin_copy?.rich_text?.[0]?.plain_text ?? ''
   let thumbnail = getNotionCoverUrl(matchedPage)
   let excerpt = description
   let content = ''
@@ -197,10 +206,21 @@ export default defineEventHandler(async (event: H3Event) => {
 
   if (!content) throw createError({ statusCode: 404, statusMessage: 'Post content not available yet' })
 
+  const { computed_content_hash } = buildHashVerification({
+    title: matchedTitle,
+    excerpt: description,
+    tags,
+    contentHash: storedContentHash,
+    linkedinCopy,
+    notionBlocks,
+  })
+
   const stored = {
     slug, title: matchedTitle, content, thumbnail,
     excerpt,
     created_at: createdAt, tags,
+    content_hash: storedContentHash,
+    computed_content_hash: computed_content_hash,
   }
   await setCachedPost(slug, stored)
   return toResponse(stored)
