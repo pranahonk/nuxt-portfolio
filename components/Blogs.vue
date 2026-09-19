@@ -13,20 +13,20 @@
         :key="post.slug"
         class="project-card md:flex mt-10"
       >
-        <div class="img max-w-lg md:max-w-sm mx-auto md:mx-0 m-2 md:mr-4">
+        <div class="img w-full max-w-lg md:w-auto md:max-w-sm mx-auto md:mx-0 my-2 md:mr-4">
           <nuxt-link :to="`/posts/${post.slug}`">
             <img
               v-if="getImage(post.thumbnail)"
               :alt="post.title"
               :src="getImage(post.thumbnail)"
-              class="rounded-xl h-44 w-96 object-cover object-center"
+              class="rounded-xl h-44 w-full md:w-96 object-cover object-center"
               loading="lazy"
               @error="handleImageError($event, post)"
             />
             <div
               v-else
               :class="gradientClass(post.title)"
-              class="rounded-xl h-44 w-96 flex items-center justify-center"
+              class="rounded-xl h-44 w-full md:w-96 flex items-center justify-center"
             >
               <span class="text-white text-4xl font-bold select-none drop-shadow">
                 {{ post.title?.[0]?.toUpperCase() ?? '?' }}

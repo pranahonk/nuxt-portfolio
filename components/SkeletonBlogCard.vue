@@ -1,7 +1,7 @@
 <template>
   <div class="project-card md:flex mt-10 animate-pulse">
-    <div class="img max-w-lg md:max-w-sm mx-auto md:mx-0 m-2 md:mr-4">
-      <div class="rounded-xl h-44 w-96 bg-gray-200 dark:bg-gray-700"></div>
+    <div class="img w-full max-w-lg md:w-auto md:max-w-sm mx-auto md:mx-0 my-2 md:mr-4">
+      <div class="rounded-xl h-44 w-full md:w-96 bg-gray-200 dark:bg-gray-700"></div>
     </div>
     <div class="flex flex-col justify-between max-w-lg mx-auto md:flex-1 md:mx-0">
       <div class="txt md:px-5 lg:px-0">
