@@ -7,7 +7,7 @@ import jitiFactory from 'jiti'
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const jiti = jitiFactory(import.meta.url)
 
-const { getPostListing, setPostListing } = jiti(join(__dirname, '../server/utils/post-store.ts'))
+const { deleteCachedPost, getPostListing, setPostListing } = jiti(join(__dirname, '../server/utils/post-store.ts'))
 
 test('getPostListing returns null outside Netlify context (graceful)', async () => {
   const result = await getPostListing()
@@ -16,4 +16,8 @@ test('getPostListing returns null outside Netlify context (graceful)', async () 
 
 test('setPostListing does not throw outside Netlify context', async () => {
   await assert.doesNotReject(setPostListing([], 300))
+})
+
+test('deleteCachedPost does not throw outside Netlify context', async () => {
+  await assert.doesNotReject(deleteCachedPost('test-post'))
 })

@@ -34,6 +34,16 @@ export async function setCachedPost(slug: string, post: StoredPost): Promise<voi
   }
 }
 
+export async function deleteCachedPost(slug: string): Promise<void> {
+  try {
+    const store = openStore()
+    await store.delete(slug)
+    await store.delete(LISTING_KEY)
+  } catch {
+    // No Netlify context in local dev — graceful degradation
+  }
+}
+
 const LISTING_KEY = 'posts:listing'
 
 export interface PostSummary {
