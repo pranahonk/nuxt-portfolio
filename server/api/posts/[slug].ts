@@ -149,10 +149,11 @@ export default defineEventHandler(async (event: H3Event) => {
     }
 
     for (const page of data.results ?? []) {
-      const props = page.properties as Record<string, { title?: Array<{ plain_text: string }> }>
+      const props = page.properties as Record<string, { title?: Array<{ plain_text: string }>; rich_text?: Array<{ plain_text: string }> }>
       const titleProp = props.title ?? props.Name ?? props.name
       const title = titleProp?.title?.[0]?.plain_text ?? ''
-      if (generateSlug(title) === slug) {
+      const explicitSlug = props.slug?.rich_text?.map(node => node.plain_text).join('') ?? ''
+      if (explicitSlug === slug || generateSlug(title) === slug) {
         matchedPage = page
         matchedTitle = title
         break

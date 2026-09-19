@@ -52,7 +52,7 @@ export async function fetchNotionListing(
         const title = titleProp?.title?.[0]?.plain_text ?? ''
         if (!title) continue
 
-        const slug = generateSlug(title)
+        const slug = props.slug?.rich_text?.map(t => t.plain_text).join('') || generateSlug(title)
         const description = props.description?.rich_text?.[0]?.plain_text ?? ''
         const tags = props.tags?.multi_select?.map(t => t.name) ?? []
         const createdAt = props.created_at?.date?.start ?? page.created_time
