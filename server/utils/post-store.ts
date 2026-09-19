@@ -19,7 +19,9 @@ export async function getCachedPost(slug: string): Promise<StoredPost | null> {
     const store = openStore()
     const raw = await store.get(slug)
     if (!raw) return null
-    return JSON.parse(raw) as StoredPost
+    const envelope = JSON.parse(raw) as { post?: StoredPost; expiresAt?: number }
+    if (!envelope.post || !envelope.expiresAt || Date.now() > envelope.expiresAt) return null
+    return envelope.post
   } catch {
     return null
   }
@@ -28,7 +30,7 @@ export async function getCachedPost(slug: string): Promise<StoredPost | null> {
 export async function setCachedPost(slug: string, post: StoredPost): Promise<void> {
   try {
     const store = openStore()
-    await store.set(slug, JSON.stringify(post))
+    await store.set(slug, JSON.stringify({ post, expiresAt: Date.now() + 300_000 }))
   } catch {
     // No Netlify context in local dev — graceful degradation
   }
