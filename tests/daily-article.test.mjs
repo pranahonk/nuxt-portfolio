@@ -1,6 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { htmlToBlocks, publicationKey, selectTopic, slugify, topics } from '../scripts/daily-article.mjs'
+import { htmlToBlocks, normalizeLinkedInHashtags, publicationKey, selectTopic, slugify, topics } from '../scripts/daily-article.mjs'
 
 test('selectTopic avoids recently used topics until the rotation is exhausted', () => {
   const selected = selectTopic(topics.slice(0, -1), new Date('2026-09-17T00:00:00Z'))
@@ -21,4 +21,13 @@ test('htmlToBlocks creates native article blocks and linked sources', () => {
   assert.equal(blocks[0].type, 'paragraph')
   assert.equal(blocks[1].type, 'heading_2')
   assert.equal(blocks.at(-1).bulleted_list_item.rich_text[0].text.link.url, 'https://example.com')
+})
+
+test('normalizeLinkedInHashtags adds 6-9 specific hashtags and removes generic tags', () => {
+  const copy = normalizeLinkedInHashtags('Summary #AI #Technology #RemoteWork')
+  const hashtags = copy.match(/#[A-Za-z0-9_-]+/g) ?? []
+  assert.ok(hashtags.length >= 6 && hashtags.length <= 9)
+  assert.equal(hashtags.includes('#AI'), false)
+  assert.equal(hashtags.includes('#Technology'), false)
+  assert.ok(hashtags.includes('#IndonesianDevelopers'))
 })

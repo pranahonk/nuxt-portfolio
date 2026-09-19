@@ -116,7 +116,7 @@ Requirements:
 - Distinguish observations from sourced facts. No hype, keyword stuffing, fake urgency, or generic AI phrases.
 - Include 3-5 descriptive H2 sections, short paragraphs, and a concrete conclusion. Sources are appended separately.
 - Optimize naturally for the topic plus "Indonesian software developer" and "Southeast Asia tech" when relevant.
-- Return JSON only: {"title":"...","excerpt":"120-160 chars","tags":["3-5","lowercase","tags"],"html":"<p>...</p><h2>...</h2>","linkedin":"500-900 character standalone LinkedIn post ending with a question; no URL and at most 3 hashtags"}`
+- Return JSON only: {"title":"...","excerpt":"120-160 chars","tags":["3-5","lowercase","tags"],"html":"<p>...</p><h2>...</h2>","linkedin":"500-900 character standalone LinkedIn post ending with a question, followed by 6-9 specific topic-relevant hashtags. Prefer precise tags such as #IndonesianDevelopers, #SoutheastAsiaTech, #RemoteEngineering, #EngineeringCareers, and #AIAssistedDevelopment. Avoid generic tags such as #Technology, #Tech, #AI, #Coding, #Programming, and #Career"}`
 
   let lastError
   for (const model of models) {
@@ -134,6 +134,7 @@ Requirements:
         typeof article.html !== 'string' || typeof article.linkedin !== 'string' ||
         !Array.isArray(article.tags) || !article.tags.every(tag => typeof tag === 'string')
       ) throw new Error(`${model} returned invalid content`)
+      article.linkedin = normalizeLinkedInHashtags(article.linkedin)
       if (article.excerpt.length > 160) {
         article.excerpt = `${article.excerpt.slice(0, 157).replace(/\s+\S*$/, '')}...`
       }
@@ -141,6 +142,18 @@ Requirements:
     } catch (error) { lastError = error }
   }
   throw lastError
+}
+
+export function normalizeLinkedInHashtags(copy) {
+  const fallback = ['#IndonesianDevelopers', '#SoutheastAsiaTech', '#RemoteEngineering', '#EngineeringCareers', '#AIAssistedDevelopment', '#SoftwareLeadership']
+  const generic = /^#(?:technology|tech|ai|coding|programming|career)$/i
+  const tags = [...new Set((copy.match(/#[A-Za-z0-9_-]+/g) ?? []).filter(tag => !generic.test(tag)))]
+  for (const tag of fallback) {
+    if (tags.length >= 6) break
+    if (!tags.some(current => current.toLowerCase() === tag.toLowerCase())) tags.push(tag)
+  }
+  const body = copy.replace(/(?:\s*#[A-Za-z0-9_-]+)+\s*$/g, '').trim()
+  return `${body}\n\n${tags.slice(0, 9).join(' ')}`.trim()
 }
 
 function richText(content, link) {
