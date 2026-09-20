@@ -2,87 +2,20 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Commands
+**See [AGENTS.md](./AGENTS.md) for the full operating guide.** It is the single source of truth for this repository: commands, environment variables, the three-tier post data flow, routing rules, security boundaries, and known operational conflicts.
 
-```bash
-yarn dev          # dev server at localhost:3000
-yarn build        # SSR build (Netlify serverless)
-yarn generate     # static site generation (clears .nuxt and .output first)
-yarn preview      # preview production build locally
-```
+Do not duplicate content from `AGENTS.md` here. Two copies drift, and a stale copy is worse than no copy.
 
-No test suite is configured. No linter/formatter is configured either (README mentions Eslint & Prettier but they are not present in package.json).
+## Quick orientation
 
-### Utility scripts
+- Nuxt 3 SSR, deployed to Netlify with the Nitro `netlify` preset.
+- Blog posts resolve Blobs cache → local JSON → Notion. Notion is the source of truth; Blobs is only a cache.
+- No test suite, no linter, no formatter. Do not invent those scripts.
+- The article generator lives in a separate repository, `/Users/pranawijaya/JobAutomationApplied`. Read its `AGENTS.md` before changing how posts are produced.
 
-```bash
-# After adding/editing articles in server/data/articles/, regenerate static JSON for Netlify:
-node scripts/generate-posts-json.js
+## Before changing anything
 
-# Optimize images in public/images/portfolio/:
-python3 scripts/optimize_images.py          # default 85% quality, creates backups
-python3 scripts/optimize_images.py --dry-run
-python3 scripts/optimize_images.py --quality 90 --no-backup
-```
-
-## Environment variables
-
-Copy to `.env`:
-
-```
-BASE_URL=
-GITHUB_USERNAME=
-NOTION_TABLE_ID=
-NOTION_ABOUT_PAGE_ID=
-NOTION_PORTFOLIO_PAGE_ID=
-NOTION_TOKEN=               # server-only, used by CMS import
-JWT_SECRET=                 # server-only, default: your-jwt-secret-here
-CMS_PASSWORD=               # server-only, default: admin123
-DEV_NAME=
-DEV_DESCRIPTION=
-DEV_ROLE=
-DEV_GITHUB_LINK=
-DEV_TWITTER_LINK=
-DEV_LINKEDIN_LINK=
-DEV_LOGO=
-```
-
-## Architecture
-
-The app is a Nuxt 3 SSR application deployed to Netlify. Nitro preset is `netlify` which compiles pages and server routes to Netlify Functions.
-
-### Data flow — blog posts
-
-Both dev and production route through the same Nitro function:
-
-- `server/api/posts/index.ts` and `server/api/posts/[slug].ts` read from `server/data/articlesData.ts`.
-- `public/_redirects` maps `/api/*` → the Netlify Function **before** the `/*  /index.html` SPA fallback. This is the critical routing rule — Netlify Functions 2.0 with `path: "/*"` + `preferStatic: true` processes `_redirects` rules before `netlify.toml` redirects. Any API path not listed in `_redirects` before `/*` will receive `index.html` (HTML) instead of JSON.
-- **Do NOT create a `public/api/posts/` directory.** Netlify infrastructure issues a 301 trailing-slash redirect for any path that matches a directory name, which bypasses all redirect rules and causes Nitro to receive `/api/posts/` (no matching route) and return `index.html`.
-- `scripts/generate-posts-json.js` only writes `public/api/posts.json`; it no longer writes individual per-post files.
-
-When adding or editing a post, update the JSON files under `server/data/articles/`, then run `node scripts/generate-posts-json.js` to regenerate the `public/api/` static files.
-
-### CMS
-
-The built-in CMS lives at `/cms/*`. It is protected by `middleware/cms-auth.ts` (checks a `cms-token` cookie). Authentication is handled by `server/api/cms/auth/login.post.ts` which validates against `CMS_PASSWORD` and issues a 24-hour JWT signed with `JWT_SECRET`. Articles can be created/edited via `/cms/articles` and imported from a Notion database via `server/api/cms/import-notion.post.ts`.
-
-### Portfolio projects
-
-Project data is hardcoded in `server/data/portfolioData.ts` (not Notion-driven). Images are referenced via `utils/imageHelper.ts` → `getOptimizedImagePath()`, which resolves to `.webp` variants in `public/images/portfolio/`.
-
-### Notion rendering
-
-The `about` page and individual Notion pages (`/page/[id]`) use `vue3-notion` + `notion-client` to render Notion blocks. The `composables/useProps.ts` helper wires up internal Nuxt Link routing for Notion page links. The `server/api/page/[pageId].ts` route fetches live from Notion using `notion-client`.
-
-### Routing / redirects
-
-`netlify.toml` and `public/_redirects` both define redirect rules. The order matters:
-- `/api/cms/*` → Netlify Functions (must come before SPA fallback)
-- `/api/posts` and `/api/posts/:slug` → static JSON files
-- `/*` → the Netlify server function (SSR fallback, must be last)
-
-The `nuxt.config.ts` sets `netlify.toml: false` on the Nitro Netlify plugin to avoid Nuxt generating a conflicting `netlify.toml`.
-
-### Styling
-
-Tailwind CSS v3 with `@tailwindcss/typography`. Dark/light mode via `@nuxtjs/color-mode` with class-based switching (`classSuffix: ''`). PostCSS pipeline includes `postcss-nested` and `postcss-preset-env` (nesting-rules disabled to avoid conflict with Tailwind nesting).
+- Post resolution or slugs: read the Post Data Flow and Content Hashing sections of `AGENTS.md` first.
+- Redirects or API routing: read Routing And Redirects. Rule order is load-bearing and has broken the API before.
+- Remote content fetching: read Security. Tier 3 fetches arbitrary URLs from Notion, so the SSRF guards are not optional.
+- Publishing or scheduling: read Known Conflict: Duplicate Publishing. Two pipelines currently publish on the same schedule.
