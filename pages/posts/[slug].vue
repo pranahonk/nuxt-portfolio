@@ -2,7 +2,15 @@
 import { onMounted, watch } from 'vue'
 
 const route = useRoute()
+const nuxtApp = useNuxtApp()
 const { data: post, pending, error } = await useFetch(`/api/posts/${route.params.slug}`)
+
+function goBack() {
+  const prevPath = (nuxtApp as Record<string, unknown>).$prevPath
+  const prev = typeof prevPath === 'function' ? (prevPath as () => string | null)() : null
+  if (prev) window.history.back()
+  else navigateTo('/posts')
+}
 
 // Handle broken images in post content
 const setupContentImageHandlers = () => {
@@ -103,15 +111,16 @@ const handleImageError = (event: Event) => {
       <!-- Post Header -->
       <header class="mb-8">
         <!-- Back Link -->
-        <NuxtLink
-          to="/posts"
+        <a
+          href="#"
+          @click.prevent.stop="goBack"
           class="inline-flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-purple-600 dark:hover:text-purple-400 mb-6 transition-colors"
         >
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
           </svg>
           Back to Posts
-        </NuxtLink>
+        </a>
 
         <!-- Featured Image -->
         <div v-if="post.thumbnail?.[0]?.url" class="mb-6 rounded-xl overflow-hidden bg-gray-200 dark:bg-gray-700">
@@ -158,15 +167,16 @@ const handleImageError = (event: Event) => {
 
       <!-- Post Footer -->
       <footer class="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700">
-        <NuxtLink
-          to="/posts"
+        <a
+          href="#"
+          @click.prevent.stop="goBack"
           class="inline-flex items-center gap-2 text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 font-medium transition-colors"
         >
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
           </svg>
           View all posts
-        </NuxtLink>
+        </a>
       </footer>
     </article>
   </div>
