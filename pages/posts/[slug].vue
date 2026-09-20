@@ -180,7 +180,12 @@ const handleImageError = (event: Event) => {
 }
 .dark .prose img { background-color: rgb(55 65 81); }
 .prose img.image-fallback { object-fit: contain; padding: 2rem; }
-.prose pre { border-radius: 0.5rem; }
+.prose { min-width: 0; overflow-wrap: anywhere; }
+.prose h1,
+.prose h2,
+.prose h3 { overflow-wrap: anywhere; word-break: break-word; }
+.prose pre { max-width: 100%; overflow-x: auto; border-radius: 0.5rem; }
+.prose pre code { display: block; width: max-content; min-width: 100%; }
 .prose blockquote { border-left-color: #9333ea; }
 .dark .prose blockquote { border-left-color: #c084fc; }
 
