@@ -56,6 +56,12 @@
     Cache-Control = "public, max-age=31536000, immutable"
 
 [[headers]]
+  for = "/api/posts"
+  [headers.values]
+    Cache-Control = "public, max-age=0, s-maxage=300, stale-while-revalidate=86400"
+    Netlify-CDN-Cache-Control = "public, durable, s-maxage=300, stale-while-revalidate=86400"
+
+[[headers]]
   for = "/api/*"
   [headers.values]
     Cache-Control = "no-store"

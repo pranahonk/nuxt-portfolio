@@ -5,16 +5,17 @@ const NOTION_API = 'https://api.notion.com/v1'
 
 export async function fetchNotionListing(
   token: string,
-  dbId: string
+  dbId: string,
+  maxItems = Infinity
 ): Promise<PostSummary[]> {
   const posts: PostSummary[] = []
   let cursor: string | undefined
   try {
     do {
       const body: Record<string, unknown> = {
-        page_size: 100,
+        page_size: Math.min(100, maxItems - posts.length),
         filter: { property: 'public', checkbox: { equals: true } },
-        sorts: [{ timestamp: 'created_time', direction: 'descending' }],
+        sorts: [{ property: 'created_at', direction: 'descending' }],
       }
       if (cursor) body.start_cursor = cursor
 
@@ -69,7 +70,7 @@ export async function fetchNotionListing(
       }
 
       cursor = data.has_more ? (data.next_cursor ?? undefined) : undefined
-    } while (cursor)
+    } while (cursor && posts.length < maxItems)
   } catch {
     return []
   }

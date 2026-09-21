@@ -12,7 +12,7 @@ const jiti = jitiFactory(import.meta.url)
 globalThis.defineEventHandler = (handler) => handler
 
 // Pure paginate helper is exported for unit testing.
-const { paginate } = jiti(join(__dirname, '../server/api/posts/index.ts'))
+const { paginate, paginatePartial } = jiti(join(__dirname, '../server/api/posts/index.ts'))
 
 const list = Array.from({ length: 25 }, (_, i) => ({
   slug: `s${i}`, title: `T${i}`, description: '', created_at: '2026-07-12T00:00:00.000Z', tags: [], thumbnail: null,
@@ -37,4 +37,18 @@ test('paginate clamps invalid page/limit to defaults', () => {
   const r = paginate(list, 0, -5)
   assert.equal(r.posts.length, 10)
   assert.equal(r.posts[0].slug, 's0')
+})
+
+test('paginatePartial uses one lookahead item without claiming an exact total', () => {
+  const r = paginatePartial(list.slice(0, 11), 1, 10)
+  assert.equal(r.posts.length, 10)
+  assert.equal(r.total, null)
+  assert.equal(r.hasMore, true)
+})
+
+test('paginatePartial reports the exact total on the final page', () => {
+  const r = paginatePartial(list, 3, 10)
+  assert.equal(r.posts.length, 5)
+  assert.equal(r.total, 25)
+  assert.equal(r.hasMore, false)
 })

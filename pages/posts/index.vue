@@ -5,7 +5,7 @@ interface PostSummary {
   slug: string; title: string; description: string
   created_at: string; tags: string[]; thumbnail: Array<{ url: string }> | null
 }
-interface PostsResponse { posts: PostSummary[]; total: number; hasMore: boolean }
+interface PostsResponse { posts: PostSummary[]; total: number | null; hasMore: boolean }
 
 const PAGE_SIZE = 10
 const page = ref(1)
@@ -24,7 +24,7 @@ async function fetchPage(n: number) {
   try {
     const res = await $fetch<PostsResponse>(`/api/posts?page=${n}&limit=${PAGE_SIZE}`)
     posts.value = n === 1 ? res.posts : [...posts.value, ...res.posts]
-    total.value = res.total
+    if (res.total !== null) total.value = res.total
     hasMore.value = res.hasMore
   } catch (e) {
     error.value = e
@@ -49,7 +49,7 @@ onActivated(async () => {
     const known = new Set(posts.value.map(p => p.slug))
     const fresh = res.posts.filter(p => !known.has(p.slug))
     if (fresh.length) posts.value = [...fresh, ...posts.value]
-    total.value = res.total
+    if (res.total !== null) total.value = res.total
   } catch { /* keep existing list */ }
 })
 

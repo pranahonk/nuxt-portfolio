@@ -15,6 +15,7 @@ export default defineNuxtConfig({
     routeRules: {
       '/': { headers: { 'cache-control': 's-maxage=31536000' } },
       '/_nuxt/**': { headers: { 'cache-control': 's-maxage=31536000' } },
+      '/api/posts': { headers: { 'cache-control': 'public, max-age=0, s-maxage=300, stale-while-revalidate=86400' } },
       '/api/**': { headers: { 'cache-control': 'no-store' } },
       '/posts': { headers: { 'cache-control': 's-maxage=300, stale-while-revalidate=60' } },
       '/sitemap.xml': { headers: { 'cache-control': 's-maxage=300, stale-while-revalidate=60' } },
