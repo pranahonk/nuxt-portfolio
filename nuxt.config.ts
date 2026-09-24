@@ -113,6 +113,9 @@ export default defineNuxtConfig({
     cmsPassword: process.env.CMS_PASSWORD || 'admin123',
     notionToken: process.env.NOTION_TOKEN,
     cronSecret: process.env.CRON_SECRET,
+    threadsAppId: process.env.THREADS_APP_ID,
+    threadsAppSecret: process.env.THREADS_APP_SECRET,
+    threadsRedirectUri: process.env.THREADS_REDIRECT_URI || 'https://www.pwijaya.com/api/threads/callback',
     public: {
       baseURL: process.env.BASE_URL,
       githubUsername: process.env.GITHUB_USERNAME,
