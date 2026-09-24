@@ -22,7 +22,7 @@ jobs:
             -X POST \
             -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
             -H "Content-Type: application/json" \
-            https://prana-wijaya.netlify.app/api/news/sync)
+            "https://www.pwijaya.com/api/news/sync")
 
           echo "HTTP Status: $STATUS"
           echo "Response:"
@@ -40,7 +40,7 @@ jobs:
             -X POST \
             -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
             -H "Content-Type: application/json" \
-            https://prana-wijaya.netlify.app/api/news/enrich)
+            "https://www.pwijaya.com/api/news/enrich")
 
           echo "HTTP Status: $STATUS"
           echo "Response:"
@@ -61,5 +61,5 @@ jobs:
             -X POST \
             -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
             -H "Content-Type: application/json" \
-            https://prana-wijaya.netlify.app/api/posts?page=1&limit=1)
+            "https://www.pwijaya.com/api/posts?page=1&limit=1")
           echo "Warm cache HTTP: $STATUS"

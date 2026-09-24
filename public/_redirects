@@ -1,3 +1,6 @@
+# Redirect the default Netlify hostname to the canonical domain.
+https://prana-wijaya.netlify.app/*  https://www.pwijaya.com/:splat  301!
+
 # All API routes - must use serverless function (specific rules before general catch-all)
 /api/cms/*  /.netlify/functions/server/api/cms/:splat  200
 /api/news/*  /.netlify/functions/server/api/news/:splat  200
