@@ -22,6 +22,31 @@ function integer(value, name) {
   return value
 }
 
+// Byte sizes and uptimes exceed the 1e9 cap that guards card/PR numbers.
+function bigInteger(value, name) {
+  if (!Number.isSafeInteger(value) || value < 0 || value > 1_000_000_000_000_000) fail(`Invalid ${name}`)
+  return value
+}
+
+function number(value, name, max = 1_000_000) {
+  if (typeof value !== 'number' || !Number.isFinite(value) || value < 0 || value > max) fail(`Invalid ${name}`)
+  return value
+}
+
+function optionalHttpUrl(value, name) {
+  if (value === null || value === undefined || value === '') return null
+  const raw = text(value, name, 2048)
+  let url
+  try {
+    url = new URL(raw)
+  } catch {
+    fail(`Invalid ${name}`)
+  }
+  if (url.protocol !== 'http:' && url.protocol !== 'https:') fail(`Invalid ${name}`)
+  if (url.username || url.password) fail(`Invalid ${name}`)
+  return url.toString()
+}
+
 function isoDate(value, name) {
   const raw = text(value, name, 64)
   const date = new Date(raw)
@@ -53,6 +78,10 @@ export function validateMissionSnapshot(value) {
   const coordinator = value.coordinator
   if (!coordinator || typeof coordinator !== 'object' || typeof coordinator.paused !== 'boolean') fail('Invalid coordinator')
 
+  const ide = optionalIde(value.ide)
+  const system = optionalSystem(value.system)
+  const timers = optionalTimers(value.timers)
+
   return {
     generatedAt,
     coordinator: {
@@ -63,6 +92,9 @@ export function validateMissionSnapshot(value) {
       activeRun: optionalText(coordinator.activeRun, 'active run', 160),
       lastResult: text(coordinator.lastResult, 'last result')
     },
+    ...(ide === undefined ? {} : { ide }),
+    ...(system === undefined ? {} : { system }),
+    ...(timers === undefined ? {} : { timers }),
     runners: array(value.runners, 'runners', 20).map((runner) => ({
       name: text(runner?.name, 'runner name'),
       status: text(runner?.status, 'runner status', 40),
@@ -95,6 +127,55 @@ export function validateMissionSnapshot(value) {
       status: text(host?.status, 'host status', 40)
     }))
   }
+}
+
+// Optional blocks. A snapshot from an older VPS sync lacks these, so absence
+// must stay valid; when present they are validated as strictly as the rest.
+function optionalIde(value) {
+  if (value === undefined) return undefined
+  if (!value || typeof value !== 'object' || Array.isArray(value)) fail('Invalid ide')
+  return {
+    relay: text(value.relay, 'ide relay', 40),
+    url: optionalHttpUrl(value.url, 'ide url'),
+    agents: array(value.agents, 'ide agents', 20).map((agent) => ({
+      name: text(agent?.name, 'ide agent name'),
+      status: text(agent?.status, 'ide agent status', 40),
+      version: optionalText(agent?.version, 'ide agent version', 40)
+    })),
+    terminals: array(value.terminals, 'ide terminals', 20).map((terminal) => ({
+      name: text(terminal?.name, 'ide terminal name'),
+      command: text(terminal?.command, 'ide terminal command', 80),
+      path: optionalText(terminal?.path, 'ide terminal path', 240)
+    }))
+  }
+}
+
+function optionalSystem(value) {
+  if (value === undefined) return undefined
+  if (!value || typeof value !== 'object' || Array.isArray(value)) fail('Invalid system')
+  return {
+    hostname: text(value.hostname, 'system hostname', 120),
+    uptimeSeconds: bigInteger(value.uptimeSeconds, 'system uptime'),
+    load1: number(value.load1, 'system load1'),
+    load5: number(value.load5, 'system load5'),
+    load15: number(value.load15, 'system load15'),
+    cpus: integer(value.cpus, 'system cpus'),
+    memTotal: bigInteger(value.memTotal, 'system memTotal'),
+    memUsed: bigInteger(value.memUsed, 'system memUsed'),
+    diskTotal: bigInteger(value.diskTotal, 'system diskTotal'),
+    diskUsed: bigInteger(value.diskUsed, 'system diskUsed')
+  }
+}
+
+function optionalTimers(value) {
+  if (value === undefined) return undefined
+  return array(value, 'timers', 40).map((timer) => ({
+    unit: text(timer?.unit, 'timer unit', 160),
+    activates: optionalText(timer?.activates, 'timer activates', 160),
+    next: optionalText(timer?.next, 'timer next', 64),
+    last: optionalText(timer?.last, 'timer last', 64),
+    state: text(timer?.state, 'timer state', 40)
+  }))
 }
 
 export function commandKey(id) {

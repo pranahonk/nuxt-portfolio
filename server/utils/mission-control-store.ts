@@ -14,6 +14,34 @@ export interface MissionCommand {
   message?: string
 }
 
+export interface MissionIde {
+  relay: string
+  url: string | null
+  agents: Array<{ name: string; status: string; version?: string | null }>
+  terminals: Array<{ name: string; command: string; path?: string | null }>
+}
+
+export interface MissionSystem {
+  hostname: string
+  uptimeSeconds: number
+  load1: number
+  load5: number
+  load15: number
+  cpus: number
+  memTotal: number
+  memUsed: number
+  diskTotal: number
+  diskUsed: number
+}
+
+export interface MissionTimer {
+  unit: string
+  activates?: string | null
+  next?: string | null
+  last?: string | null
+  state: string
+}
+
 export interface MissionSnapshot {
   generatedAt: string
   coordinator: {
@@ -29,6 +57,9 @@ export interface MissionSnapshot {
   pullRequests: Array<{ number: number; title: string; state: string; branch: string; url: string; checks: string }>
   recentRuns: Array<{ name: string; conclusion: string; status: string; url: string; createdAt: string }>
   hosts: Array<{ name: string; role: string; status: string }>
+  ide?: MissionIde
+  system?: MissionSystem
+  timers?: MissionTimer[]
 }
 
 const STATUS_KEY = 'status'

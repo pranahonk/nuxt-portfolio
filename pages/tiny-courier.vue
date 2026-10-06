@@ -183,6 +183,85 @@
           </div>
         </article>
 
+        <article v-if="snapshot?.ide" class="panel ide-panel">
+          <div class="panel-heading">
+            <div><p class="eyebrow">WORKSPACE</p><h2>49-IDE relay</h2></div>
+            <span class="sync-state" :class="snapshot.ide.relay === 'online' ? 'fresh' : 'stale'">
+              <span class="pulse-dot" />{{ snapshot.ide.relay }}
+            </span>
+          </div>
+          <div class="ide-body">
+            <div class="ide-agents">
+              <p class="ide-subhead">Agents <span class="count-chip">{{ onlineIdeAgents }}/{{ snapshot.ide.agents.length }}</span></p>
+              <div v-for="agent in snapshot.ide.agents" :key="agent.name" class="ide-agent">
+                <span class="host-status" :class="agent.status === 'online' ? 'status-online' : 'status-offline'">{{ agent.status }}</span>
+                <strong>{{ agent.name }}</strong>
+                <small v-if="agent.version">v{{ agent.version }}</small>
+              </div>
+              <p v-if="!snapshot.ide.agents.length" class="empty-state">No agents connected.</p>
+            </div>
+            <div class="ide-terminals">
+              <p class="ide-subhead">Terminals <span class="count-chip">{{ snapshot.ide.terminals.length }}</span></p>
+              <div v-for="term in snapshot.ide.terminals" :key="term.name" class="ide-terminal">
+                <span class="run-light light-good" />
+                <span><strong>{{ term.name }}</strong><small>{{ term.command }}</small></span>
+              </div>
+              <p v-if="!snapshot.ide.terminals.length" class="empty-state">No live sessions.</p>
+            </div>
+            <a v-if="snapshot.ide.url" class="ide-open" :href="snapshot.ide.url" target="_blank" rel="noreferrer">
+              Open workspace
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8" /></svg>
+            </a>
+            <p class="ide-hint">Reachable only over Tailscale (MagicDNS).</p>
+          </div>
+        </article>
+
+        <article v-if="snapshot?.system" class="panel system-panel">
+          <div class="panel-heading">
+            <div><p class="eyebrow">FLEET</p><h2>System monitor</h2></div>
+            <span class="count-chip">{{ snapshot.system.hostname }}</span>
+          </div>
+          <div class="metric-grid">
+            <div class="metric">
+              <span class="metric-label">Load (1m)</span>
+              <strong>{{ snapshot.system.load1.toFixed(2) }}</strong>
+              <small>{{ snapshot.system.cpus }} vCPU · {{ loadPct }}%</small>
+              <div class="meter"><i :style="{ width: Math.min(loadPct, 100) + '%' }" :class="loadPct > 85 ? 'bar-bad' : loadPct > 60 ? 'bar-warn' : 'bar-good'" /></div>
+            </div>
+            <div class="metric">
+              <span class="metric-label">Memory</span>
+              <strong>{{ memPct }}%</strong>
+              <small>{{ formatBytes(snapshot.system.memUsed) }} / {{ formatBytes(snapshot.system.memTotal) }}</small>
+              <div class="meter"><i :style="{ width: memPct + '%' }" :class="memPct > 85 ? 'bar-bad' : memPct > 60 ? 'bar-warn' : 'bar-good'" /></div>
+            </div>
+            <div class="metric">
+              <span class="metric-label">Disk /</span>
+              <strong>{{ diskPct }}%</strong>
+              <small>{{ formatBytes(snapshot.system.diskUsed) }} / {{ formatBytes(snapshot.system.diskTotal) }}</small>
+              <div class="meter"><i :style="{ width: diskPct + '%' }" :class="diskPct > 85 ? 'bar-bad' : diskPct > 60 ? 'bar-warn' : 'bar-good'" /></div>
+            </div>
+            <div class="metric">
+              <span class="metric-label">Uptime</span>
+              <strong>{{ formatUptime(snapshot.system.uptimeSeconds) }}</strong>
+              <small>load {{ snapshot.system.load5.toFixed(2) }} / {{ snapshot.system.load15.toFixed(2) }}</small>
+            </div>
+          </div>
+        </article>
+
+        <article v-if="snapshot?.timers?.length" class="panel timer-panel">
+          <div class="panel-heading">
+            <div><p class="eyebrow">AUTOMATION</p><h2>Scheduled jobs</h2></div>
+            <span class="count-chip">{{ snapshot.timers.length }} timers</span>
+          </div>
+          <div class="timer-list">
+            <div v-for="timer in snapshot.timers" :key="timer.unit" class="timer-row">
+              <span class="run-light" :class="timer.state === 'active' ? 'light-good' : 'light-bad'" />
+              <span><strong>{{ timer.unit.replace('.timer', '') }}</strong><small>next {{ timer.next ? formatTime(timer.next) : '—' }}</small></span>
+              <b>{{ timer.state }}</b>
+            </div>
+          </div>
+        </article>
+
         <article class="panel command-panel">
           <div class="panel-heading"><div><p class="eyebrow">AUDIT TRAIL</p><h2>Command queue</h2></div></div>
           <div class="command-list">
@@ -226,6 +305,25 @@ interface Snapshot {
   pullRequests: Array<{ number: number; title: string; state: string; branch: string; url: string; checks: string }>
   recentRuns: Array<{ name: string; conclusion: string; status: string; url: string; createdAt: string }>
   hosts: Array<{ name: string; role: string; status: string }>
+  ide?: {
+    relay: string
+    url: string | null
+    agents: Array<{ name: string; status: string; version?: string | null }>
+    terminals: Array<{ name: string; command: string; path?: string | null }>
+  }
+  system?: {
+    hostname: string
+    uptimeSeconds: number
+    load1: number
+    load5: number
+    load15: number
+    cpus: number
+    memTotal: number
+    memUsed: number
+    diskTotal: number
+    diskUsed: number
+  }
+  timers?: Array<{ unit: string; activates?: string | null; next?: string | null; last?: string | null; state: string }>
 }
 interface Command { id: string; type: CommandType; issueNumber?: number; state: string; createdAt: string }
 
@@ -252,6 +350,29 @@ const greenPullRequests = computed(() => openPullRequests.value.filter(pr => pr.
 const ageSeconds = computed(() => snapshot.value ? (Date.now() - new Date(snapshot.value.generatedAt).getTime()) / 1000 : Infinity)
 const freshnessClass = computed(() => ageSeconds.value < 120 ? 'fresh' : ageSeconds.value < 600 ? 'aging' : 'stale')
 const freshnessLabel = computed(() => ageSeconds.value < 120 ? 'Live telemetry' : ageSeconds.value < 600 ? 'Telemetry delayed' : 'Telemetry stale')
+
+const memPct = computed(() => snapshot.value?.system && snapshot.value.system.memTotal > 0
+  ? Math.round((snapshot.value.system.memUsed / snapshot.value.system.memTotal) * 100) : 0)
+const diskPct = computed(() => snapshot.value?.system && snapshot.value.system.diskTotal > 0
+  ? Math.round((snapshot.value.system.diskUsed / snapshot.value.system.diskTotal) * 100) : 0)
+const loadPct = computed(() => snapshot.value?.system && snapshot.value.system.cpus > 0
+  ? Math.round((snapshot.value.system.load1 / snapshot.value.system.cpus) * 100) : 0)
+const onlineIdeAgents = computed(() => snapshot.value?.ide?.agents.filter(a => a.status === 'online').length || 0)
+
+function formatBytes(value: number) {
+  if (!value) return '0 B'
+  const units = ['B', 'KB', 'MB', 'GB', 'TB']
+  const i = Math.min(Math.floor(Math.log(value) / Math.log(1024)), units.length - 1)
+  return `${(value / Math.pow(1024, i)).toFixed(i === 0 ? 0 : 1)} ${units[i]}`
+}
+function formatUptime(seconds: number) {
+  const d = Math.floor(seconds / 86400)
+  const h = Math.floor((seconds % 86400) / 3600)
+  const m = Math.floor((seconds % 3600) / 60)
+  if (d > 0) return `${d}d ${h}h`
+  if (h > 0) return `${h}h ${m}m`
+  return `${m}m`
+}
 
 async function checkSession() {
   try {
@@ -414,6 +535,28 @@ onBeforeUnmount(() => { if (refreshTimer) clearInterval(refreshTimer) })
 .host-status { margin-left: auto; font: .62rem 'Fira Code', monospace; }.status-online { color: #52dda0; }.status-offline { color: #ef7773; }
 .run-light, .command-state { width: 8px; height: 8px; border-radius: 50%; flex: none; }.light-good, .command-completed { background: #4dde9c; box-shadow: 0 0 10px #4dde9c80; }.light-live, .command-running, .command-pending { background: #f0ac3e; }.light-bad, .command-failed { background: #f06262; }
 .command-row { display: flex; align-items: center; gap: .7rem; padding: .72rem; }.command-row b { color: #9aabc1; }
+.ide-body { padding: .9rem; display: grid; gap: .75rem; }
+.ide-subhead { display: flex; align-items: center; justify-content: space-between; margin: 0 0 .5rem; color: #8294af; font: .68rem 'Fira Code', monospace; text-transform: uppercase; letter-spacing: .1em; }
+.ide-agent, .ide-terminal { display: flex; align-items: center; gap: .6rem; padding: .6rem .7rem; background: #0c1727; border: 1px solid #1d304a; border-radius: 9px; margin-bottom: .45rem; }
+.ide-agent strong, .ide-terminal strong { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ide-agent small, .ide-terminal small { margin-left: auto; color: #8193ad; font: .65rem 'Fira Code', monospace; }
+.ide-terminal span:nth-child(2) { min-width: 0; flex: 1; display: flex; align-items: baseline; gap: .5rem; }
+.ide-open { display: inline-flex; align-items: center; gap: .4rem; padding: .65rem .9rem; border: 1px solid #3b5b8c; border-radius: 8px; background: #17315b; color: #e8f0ff; font-weight: 600; text-decoration: none; }
+.ide-open:hover { background: #214477; }.ide-open svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 2; }
+.ide-hint { margin: 0; color: #61738e; font: .66rem 'Fira Code', monospace; }
+.metric-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: .65rem; padding: .8rem; }
+.metric { padding: .75rem; background: #0c1727; border: 1px solid #1d304a; border-radius: 9px; }
+.metric-label { display: block; color: #8294af; font: .66rem 'Fira Code', monospace; text-transform: uppercase; letter-spacing: .08em; }
+.metric strong { display: block; margin: .3rem 0 .15rem; font: 600 1.35rem 'Fira Code', monospace; }
+.metric small { color: #8193ad; font-size: .74rem; }
+.meter { height: 5px; margin-top: .5rem; border-radius: 999px; background: #15243a; overflow: hidden; }
+.meter i { display: block; height: 100%; border-radius: 999px; transition: width .3s ease; }
+.bar-good { background: #4dde9c; }.bar-warn { background: #f0ac3e; }.bar-bad { background: #f06262; }
+.timer-list { padding: .5rem; }
+.timer-row { display: flex; align-items: center; gap: .7rem; padding: .7rem .75rem; border-radius: 9px; }.timer-row:hover { background: #14243a; }
+.timer-row span:nth-child(2) { min-width: 0; flex: 1; }.timer-row strong { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: .88rem; }
+.timer-row small { display: block; color: #8193ad; margin-top: .2rem; font: .68rem 'Fira Code', monospace; }
+.timer-row b { font: 600 .65rem 'Fira Code', monospace; text-transform: uppercase; color: #9aabc1; }
 .empty-state { color: #788aa3; text-align: center; padding: 1.5rem; font-size: .85rem; }
 .mission-footer { display: flex; justify-content: space-between; gap: 1rem; padding: 1rem clamp(1rem, 3vw, 3rem) 2rem; color: #61738e; font: .68rem 'Fira Code', monospace; }
 .modal-backdrop { position: fixed; z-index: 10; inset: 0; display: grid; place-items: center; padding: 1rem; background: #020710cc; backdrop-filter: blur(8px); }
