@@ -1,0 +1,18 @@
+[Unit]
+Description=Tiny Courier Mission Control sync
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=ubuntu
+WorkingDirectory=/home/ubuntu/tiny-courier-control
+EnvironmentFile=/home/ubuntu/tiny-courier-control/mission-control.env
+ExecStart=/home/ubuntu/tiny-courier-control/bin/mission-control-sync
+TimeoutStartSec=50min
+Nice=10
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=read-only
+ReadWritePaths=-/home/ubuntu/tiny-courier-control

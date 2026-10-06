@@ -26,13 +26,23 @@ export default defineNuxtConfig({
           'X-Robots-Tag': 'noindex, nofollow, noarchive, nosnippet'
         },
         robots: false
+      },
+      '/tiny-courier': {
+        headers: {
+          'cache-control': 'no-cache, no-store, must-revalidate',
+          'X-Robots-Tag': 'noindex, nofollow, noarchive, nosnippet'
+        },
+        robots: false
+      },
+      '/api/tiny-courier/**': {
+        headers: { 'cache-control': 'no-store' }
       }
     }
   },
 
   sourcemap: {
     server: true,
-    client: true
+    client: false
   },
 
   image: {
@@ -116,6 +126,9 @@ export default defineNuxtConfig({
     threadsAppId: process.env.THREADS_APP_ID,
     threadsAppSecret: process.env.THREADS_APP_SECRET,
     threadsRedirectUri: process.env.THREADS_REDIRECT_URI || 'https://www.pwijaya.com/api/threads/callback',
+    missionControlPassword: process.env.MISSION_CONTROL_PASSWORD,
+    missionControlJwtSecret: process.env.MISSION_CONTROL_JWT_SECRET,
+    missionControlSyncSecret: process.env.MISSION_CONTROL_SYNC_SECRET,
     public: {
       baseURL: process.env.BASE_URL,
       githubUsername: process.env.GITHUB_USERNAME,
