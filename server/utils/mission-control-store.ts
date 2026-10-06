@@ -42,6 +42,23 @@ export interface MissionTimer {
   state: string
 }
 
+export type MissionOpencodeState = 'Working' | 'Waiting' | 'Stalled' | 'Idle'
+
+export interface MissionOpencode {
+  runActive: boolean
+  activeAgent: string | null
+  lastEvent: string | null
+  logAgeSeconds: number | null
+  mcpDown: string[]
+  agents: Array<{
+    name: string
+    state: MissionOpencodeState | string
+    mode?: string | null
+    model?: string | null
+    lastSeen?: string | null
+  }>
+}
+
 export interface MissionSnapshot {
   generatedAt: string
   coordinator: {
@@ -60,6 +77,7 @@ export interface MissionSnapshot {
   ide?: MissionIde
   system?: MissionSystem
   timers?: MissionTimer[]
+  opencode?: MissionOpencode
 }
 
 const STATUS_KEY = 'status'

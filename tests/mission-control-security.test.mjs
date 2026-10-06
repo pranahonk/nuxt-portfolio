@@ -36,3 +36,35 @@ test('command keys reject path traversal and malformed ids', () => {
   assert.equal(commandKey('123e4567-e89b-12d3-a456-426614174000'), 'commands/123e4567-e89b-12d3-a456-426614174000')
   assert.throws(() => commandKey('../status'), /Invalid command id/)
 })
+
+test('an older snapshot without the opencode block stays valid', () => {
+  assert.equal(validateMissionSnapshot(snapshot).opencode, undefined)
+})
+
+test('the opencode live-run block validates and normalizes timestamps', () => {
+  const withOpencode = {
+    ...snapshot,
+    opencode: {
+      activeAgent: 'orchestrator',
+      lastEvent: 'active',
+      logAgeSeconds: 48010,
+      mcpDown: ['blender-mcp', 'figma'],
+      agents: [
+        { name: 'orchestrator', state: 'Stalled', mode: 'primary', model: '9router/medium', lastSeen: '2026-10-06T02:17:57.898Z' },
+        { name: 'reporter', state: 'Idle', mode: 'subagent', model: '9router/easy', lastSeen: null }
+      ]
+    }
+  }
+  const out = validateMissionSnapshot(withOpencode).opencode
+  assert.equal(out.agents[0].state, 'Stalled')
+  assert.equal(out.agents[0].lastSeen, '2026-10-06T02:17:57.898Z')
+  assert.equal(out.agents[1].lastSeen, null)
+  assert.equal(out.logAgeSeconds, 48010)
+  assert.deepEqual(out.mcpDown, ['blender-mcp', 'figma'])
+})
+
+test('a malformed opencode block fails closed', () => {
+  assert.throws(() => validateMissionSnapshot({ ...snapshot, opencode: 'nope' }), /Invalid opencode/)
+  assert.throws(() => validateMissionSnapshot({ ...snapshot, opencode: { agents: [{ name: '', state: 'Idle' }] } }), /Invalid opencode agent name/)
+  assert.throws(() => validateMissionSnapshot({ ...snapshot, opencode: { logAgeSeconds: -1 } }), /Invalid opencode log age/)
+})

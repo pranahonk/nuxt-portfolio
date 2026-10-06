@@ -171,17 +171,51 @@
             </button>
             <p v-if="!floorStations.length" class="room-empty">No crew reported yet.</p>
           </div>
+
+          <!-- OpenCode crew -->
+          <div v-show="!activeOverlay || activeOverlay === null" class="crew-strip">
+            <div class="room-label">
+              <span>OPENCODE CREW</span>
+              <small v-if="snapshot?.opencode?.runActive">{{ activeWorkers }} working · {{ waitingWorkers }} waiting · {{ stalledWorkers }} stalled · last log {{ logAgeLabel }} ago</small>
+              <small v-else>No active run · {{ roleStations.length }} roles defined · last log {{ logAgeLabel }} ago</small>
+            </div>
+            <div class="crew-grid">
+              <button
+                v-for="role in roleStations"
+                :key="role.id"
+                type="button"
+                class="crew-card"
+                :class="`state-${role.state.toLowerCase()}`"
+                @click="openStation(role)"
+              >
+                <PixelCharacter :agent="role.id" />
+                <span class="crew-body">
+                  <span class="crew-name">{{ role.name }}</span>
+                  <span class="crew-role">{{ role.role }}</span>
+                </span>
+                <span class="badge" :class="role.tone">{{ role.state }}</span>
+              </button>
+              <p v-if="!roleStations.length" class="empty-state">No OpenCode run reported.</p>
+            </div>
+            <p v-if="snapshot?.opencode?.mcpDown?.length" class="crew-alert">
+              {{ snapshot.opencode.mcpDown.length }} MCP server(s) unavailable: {{ snapshot.opencode.mcpDown.join(', ') }}
+            </p>
+          </div>
         </div>
 
         <!-- ── Side rail ─────────────────────────────────────── -->
         <aside class="room-side">
           <div class="side-card summary-card">
-            <h2>Crew snapshot</h2>
-            <div class="summary-stat"><strong>{{ floorStations.length }}</strong><span>stations on the floor</span></div>
+            <h2>Team snapshot</h2>
+            <div class="summary-stat"><strong>{{ roleStations.length }}</strong><span>roles defined in the run</span></div>
             <hr>
-            <div class="summary-stat"><strong>{{ activeWorkers }}</strong><span>working, reviewing, collaborating</span></div>
+            <div class="summary-stat"><strong>{{ activeWorkers }}</strong><span>working now</span></div>
             <hr>
-            <div class="summary-stat"><strong>{{ idleWorkers }}</strong><span>idle &amp; standing by</span></div>
+            <div class="summary-stat"><strong>{{ waitingWorkers }}</strong><span>waiting on a permission</span></div>
+            <hr>
+            <div class="summary-stat"><strong :class="{ 'text-bad': stalledWorkers }">{{ stalledWorkers }}</strong><span>stalled (no log {{ logAgeLabel }})</span></div>
+            <hr>
+            <div class="summary-stat"><strong>{{ onlineHosts }}</strong><span>machines online</span></div>
           </div>
 
           <div class="side-card feed-card">
@@ -231,7 +265,8 @@
             <div><dt>State</dt><dd>{{ selected.state }}</dd></div>
             <div><dt>Role</dt><dd>{{ selected.role }}</dd></div>
             <div><dt>Current work</dt><dd>{{ selected.task || 'No active task attributable to this station' }}</dd></div>
-            <div><dt>Provenance</dt><dd>{{ selected.task ? 'Kanban task assignee' : 'Managed placement' }}</dd></div>
+            <div v-if="selected.detail"><dt>Last activity</dt><dd>{{ selected.detail }}</dd></div>
+            <div><dt>Provenance</dt><dd>{{ selected.kind === 'role' ? 'OpenCode run log' : 'Managed placement' }}</dd></div>
           </dl>
           <div class="modal-actions">
             <button type="button" class="ghost-button" @click="selected = null">Close</button>
@@ -260,7 +295,8 @@ import { h } from 'vue'
 import type { CSSProperties } from 'vue'
 
 type CommandType = 'pause' | 'resume' | 'run_now' | 'promote_ready' | 'move_backlog'
-type ServiceState = 'Idle' | 'Working' | 'Reviewing' | 'Collaborating' | 'Offline' | 'Unknown'
+type ServiceState = 'Idle' | 'Working' | 'Reviewing' | 'Collaborating' | 'Waiting' | 'Stalled' | 'Offline' | 'Unknown'
+type StationKind = 'machine' | 'role'
 
 interface Card { number: number; title: string; labels: string[]; url: string }
 interface Snapshot {
@@ -282,9 +318,17 @@ interface Snapshot {
     memTotal: number; memUsed: number; diskTotal: number; diskUsed: number
   }
   timers?: Array<{ unit: string; activates?: string | null; next?: string | null; last?: string | null; state: string }>
+  opencode?: {
+    runActive: boolean
+    activeAgent: string | null
+    lastEvent: string | null
+    logAgeSeconds: number | null
+    mcpDown: string[]
+    agents: Array<{ name: string; state: string; mode?: string | null; model?: string | null; lastSeen?: string | null }>
+  }
 }
 interface Command { id: string; type: CommandType; issueNumber?: number; state: string; createdAt: string }
-interface Station { id: string; name: string; role: string; state: ServiceState; task: string | null; room: string; tone: string }
+interface Station { id: string; name: string; role: string; state: ServiceState; task: string | null; room: string; tone: string; kind: StationKind; detail: string | null }
 
 definePageMeta({ layout: false })
 useSeoMeta({ title: 'Tiny Courier Mission Room', robots: 'noindex, nofollow' })
@@ -357,23 +401,48 @@ const memPct = computed(() => (snapshot.value?.system && snapshot.value.system.m
 const diskPct = computed(() => (snapshot.value?.system && snapshot.value.system.diskTotal > 0 ? Math.round((snapshot.value.system.diskUsed / snapshot.value.system.diskTotal) * 100) : 0))
 const loadPct = computed(() => (snapshot.value?.system && snapshot.value.system.cpus > 0 ? Math.round((snapshot.value.system.load1 / snapshot.value.system.cpus) * 100) : 0))
 
-/** Flatten hosts + IDE agents into floor stations; each carries a real state. */
+/** Machine hosts on the floor; each carries a real state. */
 const floorStations = computed<Station[]>(() => {
   const snap = snapshot.value
   if (!snap) return []
   const stations: Station[] = []
-  const push = (id: string, role: string, online: boolean) => {
-    const running = online && (snap.coordinator.activeRun === 'active' || busyRunners.value > 0)
-    const state: ServiceState = !online ? 'Offline' : role === 'Coordinator' && running ? 'Working' : 'Idle'
-    stations.push({ id, name: id, role, state, task: null, room: 'Workspace', tone: toneForState(state) })
-  }
-  snap.hosts.forEach((host) => push(host.name, host.role, host.status === 'online'))
-  ;(snap.ide?.agents || []).forEach((agent) => { if (!stations.some((s) => s.name === agent.name)) push(agent.name, 'Workspace agent', agent.status === 'online') })
+  snap.hosts.forEach((host) => {
+    const running = host.status === 'online' && (snap.coordinator.activeRun === 'active' || busyRunners.value > 0)
+    const state: ServiceState = host.status !== 'online' ? 'Offline' : host.role === 'Coordinator' && running ? 'Working' : 'Idle'
+    stations.push({ id: host.name, name: host.name, role: host.role, state, task: null, room: 'Workspace', tone: toneForState(state), kind: 'machine', detail: null })
+  })
   return stations
 })
-const activeWorkers = computed(() => floorStations.value.filter((s) => s.state === 'Working' || s.state === 'Reviewing' || s.state === 'Collaborating').length)
-const idleWorkers = computed(() => floorStations.value.filter((s) => s.state === 'Idle').length)
-const floorSummary = computed(() => `${activeWorkers.value} active · ${idleWorkers.value} idle · ${onlineHosts.value} online`)
+
+/** OpenCode role agents observed in the live run — the real crew. */
+const roleStations = computed<Station[]>(() => {
+  const oc = snapshot.value?.opencode
+  if (!oc?.agents?.length) return []
+  return oc.agents.map((agent) => {
+    const state = agent.state as ServiceState
+    return {
+      id: `role-${agent.name}`,
+      name: agent.name,
+      role: agent.mode === 'primary' ? 'Primary orchestrator' : 'Role agent',
+      state,
+      task: agent.model ? agent.model : null,
+      room: 'Workspace',
+      tone: toneForState(state),
+      kind: 'role' as const,
+      detail: agent.lastSeen ? `Last seen ${formatTime(agent.lastSeen)}` : 'No activity in this run'
+    }
+  })
+})
+
+const activeWorkers = computed(() => roleStations.value.filter((s) => s.state === 'Working').length)
+const idleWorkers = computed(() => roleStations.value.filter((s) => s.state === 'Idle').length)
+const waitingWorkers = computed(() => roleStations.value.filter((s) => s.state === 'Waiting').length)
+const stalledWorkers = computed(() => roleStations.value.filter((s) => s.state === 'Stalled').length)
+const logAgeLabel = computed(() => {
+  const age = snapshot.value?.opencode?.logAgeSeconds
+  return age === null || age === undefined ? 'no log' : formatUptime(age)
+})
+const floorSummary = computed(() => `${activeWorkers.value} working · ${idleWorkers.value} idle · ${onlineHosts.value} machines online`)
 
 const taskGroups = computed(() => {
   const cards = openTasks.value
@@ -387,6 +456,8 @@ const taskGroups = computed(() => {
 
 function toneForState(state: ServiceState) {
   if (state === 'Offline') return 'muted'
+  if (state === 'Stalled') return 'bad'
+  if (state === 'Waiting') return 'warn'
   if (state === 'Idle' || state === 'Unknown') return 'unknown'
   return 'good'
 }
@@ -626,6 +697,20 @@ onBeforeUnmount(() => { if (refreshTimer) clearInterval(refreshTimer) })
 .pixel-door::after { content: ''; position: absolute; right: 10%; top: 54%; width: 5px; height: 5px; background: #f2bd69; }
 .room-empty { position: absolute; left: 32%; bottom: 13%; color: #d4dfd7; font: .72rem 'Fira Code', monospace; z-index: 2; }
 
+/* OpenCode crew strip sits under the machine floor. */
+.crew-strip { border: 1px solid var(--line-soft); background: var(--surface-2); padding: .8rem .9rem 1rem; margin-top: .9rem; }
+.crew-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: .5rem; margin-top: .6rem; }
+.crew-card { display: flex; align-items: center; gap: .6rem; padding: .5rem .6rem; border: 1px solid var(--line-soft); background: #0d1311; color: var(--text); cursor: pointer; text-align: left; transition: .16s; }
+.crew-card:hover { border-color: var(--accent); }
+.crew-card .pixel-character { transform: scale(.72); transform-origin: left center; flex: none; }
+.crew-body { display: grid; gap: .1rem; min-width: 0; flex: 1; }
+.crew-name { font: .74rem 'Fira Code', monospace; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.crew-role { color: var(--text-faint); font: .6rem 'Fira Code', monospace; }
+.crew-card.state-working { border-color: #1e5c46; }
+.crew-card.state-waiting { border-color: #6a4f1c; }
+.crew-card.state-stalled { border-color: #6e2f28; background: #160f0d; }
+.crew-alert { margin: .6rem 0 0; color: var(--warn); font: .64rem 'Fira Code', monospace; line-height: 1.4; }
+
 .pixel-station { position: absolute; z-index: 6; display: grid; gap: 4px; justify-items: center; min-height: 116px; width: 138px; padding: 0; border: 0; background: transparent; color: var(--text); cursor: pointer; text-align: center; }
 .pixel-station:hover .pixel-station-name { color: var(--accent-strong); }
 .station-1 { left: 18%; bottom: 24%; }
@@ -644,6 +729,8 @@ onBeforeUnmount(() => { if (refreshTimer) clearInterval(refreshTimer) })
 .badge.good { background: #14352a; color: var(--good); }
 .badge.unknown { background: var(--line-soft); color: var(--text-dim); }
 .badge.muted { background: #2a1313; color: var(--bad); }
+.badge.bad { background: #2a1313; color: var(--bad); }
+.badge.warn { background: #33280f; color: var(--warn); }
 
 /* Pixel character */
 .pixel-character { --hair: #24394b; --skin: #e9b57d; --shirt: #6bd4c0; --pants: #263b55; position: relative; display: inline-block; width: 52px; height: 58px; z-index: 2; }

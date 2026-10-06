@@ -81,6 +81,7 @@ export function validateMissionSnapshot(value) {
   const ide = optionalIde(value.ide)
   const system = optionalSystem(value.system)
   const timers = optionalTimers(value.timers)
+  const opencode = optionalOpencode(value.opencode)
 
   return {
     generatedAt,
@@ -95,6 +96,7 @@ export function validateMissionSnapshot(value) {
     ...(ide === undefined ? {} : { ide }),
     ...(system === undefined ? {} : { system }),
     ...(timers === undefined ? {} : { timers }),
+    ...(opencode === undefined ? {} : { opencode }),
     runners: array(value.runners, 'runners', 20).map((runner) => ({
       name: text(runner?.name, 'runner name'),
       status: text(runner?.status, 'runner status', 40),
@@ -176,6 +178,32 @@ function optionalTimers(value) {
     last: optionalText(timer?.last, 'timer last', 64),
     state: text(timer?.state, 'timer state', 40)
   }))
+}
+
+// OpenCode live-run view. Optional so a snapshot from an older VPS sync stays
+// valid; the probe emits {} when the log or node is missing, which is why the
+// inner fields are optional and arrays degrade to empty rather than failing.
+function optionalOpencode(value) {
+  if (value === undefined) return undefined
+  if (!value || typeof value !== 'object' || Array.isArray(value)) fail('Invalid opencode')
+  return {
+    runActive: value.runActive === true,
+    activeAgent: optionalText(value.activeAgent, 'opencode active agent', 80),
+    lastEvent: optionalText(value.lastEvent, 'opencode last event', 40),
+    logAgeSeconds: value.logAgeSeconds === null || value.logAgeSeconds === undefined
+      ? null
+      : integer(value.logAgeSeconds, 'opencode log age'),
+    mcpDown: array(value.mcpDown ?? [], 'opencode mcpDown', 40).map((name) => text(name, 'opencode mcp name', 80)),
+    agents: array(value.agents ?? [], 'opencode agents', 40).map((agent) => ({
+      name: text(agent?.name, 'opencode agent name', 80),
+      state: text(agent?.state, 'opencode agent state', 24),
+      mode: optionalText(agent?.mode, 'opencode agent mode', 24),
+      model: optionalText(agent?.model, 'opencode agent model', 80),
+      lastSeen: agent?.lastSeen === undefined || agent?.lastSeen === null || agent?.lastSeen === ''
+        ? null
+        : isoDate(agent.lastSeen, 'opencode agent lastSeen')
+    }))
+  }
 }
 
 export function commandKey(id) {
