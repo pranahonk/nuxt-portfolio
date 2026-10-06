@@ -118,13 +118,19 @@
             <div class="board">
               <div v-for="group in taskGroups" :key="group.status" class="board-column">
                 <p class="board-column-title">{{ group.label }} <span>{{ group.items.length }}</span></p>
-                <a v-for="card in group.items" :key="card.number" :href="card.url" target="_blank" rel="noreferrer" class="board-card">
-                  <span class="board-card-number">#{{ card.number }}</span>
-                  <span class="board-card-title">{{ card.title }}</span>
+                <div v-for="card in group.items" :key="card.number" class="board-card">
+                  <a :href="card.url" target="_blank" rel="noreferrer" class="board-card-main">
+                    <span class="board-card-number">#{{ card.number }}</span>
+                    <span class="board-card-title">{{ card.title }}</span>
+                  </a>
                   <span class="label-row">
                     <span v-for="label in card.labels" :key="label" class="label-chip" :class="`label-${label}`">{{ label }}</span>
                   </span>
-                </a>
+                  <div v-if="canPromote(card) || canMoveBack(card)" class="board-card-actions">
+                    <button v-if="canPromote(card)" type="button" class="card-action" :disabled="commandBusy" @click="confirmCommand('promote_ready', card.number)">Mark ready</button>
+                    <button v-if="canMoveBack(card)" type="button" class="card-action ghost" :disabled="commandBusy" @click="confirmCommand('move_backlog', card.number)">Move to backlog</button>
+                  </div>
+                </div>
                 <p v-if="!group.items.length" class="board-empty">None</p>
               </div>
             </div>
@@ -393,6 +399,12 @@ const activeTimers = computed(() => snapshot.value?.timers?.filter((t) => t.stat
 const topRuns = computed(() => (snapshot.value?.recentRuns || []).slice(0, 5))
 const noLinkedBoard = computed(() => !openTasks.value.length && !(snapshot.value?.timers?.length))
 
+// Mirrors the VPS promote_ready guard: only low-risk, non-human backlog cards qualify.
+const canPromote = (card: Card) =>
+  card.labels.includes('backlog') && card.labels.includes('risk-low') &&
+  !card.labels.includes('risk-high') && !card.labels.includes('human-required')
+const canMoveBack = (card: Card) => card.labels.includes('ready')
+
 const ageSeconds = computed(() => (snapshot.value ? (Date.now() - new Date(snapshot.value.generatedAt).getTime()) / 1000 : Infinity))
 const freshnessClass = computed(() => (ageSeconds.value < 120 ? 'fresh' : ageSeconds.value < 600 ? 'aging' : 'stale'))
 const freshnessLabel = computed(() => (ageSeconds.value < 120 ? 'Live telemetry' : ageSeconds.value < 600 ? 'Telemetry delayed' : 'Telemetry stale'))
@@ -655,8 +667,15 @@ onBeforeUnmount(() => { if (refreshTimer) clearInterval(refreshTimer) })
 .board-column-title span { color: var(--text-faint); }
 .board-card { display: block; border: 1px solid var(--line-soft); background: #0d1311; padding: .6rem; margin-bottom: .5rem; text-decoration: none; color: var(--text); transition: .16s; }
 .board-card:hover { border-color: var(--accent); }
+.board-card-main { display: block; text-decoration: none; color: inherit; }
 .board-card-number { color: var(--warn); font: .66rem 'Fira Code', monospace; }
 .board-card-title { display: block; font-size: .82rem; margin: .2rem 0 .4rem; line-height: 1.35; }
+.board-card-actions { display: flex; gap: .35rem; margin-top: .5rem; }
+.card-action { border: 1px solid var(--line); background: var(--surface-2); color: var(--accent); padding: .3rem .55rem; cursor: pointer; font: 600 .66rem 'Fira Code', monospace; transition: .16s; }
+.card-action:hover:not(:disabled) { border-color: var(--accent); color: var(--accent-strong); }
+.card-action:disabled { opacity: .45; cursor: not-allowed; }
+.card-action.ghost { color: var(--text-dim); }
+.card-action.ghost:hover:not(:disabled) { color: var(--text); }
 .board-empty { color: var(--text-faint); font-size: .75rem; }
 .label-row { display: flex; flex-wrap: wrap; gap: .3rem; }
 .label-chip { padding: .15rem .4rem; background: var(--line-soft); color: var(--text-dim); font: .58rem 'Fira Code', monospace; }
