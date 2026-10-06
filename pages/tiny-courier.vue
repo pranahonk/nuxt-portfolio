@@ -494,7 +494,7 @@ function formatUptime(seconds: number) {
   return `${m}m`
 }
 function formatTime(value: string) {
-  return new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Jakarta', day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }).format(new Date(value))
+  return formatJakartaTime(value)
 }
 function openStation(station: Station) {
   selected.value = station
