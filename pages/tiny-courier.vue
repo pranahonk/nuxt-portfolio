@@ -61,7 +61,7 @@
         </article>
         <article>
           <span class="stat-label">Open tasks</span>
-          <strong>{{ openTasks.length }}</strong>
+          <strong>{{ snapshot?.project ? projectOpenCount : openTasks.length }}</strong>
           <small>{{ readyCount }} ready · {{ runningCount }} running · {{ reviewCount }} verifying</small>
         </article>
         <article>
@@ -259,8 +259,8 @@
       </div>
 
       <footer class="room-foot">
-        <span>Schedules: weekdays 09:00–17:00 WIB · bounded hourly passes</span>
-        <span>Never auto-merge · one low-risk card per pass · commands require confirmation</span>
+      <span>Schedules: weekdays 09:00–17:00 WIB · event-driven bounded passes</span>
+      <span>Integrator-only exact-SHA merge · one low-risk card per pass · commands require confirmation</span>
       </footer>
 
       <!-- Station detail -->
