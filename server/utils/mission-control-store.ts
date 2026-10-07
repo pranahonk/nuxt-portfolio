@@ -78,6 +78,11 @@ export interface MissionSnapshot {
   system?: MissionSystem
   timers?: MissionTimer[]
   opencode?: MissionOpencode
+  project?: {
+    title: string
+    url: string
+    items: Array<{ number: number; title: string; labels: string[]; url: string; workflow: string; closed: boolean }>
+  }
 }
 
 const STATUS_KEY = 'status'

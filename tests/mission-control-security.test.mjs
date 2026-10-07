@@ -24,6 +24,16 @@ test('snapshot validation rejects a hostile nested URL', () => {
   assert.throws(() => validateMissionSnapshot({ ...snapshot, cards: [{ ...snapshot.cards[0], url: 'https://evil.example/phish' }] }), /Invalid card URL/)
 })
 
+test('GitHub Project workflow data validates without weakening URL checks', () => {
+  const project = {
+    title: 'Tiny Courier',
+    url: 'https://github.com/users/pranahonk/projects/1',
+    items: [{ number: 1, title: 'Card', labels: ['risk-low'], url: snapshot.cards[0].url, workflow: 'Done', closed: true }]
+  }
+  assert.equal(validateMissionSnapshot({ ...snapshot, project }).project.items[0].workflow, 'Done')
+  assert.throws(() => validateMissionSnapshot({ ...snapshot, project: { ...project, url: 'https://evil.example/project' } }), /Invalid project URL/)
+})
+
 test('command transitions move forward and terminal states cannot regress', () => {
   assert.doesNotThrow(() => assertCommandTransition('pending', 'running'))
   assert.doesNotThrow(() => assertCommandTransition('running', 'completed'))

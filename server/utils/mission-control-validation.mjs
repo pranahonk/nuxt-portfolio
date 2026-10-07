@@ -82,6 +82,7 @@ export function validateMissionSnapshot(value) {
   const system = optionalSystem(value.system)
   const timers = optionalTimers(value.timers)
   const opencode = optionalOpencode(value.opencode)
+  const project = optionalProject(value.project)
 
   return {
     generatedAt,
@@ -97,6 +98,7 @@ export function validateMissionSnapshot(value) {
     ...(system === undefined ? {} : { system }),
     ...(timers === undefined ? {} : { timers }),
     ...(opencode === undefined ? {} : { opencode }),
+    ...(project === undefined ? {} : { project }),
     runners: array(value.runners, 'runners', 20).map((runner) => ({
       name: text(runner?.name, 'runner name'),
       status: text(runner?.status, 'runner status', 40),
@@ -127,6 +129,23 @@ export function validateMissionSnapshot(value) {
       name: text(host?.name, 'host name'),
       role: text(host?.role, 'host role'),
       status: text(host?.status, 'host status', 40)
+    }))
+  }
+}
+
+function optionalProject(value) {
+  if (value === undefined) return undefined
+  if (!value || typeof value !== 'object' || Array.isArray(value)) fail('Invalid project')
+  return {
+    title: text(value.title, 'project title'),
+    url: parseGitHubUrl(value.url, 'project URL'),
+    items: array(value.items, 'project items').map((item) => ({
+      number: integer(item?.number, 'project item number'),
+      title: text(item?.title, 'project item title'),
+      labels: array(item?.labels, 'project item labels', 30).map((label) => text(label, 'project item label', 80)),
+      url: parseGitHubUrl(item?.url, 'project item URL'),
+      workflow: text(item?.workflow, 'project item workflow', 40),
+      closed: typeof item?.closed === 'boolean' ? item.closed : fail('Invalid project item closed state')
     }))
   }
 }

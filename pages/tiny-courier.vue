@@ -113,7 +113,8 @@
           <div v-if="activeOverlay === 'tasks'" class="overlay-panel" role="region" aria-label="Task board">
             <div class="overlay-head">
               <h2>Task board</h2>
-              <span class="count-chip">{{ openTasks.length }} open · {{ closedTasks.length }} closed</span>
+              <a v-if="snapshot?.project" :href="snapshot.project.url" target="_blank" rel="noreferrer" class="count-chip project-link">GitHub Project · {{ projectOpenCount }} open</a>
+              <span v-else class="count-chip">{{ openTasks.length }} open · {{ closedTasks.length }} closed</span>
             </div>
             <div class="board">
               <div v-for="group in taskGroups" :key="group.status" class="board-column">
@@ -305,6 +306,7 @@ type ServiceState = 'Idle' | 'Working' | 'Reviewing' | 'Collaborating' | 'Waitin
 type StationKind = 'machine' | 'role'
 
 interface Card { number: number; title: string; labels: string[]; url: string }
+interface ProjectCard extends Card { workflow: string; closed: boolean }
 interface Snapshot {
   generatedAt: string
   coordinator: { paused: boolean; service: string; timer: string; nextRun: string | null; activeRun: string | null; lastResult: string }
@@ -332,6 +334,7 @@ interface Snapshot {
     mcpDown: string[]
     agents: Array<{ name: string; state: string; mode?: string | null; model?: string | null; lastSeen?: string | null }>
   }
+  project?: { title: string; url: string; items: ProjectCard[] }
 }
 interface Command { id: string; type: CommandType; issueNumber?: number; state: string; createdAt: string }
 interface Station { id: string; name: string; role: string; state: ServiceState; task: string | null; room: string; tone: string; kind: StationKind; detail: string | null }
@@ -391,6 +394,8 @@ const PixelCharacter = (props: { agent: string }) => {
 const onlineHosts = computed(() => snapshot.value?.hosts.filter((h) => h.status === 'online').length || 0)
 const busyRunners = computed(() => snapshot.value?.runners.filter((r) => r.busy).length || 0)
 const openTasks = computed(() => snapshot.value?.cards || [])
+const projectTasks = computed(() => snapshot.value?.project?.items || [])
+const projectOpenCount = computed(() => projectTasks.value.filter((card) => !card.closed).length)
 const closedTasks = computed(() => snapshot.value?.pullRequests.filter((pr) => pr.state !== 'OPEN') || [])
 const readyCount = computed(() => openTasks.value.filter((c) => c.labels.includes('ready')).length)
 const runningCount = computed(() => openTasks.value.filter((c) => c.labels.includes('running')).length)
@@ -457,6 +462,14 @@ const logAgeLabel = computed(() => {
 const floorSummary = computed(() => `${activeWorkers.value} working · ${idleWorkers.value} idle · ${onlineHosts.value} machines online`)
 
 const taskGroups = computed(() => {
+  if (snapshot.value?.project) {
+    const cards = projectTasks.value
+    return ['Backlog', 'Ready', 'In progress', 'Verification', 'Blocked', 'Done'].map((workflow) => ({
+      status: workflow.toLowerCase().replaceAll(' ', '-'),
+      label: workflow,
+      items: cards.filter((card) => card.workflow === workflow)
+    }))
+  }
   const cards = openTasks.value
   return [
     { status: 'ready', label: 'Ready', items: cards.filter((c) => c.labels.includes('ready')) },
@@ -661,7 +674,9 @@ onBeforeUnmount(() => { if (refreshTimer) clearInterval(refreshTimer) })
 .overlay-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: .85rem; }
 .overlay-head h2 { margin: 0; font-size: 1rem; }
 .count-chip { color: var(--text-dim); border: 1px solid var(--line); padding: .25rem .55rem; font: .64rem 'Fira Code', monospace; }
-.board { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .75rem; }
+.project-link { text-decoration: none; }
+.project-link:hover { border-color: var(--accent); color: var(--accent); }
+.board { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: .75rem; }
 .board-column { min-width: 0; }
 .board-column-title { margin: 0 0 .5rem; color: var(--text-dim); font: .66rem 'Fira Code', monospace; text-transform: uppercase; letter-spacing: .1em; }
 .board-column-title span { color: var(--text-faint); }
